@@ -3,6 +3,7 @@
 import { Mail, Lock } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function AuthForm() {
   const [mode, setMode] = useState<"login" | "signup">("login");
@@ -11,10 +12,10 @@ export default function AuthForm() {
     <div className="p-8 sm:p-12">
       {/* Logo */}
       <div className="flex items-center gap-2 mb-6">
-        <div className="bg-blue-500 text-white p-2 rounded-lg font-bold">
-          ⚡
+        <div>
+          <Image src="/logo.png" alt="logo" height={50} width={50} />
         </div>
-        <span className="font-semibold text-lg text-blue-600">Taskora</span>
+        <span className="font-semibold text-lg text-gray-600">Taskora</span>
       </div>
 
       <h2 className="text-2xl font-bold mb-2">Welcome to Taskora</h2>
