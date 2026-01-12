@@ -1,10 +1,9 @@
-import Auth from "./components/Auth";
-import DashboardPage from "./components/Dashboard";
+import OnboardingPage from "./components/onboarding";
+
 export default function Home() {
   return (
     <>
-      <Auth />
-      <DashboardPage />
+      <OnboardingPage />
     </>
   );
 }
