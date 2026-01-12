@@ -1,9 +1,10 @@
-import OnboardingPage from "./components/onboarding";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import TeamCard from "./components/teamcard";
 
 export default function Home() {
   return (
     <>
-      <OnboardingPage />
+      <TeamCard member={{} as any} />
     </>
   );
 }
