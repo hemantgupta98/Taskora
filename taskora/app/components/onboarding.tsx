@@ -1,7 +1,16 @@
+"use client";
 import Image from "next/image";
-import Link from "next/link";
+import { useState } from "react";
+import Dashboard from "./Dashboard";
 
 export default function OnboardingPage() {
+  const [showDashboard, setShowDashboard] = useState(false);
+
+  // 👉 When clicked, render Dashboard instead
+  if (showDashboard) {
+    return <Dashboard />;
+  }
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-white px-4">
       <div className="max-w-xl w-full text-center">
@@ -33,26 +42,18 @@ export default function OnboardingPage() {
           <button className="w-full sm:w-auto px-6 py-3 rounded-lg bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition">
             Create Your First Project
           </button>
+
           <button className="w-full sm:w-auto px-6 py-3 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition">
             Import Sample Data
           </button>
         </div>
-
-        {/* Secondary Links */}
-        <div className="text-sm text-gray-500 space-y-3">
-          <p>
-            Already have an account?{" "}
-            <Link href="/signin" className="text-blue-600 hover:underline">
-              Sign In
-            </Link>
-          </p>
-          <Link
-            href="/dashboard"
-            className="block text-blue-600 hover:underline"
-          >
-            Continue to Dashboard
-          </Link>
-        </div>
+        {/* Continue to Dashboard */}
+        <button
+          onClick={() => setShowDashboard(true)}
+          className="text-blue-600 text-sm hover:underline"
+        >
+          Continue to Dashboard →
+        </button>
       </div>
     </div>
   );
