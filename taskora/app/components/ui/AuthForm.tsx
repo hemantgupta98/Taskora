@@ -1,5 +1,4 @@
 "use client";
-
 import { Mail, Lock } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
@@ -15,7 +14,7 @@ export default function AuthForm() {
         <div>
           <Image src="/logo.png" alt="logo" height={50} width={50} />
         </div>
-        <span className="font-semibold text-lg text-gray-600">Taskora</span>
+        <span className="font-semibold text-lg text-blue-600">Taskora</span>
       </div>
 
       <h2 className="text-2xl font-bold mb-2">Welcome to Taskora</h2>
