@@ -1,12 +1,27 @@
 "use client";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, User2Icon } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
 import Image from "next/image";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+type Input = {
+  name: string;
+  password: string;
+  email: string;
+};
 
 export default function AuthForm() {
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Input>();
 
+  const onSubmit: SubmitHandler<Input> = (data) => console.log(data);
+  reset();
   return (
     <div className="p-8 sm:p-12">
       {/* Logo */}
@@ -43,12 +58,24 @@ export default function AuthForm() {
       </div>
 
       {/* Form */}
-      <form className="space-y-4">
-        <Input icon={<Mail size={18} />} placeholder="Email" />
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <Input
-          icon={<Lock size={18} />}
+          icon={<User2Icon size={8} />}
+          placeholder="Name"
+          type="name"
+          {...register("name")}
+        />
+        <Input
+          icon={<Mail size={18} />}
+          placeholder="Email"
+          type="email"
+          {...register("email")}
+        />
+        <Input
+          icon={<Lock size={8} />}
           placeholder="Password"
           type="password"
+          {...register("password")}
         />
 
         {mode === "login" && (
@@ -57,8 +84,11 @@ export default function AuthForm() {
           </div>
         )}
 
-        <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold">
-          {mode === "login" ? "Login" : "Create Account"}
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold"
+        >
+          {mode === "login" ? "Submit" : "Create Account"}
         </button>
       </form>
 
