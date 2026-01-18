@@ -13,12 +13,7 @@ type Input = {
 
 export default function AuthForm() {
   const [mode, setMode] = useState<"login" | "signup">("login");
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<Input>();
+  const { register, handleSubmit, reset } = useForm<Input>();
 
   const onSubmit: SubmitHandler<Input> = (data) => console.log(data);
   reset();
