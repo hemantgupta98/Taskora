@@ -4,6 +4,7 @@ import SocialButton from "./SocailButton";
 import { useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 type Input = {
   name: string;
@@ -15,8 +16,13 @@ export default function AuthForm() {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const { register, handleSubmit, reset } = useForm<Input>();
 
-  const onSubmit: SubmitHandler<Input> = (data) => console.log(data);
-  reset();
+  const onSubmit: SubmitHandler<Input> = (data) => {
+    console.log(data);
+    reset();
+  };
+
+  const router = useRouter();
+
   return (
     <div className="p-8 sm:p-12">
       {/* Logo */}
@@ -36,7 +42,7 @@ export default function AuthForm() {
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => setMode("login")}
-          className={`flex-1 py-2 rounded-lg font-medium ${
+          className={`flex-1 py-2 rounded-lg font-medium cursor-pointer ${
             mode === "login" ? "bg-blue-500 text-white" : "border"
           }`}
         >
@@ -44,7 +50,7 @@ export default function AuthForm() {
         </button>
         <button
           onClick={() => setMode("signup")}
-          className={`flex-1 py-2 rounded-lg font-medium ${
+          className={`flex-1 py-2 rounded-lg font-medium cursor-pointer ${
             mode === "signup" ? "bg-blue-500 text-white" : "border"
           }`}
         >
@@ -54,34 +60,39 @@ export default function AuthForm() {
 
       {/* Form */}
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          icon={<User2Icon size={8} />}
-          placeholder="Name"
-          type="name"
-          {...register("name")}
-        />
+        {mode === "signup" && (
+          <Input
+            icon={<User2Icon size={18} />}
+            placeholder="Name"
+            type="name"
+            {...register("name", { required: true })}
+          />
+        )}
         <Input
           icon={<Mail size={18} />}
           placeholder="Email"
           type="email"
-          {...register("email")}
+          {...register("email", { required: true })}
         />
         <Input
-          icon={<Lock size={8} />}
+          icon={<Lock size={18} />}
           placeholder="Password"
           type="password"
-          {...register("password")}
+          {...register("password", { required: true })}
         />
 
         {mode === "login" && (
-          <div className="text-right text-sm text-blue-500">
+          <div
+            onClick={() => router.replace("/forget")}
+            className="text-right text-sm text-blue-500 cursor-pointer"
+          >
             Forgot Password?
           </div>
         )}
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold"
+          className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer"
         >
           {mode === "login" ? "Submit" : "Create Account"}
         </button>
@@ -95,7 +106,7 @@ export default function AuthForm() {
       </div>
 
       {/* Social */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 cursor-pointer ">
         <SocialButton label="Google" />
         <SocialButton label="GitHub" />
       </div>
