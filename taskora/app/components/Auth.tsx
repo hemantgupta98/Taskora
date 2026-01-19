@@ -1,7 +1,7 @@
 "use client";
 import AuthForm from "../components/ui/AuthForm";
 import Image from "next/image";
-import { motion, stagger } from "motion/react";
+import { motion } from "motion/react";
 
 export default function Auth() {
   return (
@@ -17,7 +17,7 @@ export default function Auth() {
             stiffness: 100,
             damping: 80,
             duration: 5,
-            delay: 2,
+            delay: 0,
           }}
           className="hidden md:flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-700 dark:to-slate-600 p-10"
         >
@@ -25,6 +25,7 @@ export default function Auth() {
             <Image src="/logo.png" alt="logo" height={50} width={50} />
           </div>
         </motion.div>
+        {/**right Illustration */}
         <motion.div
           initial={{ opacity: 0, y: 0, x: 100 }}
           whileInView={{ opacity: 1, y: 0, x: 0 }}
@@ -34,7 +35,7 @@ export default function Auth() {
             stiffness: 100,
             damping: 80,
             duration: 5,
-            delay: 2,
+            delay: 0,
           }}
         >
           <AuthForm />
