@@ -1,10 +1,11 @@
 "use client";
-import { Mail, Lock, User2Icon } from "lucide-react";
+import { Mail, Lock, User2Icon, Repeat } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { Toaster, toast } from "sonner";
 
 type Input = {
   name: string;
@@ -22,6 +23,7 @@ export default function AuthForm() {
   };
 
   const router = useRouter();
+  const [disabled, setDisabled] = useState(false);
 
   return (
     <div className="p-8 sm:p-12">
@@ -86,9 +88,14 @@ export default function AuthForm() {
             Forgot Password?
           </div>
         )}
-
+        <Toaster position="top-center" expand={false} richColors />
         <button
           type="submit"
+          disabled={disabled}
+          onClick={() => {
+            toast.success("Sucessfully created");
+            setDisabled(false);
+          }}
           className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer"
         >
           {mode === "login" ? "Submit" : "Create Account"}
