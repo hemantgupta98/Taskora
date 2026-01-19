@@ -13,7 +13,7 @@ type Input = {
 };
 
 export default function AuthForm() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forget">("login");
   const { register, handleSubmit, reset } = useForm<Input>();
 
   const onSubmit: SubmitHandler<Input> = (data) => {
@@ -82,10 +82,7 @@ export default function AuthForm() {
         />
 
         {mode === "login" && (
-          <div
-            onClick={() => router.replace("/forget")}
-            className="text-right text-sm text-blue-500 cursor-pointer"
-          >
+          <div className="text-right text-sm text-blue-500 cursor-pointer">
             Forgot Password?
           </div>
         )}
