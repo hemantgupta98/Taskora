@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-
+import InviteTeam from "./components/InviteTeamModal";
 import Auth from "./components/Auth";
 
 import "./globals.css";
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Auth />
+        <InviteTeam />
         <main>{children}</main>
       </body>
     </html>
