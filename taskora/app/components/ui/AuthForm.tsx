@@ -1,11 +1,11 @@
 "use client";
-import { Mail, Lock, User2Icon, Repeat } from "lucide-react";
+import { Mail, Lock, User2Icon } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Toaster, toast } from "sonner";
+import { p } from "motion/react-client";
 
 type Input = {
   name: string;
@@ -20,10 +20,18 @@ export default function AuthForm() {
   const onSubmit: SubmitHandler<Input> = (data) => {
     console.log(data);
     reset();
+    if (mode === "signup") {
+      toast.success("Successfully created");
+    }
+
+    if (mode === "login") {
+      toast.success("Login submitted");
+    }
   };
 
-  const router = useRouter();
-  const [disabled, setDisabled] = useState(false);
+  const onError = () => {
+    toast.error("Fill all fields");
+  };
 
   return (
     <div className="p-8 sm:p-12">
@@ -61,7 +69,7 @@ export default function AuthForm() {
       </div>
 
       {/* Form */}
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit, onError)}>
         {mode === "signup" && (
           <Input
             icon={<User2Icon size={18} />}
@@ -70,17 +78,31 @@ export default function AuthForm() {
             {...register("name", { required: true })}
           />
         )}
+
         <Input
           icon={<Mail size={18} />}
           placeholder="Email"
           type="email"
-          {...register("email", { required: true })}
+          {...register("email", {
+            required: "Enter a valid email address",
+            pattern: {
+              value: /^\S+@\S+\.\S+$/,
+              message: "Enter a valid email address",
+            },
+          })}
         />
+
         <Input
           icon={<Lock size={18} />}
           placeholder="Password"
           type="password"
-          {...register("password", { required: true })}
+          {...register("password", {
+            required: true,
+            pattern: {
+              value: /^[A-Za-z]{1,10}$/,
+              message: "Password must be 1–10 letters only",
+            },
+          })}
         />
 
         {mode === "login" && (
@@ -89,15 +111,7 @@ export default function AuthForm() {
           </div>
         )}
         <Toaster position="top-center" expand={false} richColors />
-        <button
-          type="submit"
-          disabled={disabled}
-          onClick={() => {
-            toast.success("Sucessfully created");
-            setDisabled(false);
-          }}
-          className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer"
-        >
+        <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer">
           {mode === "login" ? "Submit" : "Create Account"}
         </button>
       </form>

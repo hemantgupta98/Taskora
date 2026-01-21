@@ -17,7 +17,7 @@ export default function Auth() {
             stiffness: 100,
             damping: 80,
             duration: 5,
-            delay: 0,
+            delay: 1,
           }}
           className="hidden md:flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-700 dark:to-slate-600 p-10"
         >
@@ -35,7 +35,7 @@ export default function Auth() {
             stiffness: 100,
             damping: 80,
             duration: 5,
-            delay: 0,
+            delay: 1,
           }}
         >
           <AuthForm />
