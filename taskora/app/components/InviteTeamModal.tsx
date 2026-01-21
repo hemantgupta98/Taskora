@@ -11,6 +11,17 @@ export default function InviteTeamModal({ onClose }: { onClose?: () => void }) {
   const [role, setRole] = useState("Viewer");
   const [emails, setEmails] = useState("");
 
+  const teamLink = "https://taskora.com/join/team-abc-123";
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("copied..");
+    } catch (err) {
+      console.log("Failed to copy:", err);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -23,7 +34,7 @@ export default function InviteTeamModal({ onClose }: { onClose?: () => void }) {
             </p>
           </div>
           <button onClick={onClose}>
-            <X className="text-gray-500" type="close" />
+            <X className="text-gray-500" />
           </button>
         </div>
 
@@ -72,7 +83,10 @@ export default function InviteTeamModal({ onClose }: { onClose?: () => void }) {
                 value="https://taskora.com/join/team-abc-123"
                 className="flex-1 border rounded-lg px-3 py-2 text-sm"
               />
-              <button className="flex items-center gap-1 px-3 py-2 border rounded-lg text-sm">
+              <button
+                onClick={() => copyToClipboard(teamLink)}
+                className="flex items-center gap-1 px-3 py-2 border rounded-lg text-sm"
+              >
                 <Copy size={16} /> Copy Link
               </button>
             </div>
@@ -86,10 +100,10 @@ export default function InviteTeamModal({ onClose }: { onClose?: () => void }) {
           <div className="border rounded-xl p-4 space-y-3">
             <h3 className="font-medium">Recent Activity</h3>
             <div className="flex items-center gap-3 text-sm">
-              {/*<img
+              {/**<img
                 src="https://i.pravatar.cc/32"
                 className="w-8 h-8 rounded-full"
-              />* */}
+              /> */}
 
               <p className="text-gray-600">
                 <span className="font-medium">Alice Johnson</span> invited

@@ -5,7 +5,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
-import { p } from "motion/react-client";
 
 type Input = {
   name: string;
