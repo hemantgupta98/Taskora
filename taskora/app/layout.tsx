@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import InviteTeam from "./components/InviteTeamModal";
-import Auth from "./components/Auth";
-
 import "./globals.css";
+import Team from "./components/Team";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <InviteTeam />
+        <Team />
         <main>{children}</main>
       </body>
     </html>
