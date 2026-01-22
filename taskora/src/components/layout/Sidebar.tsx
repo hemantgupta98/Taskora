@@ -13,12 +13,12 @@ import {
 } from "lucide-react";
 
 const links = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Project Board", href: "/auth", icon: KanbanSquare },
-  { name: "Sprint & Timeline", href: "/forget", icon: Puzzle },
-  { name: "Team", href: "/team", icon: Users },
-  { name: "Components Library", href: "/invite-team", icon: BarChart3 },
-  { name: "Settings", href: "/setting", icon: Settings },
+  { name: "Dashboard", href: "/main/dashboard", icon: LayoutDashboard },
+  { name: "Project Board", href: "/main/project", icon: KanbanSquare },
+  { name: "Sprint & Timeline", href: "/main/forget", icon: Puzzle },
+  { name: "Team", href: "/main/team", icon: Users },
+  { name: "Components Library", href: "/main/invite-team", icon: BarChart3 },
+  { name: "Settings", href: "/main/setting", icon: Settings },
 ];
 
 export default function Sidebar() {

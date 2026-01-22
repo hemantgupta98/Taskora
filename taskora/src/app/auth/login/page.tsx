@@ -1,9 +1,11 @@
 "use client";
-import AuthForm from "../../components/ui/AuthForm";
+import AuthForm from "../../../components/ui/AuthForm";
 import Image from "next/image";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 
 export default function Auth() {
+  const router = useRouter();
   return (
     <div className="min-h-screen flex items-center justify-center p-6  dark:bg-slate-900">
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-5xl w-full grid md:grid-cols-2 overflow-hidden">
@@ -24,6 +26,12 @@ export default function Auth() {
           <div>
             <Image src="/logo.png" alt="logo" height={50} width={50} />
           </div>
+          <button
+            onClick={() => router.push("/main")}
+            className="w-full bg-black text-white py-2 rounded-lg hover:opacity-90"
+          >
+            Continue to Dashboard →
+          </button>
         </motion.div>
         {/**right Illustration */}
         <motion.div
