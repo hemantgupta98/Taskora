@@ -14,11 +14,11 @@ import {
 
 const links = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Project Board", href: "/project-board", icon: KanbanSquare },
-  { name: "Sprint & Timeline", href: "/sprint-timeline", icon: Puzzle },
+  { name: "Project Board", href: "/auth", icon: KanbanSquare },
+  { name: "Sprint & Timeline", href: "/forget", icon: Puzzle },
   { name: "Team", href: "/team", icon: Users },
   { name: "Components Library", href: "/invite-team", icon: BarChart3 },
-  { name: "Settings", href: "/onboarding", icon: Settings },
+  { name: "Settings", href: "/setting", icon: Settings },
 ];
 
 export default function Sidebar() {

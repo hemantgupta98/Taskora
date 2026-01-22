@@ -70,7 +70,7 @@ export default function TeamManagementPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r hidden md:flex flex-col justify-between">
+      {/* <aside className="w-64 bg-white border-r hidden md:flex flex-col justify-between">
         <div>
           <div className="px-6 py-5 font-semibold text-xl text-blue-600">
             Taskora
@@ -94,12 +94,13 @@ export default function TeamManagementPage() {
           <SidebarItem icon={<HelpCircle size={18} />} label="Help" />
           <SidebarItem icon={<LogOut size={18} />} label="Log Out" />
         </div>
-      </aside>
+      </aside>*/}
 
       {/* Main */}
       <main className="flex-1 flex flex-col">
         {/* Topbar */}
-        <header className="h-16 bg-white border-b flex items-center justify-between px-6">
+
+        {/**<header className="h-16 bg-white border-b flex items-center justify-between px-6">
           <div className="flex items-center gap-3">
             <Search size={18} className="text-gray-400" />
             <input
@@ -117,7 +118,7 @@ export default function TeamManagementPage() {
               className="w-8 h-8 rounded-full"
             />
           </div>
-        </header>
+        </header> */}
 
         {/* Content */}
         <div className="p-6 space-y-6">
@@ -153,6 +154,7 @@ export default function TeamManagementPage() {
 
 /* ---------- Components ---------- */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SidebarItem({ icon, label, active }: any) {
   return (
     <div

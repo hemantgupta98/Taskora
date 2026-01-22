@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import Dashboard from "./Dashboard";
+import Dashboard from "../dashboard/Dashboard";
 
 export default function OnboardingPage() {
   const [showDashboard, setShowDashboard] = useState(false);
