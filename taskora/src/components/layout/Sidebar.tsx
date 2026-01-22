@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import {
   LayoutDashboard,
   KanbanSquare,
@@ -12,13 +12,13 @@ import {
   LogOut,
 } from "lucide-react";
 
-const menu = [
-  { name: "Dashboard", icon: LayoutDashboard },
-  { name: "Project Board", icon: KanbanSquare },
-  { name: "Sprint & Timeline", icon: Timer },
-  { name: "Team", icon: Users, active: true },
-  { name: "Analytics", icon: BarChart3 },
-  { name: "Components Library", icon: Puzzle },
+const links = [
+  { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Project Board", href: "/project-board", icon: KanbanSquare },
+  { name: "Sprint & Timeline", href: "/sprint-timeline", icon: Puzzle },
+  { name: "Team", href: "/team", icon: Users },
+  { name: "Components Library", href: "/invite-team", icon: BarChart3 },
+  { name: "Settings", href: "/onboarding", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -27,16 +27,15 @@ export default function Sidebar() {
       <div className="p-6 text-xl font-bold text-primary">Taskora</div>
 
       <nav className="flex-1 space-y-1 px-3">
-        {menu.map((item) => (
-          <div
+        {links.map((item) => (
+          <Link
             key={item.name}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer
-              ${item.active ? "bg-blue-50 text-primary" : "hover:bg-gray-100"}
-            `}
+            href={item.href}
+            className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100"
           >
             <item.icon size={18} />
-            <span>{item.name}</span>
-          </div>
+            {item.name}
+          </Link>
         ))}
       </nav>
 

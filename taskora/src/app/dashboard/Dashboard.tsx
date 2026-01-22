@@ -22,7 +22,7 @@ import {
 export default function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-900">
-      {/* Sidebar */}
+      {/* Sidebar
       <aside className="w-64 bg-white border-r hidden md:flex flex-col justify-between">
         <div>
           <div className="px-6 py-5 font-semibold text-xl text-blue-600">
@@ -46,10 +46,11 @@ export default function DashboardPage() {
           <NavItem icon={<LogOut size={18} />} label="Log Out" />
         </div>
       </aside>
+       */}
 
       {/* Main */}
       <main className="flex-1 flex flex-col">
-        {/* Topbar */}
+        {/* Topbar
         <header className="h-16 bg-white border-b flex items-center justify-between px-6">
           <div className="flex items-center gap-3">
             <Search className="text-gray-400" size={18} />
@@ -66,10 +67,11 @@ export default function DashboardPage() {
             {/*<img
               src="https://i.pravatar.cc/40"
               className="w-8 h-8 rounded-full"
-            />*/}
+            />
           </div>
         </header>
-
+       =
+          /*}
         {/* Content */}
         <div className="p-6 space-y-6">
           <h1 className="text-2xl font-semibold">Good morning, John!</h1>
@@ -173,6 +175,8 @@ export default function DashboardPage() {
 
 /* ---------- Components ---------- */
 
+{
+  /** 
 function NavItem({ icon, label, active }: any) {
   return (
     <div
@@ -185,7 +189,10 @@ function NavItem({ icon, label, active }: any) {
     </div>
   );
 }
+  */
+}
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function StatCard({ title, value, subtitle }: any) {
   return (
     <div className="bg-white p-4 rounded-xl border">
@@ -196,6 +203,7 @@ function StatCard({ title, value, subtitle }: any) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ProjectCard({ title, progress, date }: any) {
   return (
     <div className="bg-white p-4 rounded-xl border space-y-3">
@@ -213,6 +221,7 @@ function ProjectCard({ title, progress, date }: any) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Card({ title, children }: any) {
   return (
     <div className="bg-white p-4 rounded-xl border">
@@ -222,6 +231,7 @@ function Card({ title, children }: any) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ProgressBar({ value = 50 }: any) {
   return (
     <div className="w-full bg-gray-200 h-3 rounded">

@@ -1,9 +1,9 @@
-import Auth from "./auth/Auth";
+import DashboardPage from "./dashboard/Dashboard";
 
 export default function Home() {
   return (
     <>
-      <Auth />
+      <DashboardPage />
     </>
   );
 }

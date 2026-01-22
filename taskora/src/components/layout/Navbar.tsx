@@ -22,13 +22,13 @@ export default function Navbar() {
 
         <Bell className="text-gray-500 cursor-pointer" />
 
-        <Image
+        {/**<Image
           src="/pic.jpg"
           alt="Profile"
           width={36}
           height={36}
           className="rounded-full"
-        />
+        /> */}
       </div>
     </header>
   );
