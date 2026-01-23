@@ -11,7 +11,6 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
-
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Project Board", href: "/project", icon: KanbanSquare },

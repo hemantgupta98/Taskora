@@ -1,11 +1,11 @@
 "use client";
 
 import { Bell, Plus, Search } from "lucide-react";
-import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 export default function Navbar() {
+  const router = useRouter();
   return (
-    <header className="h-16 bg-white border-b flex items-center justify-between px-6">
+    <header className="h-16 mt-2 bg-white border-b flex items-center justify-between px-6 py-2">
       <div className="flex items-center gap-4">
         <Search className="text-gray-400" size={18} />
         <input
@@ -15,7 +15,10 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg">
+        <button
+          onClick={() => router.push("/create-task")}
+          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
+        >
           <Plus size={16} />
           Create Task
         </button>
