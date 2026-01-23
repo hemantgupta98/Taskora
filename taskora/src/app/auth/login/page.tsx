@@ -26,12 +26,12 @@ export default function Auth() {
           <div>
             <Image src="/logo.png" alt="logo" height={50} width={50} />
           </div>
-          <button
+          {/*<button
             onClick={() => router.push("/main")}
             className="w-full bg-black text-white py-2 rounded-lg hover:opacity-90"
           >
             Continue to Dashboard →
-          </button>
+          </button>*/}
         </motion.div>
         {/**right Illustration */}
         <motion.div
