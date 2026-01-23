@@ -7,15 +7,10 @@
 import { X, Send, Copy } from "lucide-react";
 import { useState } from "react";
 
-export default function InviteTeamModal({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose?: () => void;
-}) {
+export default function InviteTeamModal() {
   const [role, setRole] = useState("Viewer");
   const [emails, setEmails] = useState("");
+  const [open, setOpen] = useState(true);
 
   const teamLink = "https://taskora.com/join/team-abc-123";
 
@@ -40,7 +35,7 @@ export default function InviteTeamModal({
               Invite new members to your team and manage their roles.
             </p>
           </div>
-          <button onClick={onClose} className="text-gray-500 mb-4">
+          <button onClick={() => setOpen(false)} className="text-gray-500 mb-4">
             <X size={18} />
           </button>
         </div>

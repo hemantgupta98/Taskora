@@ -22,7 +22,7 @@ export default function TaskDrawer({
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40">
       <div className="w-[420px] bg-white h-full p-6">
         <button onClick={onClose} className="text-gray-500 mb-4">
-          ✕ Close
+          ✕
         </button>
 
         <h2 className="text-xl font-semibold mb-2">{task.title}</h2>

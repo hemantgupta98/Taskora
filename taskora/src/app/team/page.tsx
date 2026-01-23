@@ -22,6 +22,7 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const teamMembers = [
   {
@@ -67,66 +68,21 @@ const teamMembers = [
 ];
 
 export default function TeamManagementPage() {
+  const router = useRouter();
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      {/* <aside className="w-64 bg-white border-r hidden md:flex flex-col justify-between">
-        <div>
-          <div className="px-6 py-5 font-semibold text-xl text-blue-600">
-            Taskora
-          </div>
-          <nav className="px-4 space-y-1">
-            <SidebarItem
-              icon={<LayoutDashboard size={18} />}
-              label="Dashboard"
-            />
-            <SidebarItem icon={<Kanban size={18} />} label="Project Board" />
-            <SidebarItem
-              icon={<Calendar size={18} />}
-              label="Sprint & Timeline"
-            />
-            <SidebarItem icon={<Users size={18} />} label="Team" active />
-            <SidebarItem icon={<BarChart2 size={18} />} label="Analytics" />
-          </nav>
-        </div>
-        <div className="px-4 pb-4 space-y-1">
-          <SidebarItem icon={<Settings size={18} />} label="Settings" />
-          <SidebarItem icon={<HelpCircle size={18} />} label="Help" />
-          <SidebarItem icon={<LogOut size={18} />} label="Log Out" />
-        </div>
-      </aside>*/}
-
       {/* Main */}
       <main className="flex-1 flex flex-col">
-        {/* Topbar */}
-
-        {/**<header className="h-16 bg-white border-b flex items-center justify-between px-6">
-          <div className="flex items-center gap-3">
-            <Search size={18} className="text-gray-400" />
-            <input
-              placeholder="Search"
-              className="outline-none text-sm bg-transparent"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
-              <Plus size={16} /> Create Task
-            </button>
-            <Bell size={20} className="text-gray-500" />
-            <img
-              src="https://i.pravatar.cc/40"
-              className="w-8 h-8 rounded-full"
-            />
-          </div>
-        </header> */}
-
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-semibold">Team Management</h1>
             <div className="flex gap-3">
-              <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+              <button
+                onClick={() => router.push("/invite-team")}
+                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+              >
                 <UserPlus size={16} /> Invite Member
               </button>
               <button className="flex items-center gap-2 border px-4 py-2 rounded-lg text-sm">
@@ -142,11 +98,6 @@ export default function TeamManagementPage() {
             ))}
           </div>
         </div>
-
-        {/* Footer */}
-        <footer className="text-center text-xs text-gray-400 py-4 border-t">
-          © 2026 Taskora. All rights reserved.
-        </footer>
       </main>
     </div>
   );

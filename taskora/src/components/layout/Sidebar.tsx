@@ -17,7 +17,7 @@ const links = [
   { name: "Project Board", href: "/project", icon: KanbanSquare },
   { name: "Sprint & Timeline", href: "", icon: Puzzle },
   { name: "Team", href: "/team", icon: Users },
-  { name: "Components Library", href: "/invite-team", icon: BarChart3 },
+  { name: "Components Library", href: "", icon: BarChart3 },
 ];
 
 const downLink = [
