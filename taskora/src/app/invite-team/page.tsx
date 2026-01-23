@@ -7,7 +7,13 @@
 import { X, Send, Copy } from "lucide-react";
 import { useState } from "react";
 
-export default function InviteTeamModal({ onClose }: { onClose?: () => void }) {
+export default function InviteTeamModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose?: () => void;
+}) {
   const [role, setRole] = useState("Viewer");
   const [emails, setEmails] = useState("");
 
@@ -21,6 +27,7 @@ export default function InviteTeamModal({ onClose }: { onClose?: () => void }) {
       console.log("Failed to copy:", err);
     }
   };
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -33,8 +40,8 @@ export default function InviteTeamModal({ onClose }: { onClose?: () => void }) {
               Invite new members to your team and manage their roles.
             </p>
           </div>
-          <button onClick={onClose}>
-            <X className="text-gray-500" />
+          <button onClick={onClose} className="text-gray-500 mb-4">
+            <X size={18} />
           </button>
         </div>
 

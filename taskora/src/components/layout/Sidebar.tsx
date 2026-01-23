@@ -11,13 +11,12 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Project Board", href: "/project", icon: KanbanSquare },
   { name: "Sprint & Timeline", href: "", icon: Puzzle },
-  { name: "Team", href: "/main/team", icon: Users },
+  { name: "Team", href: "/team", icon: Users },
   { name: "Components Library", href: "/invite-team", icon: BarChart3 },
 ];
 
@@ -28,7 +27,6 @@ const downLink = [
 ];
 
 export default function Sidebar() {
-  const router = useRouter();
   return (
     <aside className="w-64 bg-white border-r flex flex-col">
       <div className="p-6 text-xl font-bold text-primary">Taskora</div>
