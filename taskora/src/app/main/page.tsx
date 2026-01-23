@@ -1,4 +1,5 @@
-import Appshell from "../../components/layout/Appshell";
+{
+  /**import Appshell from "../../components/layout/Appshell";
 
 export default function MainLayout({
   children,
@@ -12,4 +13,6 @@ export default function MainLayout({
       </body>
     </html>
   );
+}
+ */
 }

@@ -1,5 +1,5 @@
 "use client";
-import AuthForm from "../../../components/ui/AuthForm";
+import AuthForm from "../../components/ui/AuthForm";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";

@@ -2,6 +2,7 @@
 import { Mail, Lock, User2Icon } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
@@ -31,6 +32,8 @@ export default function AuthForm() {
   const onError = () => {
     toast.error("Fill all fields");
   };
+
+  const router = useRouter();
 
   return (
     <div className="p-8 sm:p-12">
@@ -105,7 +108,10 @@ export default function AuthForm() {
         />
 
         {mode === "login" && (
-          <div className="text-right text-sm text-blue-500 cursor-pointer">
+          <div
+            onClick={() => router.push("/forget")}
+            className="text-right text-sm text-blue-500 cursor-pointer"
+          >
             Forgot Password?
           </div>
         )}
