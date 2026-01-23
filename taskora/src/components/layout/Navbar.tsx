@@ -2,6 +2,15 @@
 
 import { Bell, Plus, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../../components/ui/sheet";
+
 export default function Navbar() {
   const router = useRouter();
   return (
@@ -22,8 +31,21 @@ export default function Navbar() {
           <Plus size={16} />
           Create Task
         </button>
-        <div>
-          <Bell className="text-gray-500 cursor-pointer" />
+        <div className="relative">
+          <Sheet>
+            <SheetTrigger>
+              <div className="h-2 w-2 absolute right-1 bg-red-500 rounded-full animate-pulse"></div>
+              <Bell className="text-gray-500 cursor-pointer " />
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Are you absolutely sure?</SheetTitle>
+                <SheetDescription>
+                  This action cannot be undone.
+                </SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
         </div>
 
         {/**<Image
