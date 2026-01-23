@@ -22,8 +22,9 @@ export default function Navbar() {
           <Plus size={16} />
           Create Task
         </button>
-
-        <Bell className="text-gray-500 cursor-pointer" />
+        <div>
+          <Bell className="text-gray-500 cursor-pointer" />
+        </div>
 
         {/**<Image
           src="/pic.jpg"
