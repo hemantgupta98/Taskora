@@ -11,17 +11,24 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const links = [
-  { name: "Dashboard", href: "/main/dashboard", icon: LayoutDashboard },
-  { name: "Project Board", href: "/main/project", icon: KanbanSquare },
-  { name: "Sprint & Timeline", href: "/main/forget", icon: Puzzle },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Project Board", href: "/project", icon: KanbanSquare },
+  { name: "Sprint & Timeline", href: "", icon: Puzzle },
   { name: "Team", href: "/main/team", icon: Users },
-  { name: "Components Library", href: "/main/invite-team", icon: BarChart3 },
-  { name: "Settings", href: "/main/setting", icon: Settings },
+  { name: "Components Library", href: "/invite-team", icon: BarChart3 },
+];
+
+const downLink = [
+  { name: "Setting", href: "/setting", icon: Settings },
+  { name: "Help", href: "/help", icon: HelpCircle },
+  { name: "Logout", href: "/logout", icon: LogOut },
 ];
 
 export default function Sidebar() {
+  const router = useRouter();
   return (
     <aside className="w-64 bg-white border-r flex flex-col">
       <div className="p-6 text-xl font-bold text-primary">Taskora</div>
@@ -39,10 +46,25 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="border-t p-3 space-y-2">
-        <SidebarItem icon={Settings} label="Settings" />
+      <div className="border-t p-4 space-y-2">
+        <nav>
+          {downLink.map((e) => (
+            <Link
+              key={e.name}
+              href={e.href}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100"
+            >
+              <e.icon size={18} />
+              {e.name}
+            </Link>
+          ))}
+        </nav>
+        {/**div onClick={() => router.push("/setting")}>
+          <SidebarItem icon={Settings} label="Settings" />
+        </div>
+
         <SidebarItem icon={HelpCircle} label="Help" />
-        <SidebarItem icon={LogOut} label="Log Out" />
+        <SidebarItem icon={LogOut} label="Log Out" /> */}
       </div>
     </aside>
   );
