@@ -3,17 +3,59 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { Card, CardContent } from "../../components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../../components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import React from "react";
+
 export default function OnboardingPage() {
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true }),
+  );
+
+  const Images = ["/welcome.png", "/manage.png", "/bring.png", "/group.png"];
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-2xl text-center">
         {/* Illustration */}
         <div className="flex justify-center">
-          <img
-            src="https://illustrations.popsy.co/white/app-launch.svg"
-            alt="Onboarding illustration"
-            className="w-[320px] sm:w-95"
-          />
+          <Carousel
+            opts={{
+              loop: true,
+            }}
+            plugins={[plugin.current]}
+            className="w-full max-w-40 sm:max-w-sm"
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
+          >
+            <CarouselContent>
+              {Images.map((src, index) => (
+                <CarouselItem key={index}>
+                  <div className="p-1">
+                    <Card className="border-0 shadow-none">
+                      <CardContent className=" aspect-square w-full overflow-hidden rounded-2xl">
+                        <Image
+                          src={src}
+                          alt={`carousel-image-${index}`}
+                          className=" rounded-2xl"
+                          height={200}
+                          width={1000}
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden" />
+            <CarouselNext className="hidden" />
+          </Carousel>
         </div>
 
         {/* Title */}
