@@ -59,9 +59,9 @@ export default function OnboardingPage() {
             Continue to Dashboard
           </Link>
         </div>
-        <div>
-          <Image src="" alt="logo" height={50} width={50} />
-        </div>
+        {/**<div>
+          <Image src="/welcome.png" alt="logo" height={500} width={500} />
+        </div> */}
       </div>
     </div>
   );
