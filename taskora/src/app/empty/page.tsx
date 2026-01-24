@@ -1,12 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-// COMPLETE Onboarding / Empty State page UI
-// Stack: Next.js App Router + React + TypeScript + TailwindCSS
-// File: app/onboarding/page.tsx (or app/page.tsx if you want)
-
 import Link from "next/link";
-
+import Image from "next/image";
 export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
@@ -62,6 +58,9 @@ export default function OnboardingPage() {
           >
             Continue to Dashboard
           </Link>
+        </div>
+        <div>
+          <Image src="" alt="logo" height={50} width={50} />
         </div>
       </div>
     </div>
