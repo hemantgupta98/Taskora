@@ -2,10 +2,8 @@
 import AuthForm from "../../components/ui/AuthForm";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
 
 export default function Auth() {
-  const router = useRouter();
   return (
     <>
       <div className=" min-h-screen flex items-center justify-center p-6  dark:bg-slate-900">

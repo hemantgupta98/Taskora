@@ -6,31 +6,28 @@ const PORT = 5000;
 const app = express();
 
 const corsOption = {
-  origin: "",
-  optionSuccessStatua: 200,
-  METHODS: "GET,POST, PUT , PATCH, DELETE, HEAD",
+  origin: "http://localhost:3000",
+  optionSuccessStatus: 200,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
   credentials: true,
 };
 
 app.use(express.json());
 app.use(cors(corsOption));
+app.use(express.urlencoded({ extended: false }));
 
 mongoose
-  .connect("")
-  .then((e) => console.log("mongoDB connected successfully", e))
+  .connect("mongodb://localhost:27017/taskora")
+  .then((e) => console.log("mongoDB connected successfully"))
   .catch((error) => console.log("Error in mongoDB connection", error));
 
-app.post("/src/app/auth", (req, res) => {
-  console.log(req.body);
-  return res.json(req.body);
-});
-
-app.get("/src/app/auth", (req, res) => {
-  res.end(req.body);
+app.post("/api/auth", (req, res) => {
+  console.log("Body");
+  res.json({ success: true, data: req.body });
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello World 👋");
+  res.send("Hello World 👋 good boy hemant");
 });
 
 app.listen(5000, () => console.log(`Server running on port ${PORT}`));

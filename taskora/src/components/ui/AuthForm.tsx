@@ -17,7 +17,7 @@ export default function AuthForm() {
   const [mode, setMode] = useState<"login" | "signup" | "forget">("login");
   const { register, handleSubmit, reset } = useForm<Input>();
 
-  const onSubmit: SubmitHandler<Input> = (data) => {
+  const onSubmit: SubmitHandler<Input> = async (data) => {
     console.log(data);
     reset();
     if (mode === "signup") {
@@ -26,6 +26,20 @@ export default function AuthForm() {
 
     if (mode === "login") {
       toast.success("Login submitted");
+    }
+    try {
+      const res = await fetch("http://localhost:5000/api/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      console.log("Responsed", result);
+    } catch (error) {
+      console.log("api connection failed", error);
     }
   };
 

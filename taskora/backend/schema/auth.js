@@ -1,20 +1,26 @@
+import { timeStamp } from "console";
 import { model, Schema } from "mongoose";
 
-const authSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
+const authSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  { timestamps: true },
+);
 
-const auth = model("taskora-auth", authSchema);
+const User = model("taskora", authSchema);
 
-module.exports = auth;
+module.exports = User;
