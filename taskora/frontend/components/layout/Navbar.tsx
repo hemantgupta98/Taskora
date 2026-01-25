@@ -9,7 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../../components/ui/sheet";
+} from "../ui/sheet";
 
 export default function Navbar() {
   const router = useRouter();
