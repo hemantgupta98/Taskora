@@ -17,5 +17,16 @@
   "bugs": {
     "url": "https://github.com/hemantgupta98/Taskora/issues"
   },
-  "homepage": "https://github.com/hemantgupta98/Taskora#readme"
+  "homepage": "https://github.com/hemantgupta98/Taskora#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
