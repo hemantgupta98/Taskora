@@ -1,4 +1,5 @@
 "use client";
+
 import { Mail, Lock, User2Icon } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
@@ -6,56 +7,58 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
+import { forwardRef } from "react";
 
-type Input = {
-  name: string;
-  password: string;
+type FormData = {
+  name?: string;
   email: string;
+  password: string;
 };
 
 export default function AuthForm() {
-  const [mode, setMode] = useState<"login" | "signup" | "forget">("login");
-  const { register, handleSubmit, reset } = useForm<Input>();
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const { register, handleSubmit, reset } = useForm<FormData>();
+  const router = useRouter();
 
-  const onSubmit: SubmitHandler<Input> = async (data) => {
-    console.log(data);
-    reset();
-    if (mode === "signup") {
-      toast.success("Successfully created");
-    }
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    console.log("FORM DATA 👉", data);
 
-    if (mode === "login") {
-      toast.success("Login submitted");
-    }
     try {
-      const res = await fetch("http://localhost:5000/api/auth", {
+      const url =
+        mode === "signup"
+          ? "http://localhost:5000/api/signup"
+          : "http://localhost:5000/api/login";
+
+      const res = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(data),
       });
+
       const result = await res.json();
-      console.log("Responsed", result);
+
+      if (!res.ok) {
+        toast.error(result.message || "Incorrect Password");
+        return;
+      }
+
+      toast.success(
+        mode === "signup" ? "Account created successfully" : "Login successful",
+      );
+
+      reset();
     } catch (error) {
-      console.log("api connection failed", error);
+      console.error(error);
+      toast.error("Server error");
     }
   };
-
-  const onError = () => {
-    toast.error("Fill all fields");
-  };
-
-  const router = useRouter();
 
   return (
     <div className="p-8 sm:p-12">
       {/* Logo */}
       <div className="flex items-center gap-2 mb-6">
-        <div>
-          <Image src="/logo.png" alt="logo" height={50} width={50} />
-        </div>
+        <Image src="/logo.png" alt="logo" height={50} width={50} />
         <span className="font-semibold text-lg text-blue-600">Taskora</span>
       </div>
 
@@ -68,7 +71,7 @@ export default function AuthForm() {
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => setMode("login")}
-          className={`flex-1 py-2 rounded-lg font-medium cursor-pointer ${
+          className={`flex-1 py-2 rounded-lg font-medium ${
             mode === "login" ? "bg-blue-500 text-white" : "border"
           }`}
         >
@@ -76,7 +79,7 @@ export default function AuthForm() {
         </button>
         <button
           onClick={() => setMode("signup")}
-          className={`flex-1 py-2 rounded-lg font-medium cursor-pointer ${
+          className={`flex-1 py-2 rounded-lg font-medium ${
             mode === "signup" ? "bg-blue-500 text-white" : "border"
           }`}
         >
@@ -85,12 +88,12 @@ export default function AuthForm() {
       </div>
 
       {/* Form */}
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit, onError)}>
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         {mode === "signup" && (
           <Input
             icon={<User2Icon size={18} />}
             placeholder="Name"
-            type="name"
+            type="text"
             {...register("name", { required: true })}
           />
         )}
@@ -99,26 +102,14 @@ export default function AuthForm() {
           icon={<Mail size={18} />}
           placeholder="Email"
           type="email"
-          {...register("email", {
-            required: "Enter a valid email address",
-            pattern: {
-              value: /^\S+@\S+\.\S+$/,
-              message: "Enter a valid email address",
-            },
-          })}
+          {...register("email", { required: true })}
         />
 
         <Input
           icon={<Lock size={18} />}
           placeholder="Password"
           type="password"
-          {...register("password", {
-            required: true,
-            pattern: {
-              value: /^[A-Za-z]{1,10}$/,
-              message: "Password must be 1–10 letters only",
-            },
-          })}
+          {...register("password", { required: true })}
         />
 
         {mode === "login" && (
@@ -129,11 +120,13 @@ export default function AuthForm() {
             Forgot Password?
           </div>
         )}
-        <Toaster position="top-center" expand={false} richColors />
-        <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer">
-          {mode === "login" ? "Submit" : "Create Account"}
+
+        <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold">
+          {mode === "login" ? "Login" : "Create Account"}
         </button>
       </form>
+
+      <Toaster position="top-center" richColors />
 
       {/* Divider */}
       <div className="flex items-center gap-4 my-6">
@@ -143,7 +136,7 @@ export default function AuthForm() {
       </div>
 
       {/* Social */}
-      <div className="grid grid-cols-2 gap-4 cursor-pointer ">
+      <div className="grid grid-cols-2 gap-4">
         <SocialButton label="Google" />
         <SocialButton label="GitHub" />
       </div>
@@ -151,18 +144,11 @@ export default function AuthForm() {
   );
 }
 
-function Input({
-  icon,
-  ...props
-}: {
-  icon: React.ReactNode;
-  placeholder: string;
-  type?: string;
-}) {
-  return (
-    <div className="flex items-center gap-3 border rounded-lg px-4 py-3">
-      <span className="text-gray-400">{icon}</span>
-      <input {...props} className="w-full outline-none text-sm" />
-    </div>
-  );
-}
+const Input = forwardRef<HTMLInputElement, any>(({ icon, ...props }, ref) => (
+  <div className="flex items-center gap-3 border rounded-lg px-4 py-3">
+    <span className="text-gray-400">{icon}</span>
+    <input ref={ref} {...props} className="w-full outline-none text-sm" />
+  </div>
+));
+
+Input.displayName = "Input";
