@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import User from "./schema/auth.js";
+import User from "./schema/auth";
 
 const PORT = 5000;
 
