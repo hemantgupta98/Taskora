@@ -9,4 +9,4 @@ const authSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.model("User", authSchema);
+export default mongoose.model("signup", authSchema);

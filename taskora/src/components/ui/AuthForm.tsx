@@ -26,8 +26,8 @@ export default function AuthForm() {
     try {
       const url =
         mode === "signup"
-          ? "http://localhost:5000/api/signup"
-          : "http://localhost:5000/api/login";
+          ? "http://localhost:5000/api/auth/signup"
+          : "http://localhost:5000/api/auth/login";
 
       const res = await fetch(url, {
         method: "POST",
