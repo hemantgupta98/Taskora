@@ -36,10 +36,18 @@ export default function AuthForm() {
         body: JSON.stringify(data),
       });
 
-      const result = await res.json();
+      let result;
+      const contentType = res.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
+        result = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || "Invalid server response");
+      }
 
       if (!res.ok) {
-        toast.error(result.message || "Incorrect Password");
+        toast.error(result.message || "Authentication failed");
         return;
       }
 
@@ -49,8 +57,8 @@ export default function AuthForm() {
 
       reset();
     } catch (error) {
-      console.error(error);
-      toast.error("Server error");
+      console.error("AUTH ERROR 👉", error);
+      toast.error("Server error. Please try again.");
     }
   };
 
