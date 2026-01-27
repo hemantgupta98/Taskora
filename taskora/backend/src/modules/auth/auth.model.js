@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import hashpassword from "./auth.hashed.js";
 
 const authSchema = new mongoose.Schema(
   {
@@ -16,6 +17,17 @@ const loginSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+authSchema.pre("save", async function (next) {
+  try {
+    if (this.isNew && this.password) {
+      this.password = await hashpassword(this.password);
+    }
+    next();
+  } catch (err) {
+    next;
+  }
+});
 
 const signSchema = mongoose.model("signup", authSchema);
 const loginDB = mongoose.model("login", loginSchema);
