@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { comparePassword } from "./auth.hashed.js";
 import { LoginHistory } from "./auth.model.js";
 import { createUser, findUserByEmail } from "./auth.service.js";
+import sendOtp from "./auth.gmail.js";
 
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -61,4 +62,20 @@ export const login = async (req, res) => {
     console.log("Login error:", error.message);
     res.status(500).json({ message: "Login failed" });
   }
+};
+
+const optGenerator = () => {
+  return Math.floor(10000 + Math.random() * 90000).toString();
+};
+
+export const registerUser = async (req, res) => {
+  const { email } = req.body;
+
+  const otp = optGenerator();
+
+  const sent = await sendOtp(email, otp);
+
+  if (sent) return res.status(200).json({ message: "Otp send successfully" });
+
+  res.status(500).json({ message: "Sending otp failed" });
 };
