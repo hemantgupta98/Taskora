@@ -48,7 +48,7 @@ export default function AuthForm() {
 
       if (!res.ok) {
         toast.error(result.message || "Authentication failed");
-        return;
+        return reset();
       }
 
       toast.success(
