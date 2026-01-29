@@ -4,18 +4,9 @@ import Image from "next/image";
 const page = () => {
   return (
     <>
-      <main className="min-h-screen bg-blue-100 ">
-        <div className="p-15 w-full  ">
-          <div className=" gird md:grid-cols-1 p-10 h-157 object-contain bg-white rounded-2xl shadow-2xl   ">
-            <Image
-              src="/help-center.avif"
-              alt="help center pic"
-              fill
-              className=" "
-            />
-          </div>
-        </div>
-      </main>
+      <div className="min-h-screen bg-blue-50 p-20 ">
+        <div className="overflow-hidden  shadow-2xl rounded-2xl bg-white w-full p-5 h-210 md:p-2"></div>
+      </div>
     </>
   );
 };
