@@ -10,7 +10,7 @@ export default function SettingsTabs() {
 
   return (
     <>
-      <div className="flex gap-4 bg-white border shadow-2xl rounded-lg p-4 w-fit">
+      <div className="flex  gap-6 bg-white border shadow-2xl rounded-lg p-4 w-fit">
         <button
           onClick={() => setMode("Profile")}
           className={` flex p-2 rounded-md shadow-2xl ${mode === "Profile" ? " ring-1 ring-blue-400" : "border"}`}
