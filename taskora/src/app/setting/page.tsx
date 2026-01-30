@@ -1,12 +1,11 @@
 "use client";
 
-import { User, Briefcase, Palette, Bell } from "lucide-react";
+import { User, Briefcase, Palette } from "lucide-react";
 
 const tabs = [
   { label: "Profile", icon: User, active: true },
   { label: "Workspace", icon: Briefcase },
   { label: "Theme", icon: Palette },
-  { label: "Notifications", icon: Bell },
 ];
 
 export default function SettingsTabs() {
