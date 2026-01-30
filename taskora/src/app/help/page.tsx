@@ -1,5 +1,4 @@
-// app/help/page.tsx
-import React, { JSX } from "react";
+import { JSX } from "react";
 import {
   ChatBubbleLeftRightIcon,
   QuestionMarkCircleIcon,
@@ -13,7 +12,7 @@ import {
 export default function HelpPage() {
   return (
     <div className="min-h-screen bg-slate-50 p-6">
-      <div className="mx-auto max-w-6xl rounded-2xl bg-white p-8 shadow">
+      <div className="mx-auto  w-full rounded-2xl h-fit bg-white p-8 shadow">
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-center">
           <div className="flex-1">
             <h1 className="text-4xl font-bold text-slate-800">
@@ -39,7 +38,6 @@ export default function HelpPage() {
               <p className="mb-4 text-sm text-slate-500">
                 Quick answers to common questions
               </p>
-
               <ul className="divide-y">
                 {[
                   "How to Reset Your Password",
