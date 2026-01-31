@@ -5,6 +5,7 @@ import { forwardRef, useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Upload } from "lucide-react";
+import { Switch } from "../../components/ui/switch";
 
 import {
   Select,
@@ -44,7 +45,7 @@ export default function SettingsTabs() {
           onClick={() => setMode("Profile")}
           className={` flex p-2 rounded-md shadow-xl ${mode === "Profile" ? " ring-1 ring-blue-400" : "border"}`}
         >
-          <User className="p-1" />
+          <User className="p-1 " />
           Profile
         </button>
         <button
@@ -262,6 +263,32 @@ export default function SettingsTabs() {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {mode === "Theme" && (
+          <div>
+            <h1 className="text-2xl font-semibold text-black">
+              Theme Settings
+            </h1>
+            <p className="text-sm  text-gray-400">
+              Customize your theme prefrences
+            </p>
+            <div className="flex items-center gap-4 my-6">
+              <h1 className="text-xl text-black font-semibold">Appearance</h1>
+              <div className="flex-1 h-px bg-gray-200" />
+            </div>
+            <div className=" grid grid-cols-3 ml-15">
+              <label className="h-50 w-50 border border-2 border-gray-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50"></label>
+              <label className="h-50 w-50 border-2 border border-gray-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50"></label>
+            </div>
+            <div className="flex ml-15 mt-10 gap-5">
+              <Upload size={20} />
+              <h1 className=" text-md text-black font-semibold">
+                Use system prefrence
+              </h1>
+              <Switch />
+            </div>
           </div>
         )}
       </div>
