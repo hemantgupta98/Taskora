@@ -168,7 +168,7 @@ export default function SettingsTabs() {
             <div className="flex items-center gap-4 my-6">
               <div className="flex-1 h-px bg-gray-200" />
             </div>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className=" grid grid-cols-2 space-x-5">
                 <label className="text-md font-semibold text-gray-500 ">
                   Worksapce Name
@@ -243,6 +243,23 @@ export default function SettingsTabs() {
                     <SelectItem value="kuwait">Kuwait – UTC +03:00</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+              <div className="pt-10 space-x-5 flex justify-center align-top">
+                <button
+                  onClick={() => reset()}
+                  className="bg-gray-300 shadow-xl text-white font-semibold rounded-sm p-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 shadow-xl text-white font-semibold rounded-sm p-2 w-40"
+                >
+                  Save Changes
+                </button>
               </div>
             </form>
           </div>
