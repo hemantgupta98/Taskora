@@ -1,42 +1,165 @@
 "use client";
 
 import { User, Briefcase, Palette } from "lucide-react";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
+import Image from "next/image";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Upload } from "lucide-react";
+import { on } from "events";
+
+type FormData = {
+  fullName?: string;
+  email: string;
+  username: string;
+  contact: number;
+  address: string;
+};
 
 export default function SettingsTabs() {
   const [mode, setMode] = useState<"Profile" | "Workspace" | "Theme">(
     "Profile",
   );
 
+  const { register, handleSubmit, reset } = useForm<FormData>();
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    console.log(data);
+    reset();
+  };
+
   return (
     <>
-      <div className="flex  gap-6 bg-white border shadow-2xl rounded-lg p-4 w-fit">
+      <div className="flex  gap-6 bg-white border shadow-xl rounded-lg p-4 w-fit">
         <button
           onClick={() => setMode("Profile")}
-          className={` flex p-2 rounded-md shadow-2xl ${mode === "Profile" ? " ring-1 ring-blue-400" : "border"}`}
+          className={` flex p-2 rounded-md shadow-xl ${mode === "Profile" ? " ring-1 ring-blue-400" : "border"}`}
         >
           <User className="p-1" />
           Profile
         </button>
         <button
           onClick={() => setMode("Workspace")}
-          className={`flex p-2 rounded-md shadow-2xl ${mode === "Workspace" ? "ring-1 ring-blue-400" : "border"}`}
+          className={`flex p-2 rounded-md shadow-xl ${mode === "Workspace" ? "ring-1 ring-blue-400" : "border"}`}
         >
           <Briefcase className="p-1" />
           Workspace
         </button>
         <button
           onClick={() => setMode("Theme")}
-          className={`flex p-2 rounded-md shadow-2xl  ${mode === "Theme" ? "ring-1 ring-blue-400" : "border"}`}
+          className={`flex p-2 rounded-md shadow-xl  ${mode === "Theme" ? "ring-1 ring-blue-400" : "border"}`}
         >
           <Palette className="p-1" />
           Theme
         </button>
       </div>
-      <div>
-        {mode === "Profile" && <p>My name Profile</p>}
-        <h1>hiii</h1>
+      <div className="m-5 p-5 rounded-2xl shadow-xl">
+        {mode === "Profile" && (
+          <div>
+            <h1 className="text-2xl text-black font-semibold">
+              Basic information
+            </h1>
+            <p className="text-sm text-gray-400">
+              Manage your personal profile details
+            </p>
+            <div className="flex gap-4 mt-10">
+              <div>
+                <Image
+                  src="/logo.png"
+                  alt="profile logo"
+                  height={50}
+                  width={50}
+                  className="object-cover rounded-4xl bg-gray-100"
+                />
+              </div>
+
+              <Input
+                icon={
+                  <Upload size={18} className=" cursor-pointer text-blue-600" />
+                }
+                type="file"
+                accept="image/*"
+                className=" font-semibold"
+              />
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="space-x-5 grid grid-cols-2 gap-5 mt-10 ">
+                <label className="text-md font-semibold text-gray-500 ">
+                  full Name
+                  <Input
+                    placeholder="John Doe"
+                    type="name"
+                    {...register("fullName", { required: true })}
+                  />
+                </label>
+                <label className="text-md font-semibold text-gray-500">
+                  Email
+                  <Input
+                    placeholder="example@gmail.com"
+                    type="name"
+                    {...register("email", { required: true })}
+                  />
+                </label>
+                <label className="text-md font-semibold text-gray-500">
+                  User Name
+                  <Input
+                    placeholder="johndoe122"
+                    type="name"
+                    {...register("username", { required: true })}
+                  />
+                </label>
+              </div>
+              <h1 className=" text-xl font-semibold text-black  mt-10">
+                Contact Information
+              </h1>
+              <p className="text-md pt-2 font-semibold text-gray-400 ">
+                Update your details for better communication
+              </p>
+              <div className=" grid grid-cols-2 pt-10 gap-5 ">
+                <label className="text-md font-semibold text-gray-500">
+                  Phone Number
+                  <Input
+                    placeholder="+91 1800253698"
+                    type="text"
+                    {...register("contact", { required: true })}
+                  />
+                </label>
+                <label className="text-md font-semibold text-gray-500">
+                  Address
+                  <Input
+                    placeholder="Ranchi Jharkhand, India "
+                    type="name"
+                    {...register("address", { required: true })}
+                  />
+                </label>
+              </div>
+              <div className="pt-10 space-x-5 flex justify-center align-top">
+                <button
+                  onClick={() => reset()}
+                  className="bg-gray-300 shadow-xl text-white font-semibold rounded-sm p-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 shadow-xl text-white font-semibold rounded-sm p-2 w-40"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </>
   );
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Input = forwardRef<HTMLInputElement, any>(({ icon, ...props }, ref) => (
+  <div className="flex items-center gap-3 border rounded-lg px-4 py-3">
+    <span className="text-gray-400">{icon}</span>
+    <input ref={ref} {...props} className="w-full outline-none text-sm" />
+  </div>
+));
+
+Input.displayName = "Input";
