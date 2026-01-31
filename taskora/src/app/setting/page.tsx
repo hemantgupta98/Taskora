@@ -5,7 +5,14 @@ import { forwardRef, useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Upload } from "lucide-react";
-import { on } from "events";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { Url } from "next/dist/shared/lib/router/router";
 
 type FormData = {
@@ -172,7 +179,7 @@ export default function SettingsTabs() {
                   />
                 </label>
                 <label className="text-md font-semibold text-gray-500 ">
-                  Worksapce Name
+                  Worksapce Url
                   <Input
                     placeholder="/taskora-project"
                     type="url"
@@ -209,6 +216,33 @@ export default function SettingsTabs() {
               </div>
               <div className="flex items-center gap-4 my-6">
                 <div className="flex-1 h-px bg-gray-200" />
+              </div>
+              <div className=" grid grid-cols-3">
+                <h1 className="text-xl font-semibold text-black ">Time zone</h1>
+                <Select>
+                  <SelectTrigger className="w-[250px]">
+                    <SelectValue placeholder="Time Zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="India">
+                      India – UTC +05:30 (IST)
+                    </SelectItem>
+                    <SelectItem value="Hong Kong">
+                      Hong Kong – UTC +08:00
+                    </SelectItem>
+                    <SelectItem value="Singapore">
+                      Singapore – UTC +08:00
+                    </SelectItem>
+                    <SelectItem value="Oman">Oman – UTC +04:00</SelectItem>
+                    <SelectItem value="UAE">
+                      United Arab Emirates (UAE) – UTC +04:00
+                    </SelectItem>
+                    <SelectItem value="saudi">
+                      Saudi Arabia – UTC +03:00
+                    </SelectItem>
+                    <SelectItem value="kuwait">Kuwait – UTC +03:00</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </form>
           </div>
