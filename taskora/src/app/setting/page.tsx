@@ -52,7 +52,7 @@ export default function SettingsTabs() {
           Theme
         </button>
       </div>
-      <div className="m-5 p-5 rounded-2xl shadow-xl">
+      <div className="m-5 p-5 rounded-2xl shadow-2xl">
         {mode === "Profile" && (
           <div>
             <h1 className="text-2xl text-black font-semibold">
@@ -82,7 +82,7 @@ export default function SettingsTabs() {
               />
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="space-x-5 grid grid-cols-2 gap-5 mt-10 ">
+              <div className="space-x-5 grid grid-cols-2 mt-10 ">
                 <label className="text-md font-semibold text-gray-500 ">
                   full Name
                   <Input
@@ -99,7 +99,7 @@ export default function SettingsTabs() {
                     {...register("email", { required: true })}
                   />
                 </label>
-                <label className="text-md font-semibold text-gray-500">
+                <label className="text-md font-semibold text-gray-500 mt-5">
                   User Name
                   <Input
                     placeholder="johndoe122"
