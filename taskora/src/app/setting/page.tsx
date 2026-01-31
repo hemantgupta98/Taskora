@@ -188,28 +188,24 @@ export default function SettingsTabs() {
                 <h1 className="text-xl font-semibold text-black ">
                   Logo & Icons
                 </h1>
-                <Input
-                  icon={
-                    <Upload
-                      size={18}
-                      className=" cursor-pointer text-blue-600"
-                    />
-                  }
-                  type="file"
-                  accept="image/*"
-                  className=" font-semibold"
-                />
-                <Input
-                  icon={
-                    <Upload
-                      size={18}
-                      className=" cursor-pointer text-blue-600"
-                    />
-                  }
-                  type="file"
-                  accept="image/*"
-                  className=" font-semibold"
-                />
+                <label className="h-50 w-50 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
+                  <span className="text-md font-medium text-gray-500">
+                    Upload Logo
+                  </span>
+
+                  <Upload size={18} className="text-blue-600 mb-1" />
+
+                  <Input type="file" accept="image/*" className="hidden" />
+                </label>
+                <label className="h-50 w-50 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
+                  <span className="text-md font-medium text-gray-500">
+                    Upload Icon
+                  </span>
+
+                  <Upload size={18} className="text-blue-600 mb-1" />
+
+                  <Input type="file" accept="image/*" className="hidden" />
+                </label>
               </div>
               <div className="flex items-center gap-4 my-6">
                 <div className="flex-1 h-px bg-gray-200" />
