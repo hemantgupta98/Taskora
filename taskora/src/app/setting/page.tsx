@@ -6,6 +6,7 @@ import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Upload } from "lucide-react";
 import { on } from "events";
+import { Url } from "next/dist/shared/lib/router/router";
 
 type FormData = {
   fullName?: string;
@@ -13,6 +14,8 @@ type FormData = {
   username: string;
   contact: number;
   address: string;
+  workName: string;
+  workUrl: Url;
 };
 
 export default function SettingsTabs() {
@@ -150,7 +153,70 @@ export default function SettingsTabs() {
           </div>
         )}
 
-        {mode === "Workspace" && <div></div>}
+        {mode === "Workspace" && (
+          <div>
+            <h1 className="text-2xl text-black font-semibold">
+              Workspace Settings
+            </h1>
+            <div className="flex items-center gap-4 my-6">
+              <div className="flex-1 h-px bg-gray-200" />
+            </div>
+            <form>
+              <div className=" grid grid-cols-2 space-x-5">
+                <label className="text-md font-semibold text-gray-500 ">
+                  Worksapce Name
+                  <Input
+                    placeholder="Taskora"
+                    type="name"
+                    {...register("workName", { required: true })}
+                  />
+                </label>
+                <label className="text-md font-semibold text-gray-500 ">
+                  Worksapce Name
+                  <Input
+                    placeholder="/taskora-project"
+                    type="url"
+                    accept="url/*"
+                    {...register("workUrl", { required: true })}
+                  />
+                </label>
+              </div>
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+              <div className="grid grid-cols-3 space-x-5">
+                <h1 className="text-xl font-semibold text-black ">
+                  Logo & Icons
+                </h1>
+                <Input
+                  icon={
+                    <Upload
+                      size={18}
+                      className=" cursor-pointer text-blue-600"
+                    />
+                  }
+                  type="file"
+                  accept="image/*"
+                  className=" font-semibold"
+                />
+                <Input
+                  icon={
+                    <Upload
+                      size={18}
+                      className=" cursor-pointer text-blue-600"
+                    />
+                  }
+                  type="file"
+                  accept="image/*"
+                  className=" font-semibold"
+                />
+              </div>
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </>
   );
