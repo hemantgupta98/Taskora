@@ -149,6 +149,8 @@ export default function SettingsTabs() {
             </form>
           </div>
         )}
+
+        {mode === "Workspace" && <div></div>}
       </div>
     </>
   );
