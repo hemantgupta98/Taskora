@@ -285,7 +285,7 @@ export default function SettingsTabs() {
             <div className="flex ml-15 mt-10 gap-5">
               <Upload size={20} />
               <h1 className=" text-md text-black font-semibold">
-                Use system prefrence
+                Use system prefrences
               </h1>
               <Switch />
             </div>
