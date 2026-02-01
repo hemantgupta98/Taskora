@@ -4,7 +4,7 @@ import { User, Briefcase, Palette } from "lucide-react";
 import { forwardRef, useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Upload } from "lucide-react";
+import { Upload, Moon, Sun, Check } from "lucide-react";
 import { Switch } from "../../components/ui/switch";
 
 import {
@@ -37,6 +37,23 @@ export default function SettingsTabs() {
     console.log(data);
     reset();
   };
+
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [useSystem, setUseSystem] = useState(false);
+  const [accent, setAccent] = useState("#2563EB");
+  const [fontSize, setFontSize] = useState<"small" | "medium" | "large">(
+    "medium",
+  );
+
+  const accentColors = [
+    "#2563EB",
+    "#06B6D4",
+    "#22C55E",
+    "#F59E0B",
+    "#7C3AED",
+    "#EC4899",
+    "#DC2626",
+  ];
 
   return (
     <>
@@ -267,28 +284,135 @@ export default function SettingsTabs() {
         )}
 
         {mode === "Theme" && (
-          <div>
-            <h1 className="text-2xl font-semibold text-black">
-              Theme Settings
-            </h1>
-            <p className="text-sm  text-gray-400">
-              Customize your theme prefrences
-            </p>
-            <div className="flex items-center gap-4 my-6">
-              <h1 className="text-xl text-black font-semibold">Appearance</h1>
-              <div className="flex-1 h-px bg-gray-200" />
-            </div>
-            <div className=" grid grid-cols-3 ml-15">
-              <label className="h-50 w-50 border border-2 border-gray-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50"></label>
-              <label className="h-50 w-50 border-2 border border-gray-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50"></label>
-            </div>
-            <div className="flex ml-15 mt-10 gap-5">
-              <Upload size={20} />
-              <h1 className=" text-md text-black font-semibold">
-                Use system prefrences
-              </h1>
-              <Switch />
-            </div>
+          <div className="flex min-h-screen bg-slate-100">
+            {/* Sidebar */}
+
+            {/* Main Content */}
+            <main className="flex-1 p-10">
+              <h2 className="text-3xl font-bold text-slate-800">
+                Theme Settings
+              </h2>
+              <p className="text-slate-500 mb-8">
+                Customize your theme preferences.
+              </p>
+
+              {/* Appearance */}
+              <section className="bg-white rounded-xl p-6 shadow mb-8">
+                <h3 className="text-xl font-semibold mb-4">Appearance</h3>
+
+                <div className="flex gap-6">
+                  <button
+                    onClick={() => setTheme("light")}
+                    className={`flex-1 border rounded-xl p-4 flex flex-col items-center gap-3 transition ${
+                      theme === "light"
+                        ? "border-blue-600 ring-2 ring-blue-200"
+                        : "hover:border-slate-300"
+                    }`}
+                  >
+                    <Sun className="text-yellow-500" />
+                    <span className="font-medium">Light Mode</span>
+                  </button>
+
+                  <button
+                    onClick={() => setTheme("dark")}
+                    className={`flex-1 border rounded-xl p-4 flex flex-col items-center gap-3 transition ${
+                      theme === "dark"
+                        ? "border-blue-600 ring-2 ring-blue-200"
+                        : "hover:border-slate-300"
+                    }`}
+                  >
+                    <Moon className="text-slate-700" />
+                    <span className="font-medium">Dark Mode</span>
+                  </button>
+                </div>
+
+                {/* System Toggle */}
+                <div className="flex items-center gap-4 mt-6">
+                  <span className="text-slate-700">Use System Preference</span>
+                  <button
+                    onClick={() => setUseSystem(!useSystem)}
+                    className={`w-12 h-6 rounded-full relative transition ${
+                      useSystem ? "bg-blue-600" : "bg-slate-300"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition ${
+                        useSystem ? "translate-x-6" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
+              </section>
+
+              {/* Accent Color */}
+              <section className="bg-white rounded-xl p-6 shadow mb-8">
+                <h3 className="text-xl font-semibold mb-4">Accent Color</h3>
+
+                <div className="flex gap-4 mb-4">
+                  {accentColors.map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => setAccent(color)}
+                      style={{ backgroundColor: color }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center"
+                    >
+                      {accent === color && <Check className="text-white" />}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <label className="font-medium">Custom Color:</label>
+                  <input
+                    type="color"
+                    value={accent}
+                    onChange={(e) => setAccent(e.target.value)}
+                    className="w-12 h-10 p-1 border rounded"
+                  />
+                  <input
+                    value={accent}
+                    readOnly
+                    className="border px-3 py-2 rounded w-32"
+                  />
+                </div>
+              </section>
+
+              {/* Font Size */}
+              <section className="bg-white rounded-xl p-6 shadow mb-8">
+                <h3 className="text-xl font-semibold mb-4">Font Size</h3>
+
+                <div className="flex gap-4">
+                  {(["small", "medium", "large"] as const).map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setFontSize(size)}
+                      className={`px-6 py-2 rounded-lg border transition ${
+                        fontSize === size
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-slate-100"
+                      }`}
+                    >
+                      {size.charAt(0).toUpperCase() + size.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <div className="pt-10 space-x-5 flex justify-center align-top">
+                <button
+                  onClick={() => reset()}
+                  className="bg-gray-300 shadow-xl text-white font-semibold rounded-sm p-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 shadow-xl text-white font-semibold rounded-sm p-2 w-40"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </main>
           </div>
         )}
       </div>
