@@ -7,7 +7,7 @@ export default function LogoutPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="flex justify-center align-middle items-center py-10 bg-gray-50 px-4">
       <div className="w-full max-w-lg text-center">
         {/* Title */}
         <h1 className="text-3xl font-semibold text-gray-800">
@@ -20,7 +20,7 @@ export default function LogoutPage() {
         {/* Illustration */}
         <div className="mt-10 flex justify-center">
           <Image
-            src="/logout-illustration.png"
+            src="/logout.webp"
             alt="Logout Illustration"
             width={320}
             height={320}
