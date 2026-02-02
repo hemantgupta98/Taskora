@@ -13,8 +13,8 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <StatCard
               title="Total Projects"
-              value="12"
-              subtitle="Currently active projects"
+              value="0"
+              subtitle="Taskora projects"
             />
             <StatCard
               title="Tasks Due Today 2"
@@ -22,7 +22,7 @@ export default function DashboardPage() {
               subtitle="Critical tasks to complete"
             />
             <StatCard
-              title="Team Members"
+              title="Irelevent"
               value="15"
               subtitle="Active members in your team"
             />
@@ -69,16 +69,16 @@ export default function DashboardPage() {
             </Card>
             <Card title="Open Tasks by Assignee">
               <div className="space-y-3">
-                <ProgressBar />
-                <ProgressBar />
-                <ProgressBar />
-                <ProgressBar />
+                <ProgressBar value={2} />
+                <ProgressBar value={10} />
+                <ProgressBar value={15} />
+                <ProgressBar value={25} />
               </div>
             </Card>
             <Card title="Current Sprint: Alpha v1.0">
               <p className="text-sm text-gray-500">7 days remaining</p>
               <div className="mt-3">
-                <ProgressBar value={65} />
+                <ProgressBar value={23} />
               </div>
             </Card>
           </div>
