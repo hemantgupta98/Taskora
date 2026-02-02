@@ -11,6 +11,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "../../components/ui/otp";
+import { useState } from "react";
 
 type Input = {
   email: string;
@@ -34,6 +35,7 @@ export default function AuthForm() {
     }
   };
 
+  const [mode, setmode] = useState<"otp" | "verify">();
   const router = useRouter();
 
   return (
@@ -71,19 +73,31 @@ export default function AuthForm() {
               </p>
             )}
 
-            <InputOTP maxLength={6}>
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-              </InputOTPGroup>
-              <InputOTPSeparator />
-              <InputOTPGroup>
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
-              </InputOTPGroup>
-            </InputOTP>
+            <button
+              onClick={() => setmode("otp")}
+              className={`w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer ${mode === "otp" ? "ring-1 ring-blue-200" : "border"}`}
+            >
+              Send OTP
+            </button>
+            {mode === "otp" && (
+              <div className="  grid grid-cols-2 p-2">
+                <InputOTP maxLength={5}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                  </InputOTPGroup>
+                </InputOTP>
+                <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer">
+                  Verfiy
+                </button>
+              </div>
+            )}
+
             <Input
               icon={<Lock size={18} />}
               placeholder="New password"
@@ -122,7 +136,10 @@ export default function AuthForm() {
             )}
 
             <Toaster position="top-center" expand={false} richColors />
-            <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer">
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer"
+            >
               Submit
             </button>
           </form>

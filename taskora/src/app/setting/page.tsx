@@ -5,7 +5,6 @@ import { forwardRef, useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Upload, Moon, Sun, Check } from "lucide-react";
-import { Switch } from "../../components/ui/switch";
 
 import {
   Select,
