@@ -113,18 +113,20 @@ export default function AuthForm() {
               Send OTP
             </button>
             {mode === "otp" && (
-              <div className="grid grid-cols-2 gap-4 p-2">
-                <InputOTP maxLength={4}>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                  </InputOTPGroup>
-                  <InputOTPSeparator />
-                  <InputOTPGroup>
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                  </InputOTPGroup>
-                </InputOTP>
+              <div className="p-2 space-y-5">
+                <div className=" flex justify-center align-middle">
+                  <InputOTP maxLength={4}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                    </InputOTPGroup>
+                    <InputOTPSeparator />
+                    <InputOTPGroup>
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
 
                 <button
                   type="submit"
