@@ -15,13 +15,15 @@ const sendOtp = async (email, otp) => {
     const mailOption = {
       from: `"Taskora" <${process.env.EMAIL_APP_USER}>`,
       to: email,
-      subject: "Your Verification Code",
-      text: `Your OTP is ${otp}`,
+      subject: "Password Reset OTP",
+      text: `Your One-Time Password (OTP) is ${otp}`,
       html: `
-        <h2>Email Verification</h2>
+        <h2>We received a request to reset your password.</h2>
         <p>Your 4-digit OTP is:</p>
-        <h1>${otp}</h1>
-        <p>This OTP is valid for 2 minutes.</p>
+        <h2>${otp}</h2>
+        <p>This OTP is valid for the next 2 minutes</p>
+        <p>Please do not share this code with anyone.</p>
+        <h3>Taskora</h3>
       `,
     };
 
