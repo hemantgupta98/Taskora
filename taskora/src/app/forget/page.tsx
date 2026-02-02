@@ -1,11 +1,9 @@
 "use client";
-import { Mail, Lock, User2Icon, LogIn } from "lucide-react";
-import SocialButton from "../../components/ui/SocailButton";
+import { Mail, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
-import { RiGhost2Fill } from "react-icons/ri";
 import { FaAngleDoubleLeft } from "react-icons/fa";
 
 type Input = {
