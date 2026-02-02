@@ -80,68 +80,77 @@ export default function AuthForm() {
               Send OTP
             </button>
             {mode === "otp" && (
-              <div className="  grid grid-cols-2 p-2">
-                <InputOTP maxLength={5}>
+              <div className="grid grid-cols-2 gap-4 p-2">
+                <InputOTP maxLength={4}>
                   <InputOTPGroup>
+                    <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
                   </InputOTPGroup>
                   <InputOTPSeparator />
                   <InputOTPGroup>
+                    <InputOTPSlot index={2} />
                     <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
                   </InputOTPGroup>
                 </InputOTP>
-                <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer">
-                  Verfiy
+
+                <button
+                  type="submit"
+                  onClick={() => setmode("verify")}
+                  className="w-full bg-blue-500 cursor-pointer text-white py-3 rounded-lg font-semibold"
+                >
+                  Verify
                 </button>
               </div>
             )}
 
-            <Input
-              icon={<Lock size={18} />}
-              placeholder="New password"
-              type="password"
-              {...register("password", {
-                required: "Enter your new password",
-                pattern: {
-                  value: /^[A-Za-z]{1,10}$/,
-                  message: "Enter a new password",
-                },
-                minLength: 4,
-              })}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1 ml-1">
-                {errors.password.message}
-              </p>
-            )}
-            <Input
-              icon={<Lock size={18} />}
-              placeholder="Re-type password"
-              type="password"
-              {...register("rePassword", {
-                required: "Password not match",
-                pattern: {
-                  value: /^[A-Za-z]{1,10}$/,
-                  message: "Password must be 1–10 letters only",
-                },
-                minLength: 4,
-              })}
-            />
-            {errors.rePassword && (
-              <p className="text-red-500 text-sm mt-1 ml-1">
-                {errors.rePassword.message}
-              </p>
-            )}
+            {mode === "verify" && (
+              <>
+                <Input
+                  icon={<Lock size={18} />}
+                  placeholder="New password"
+                  type="password"
+                  {...register("password", {
+                    required: "Enter your new password",
+                    pattern: {
+                      value: /^[A-Za-z]{1,10}$/,
+                      message: "Enter a new password",
+                    },
+                    minLength: 4,
+                  })}
+                />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1 ml-1">
+                    {errors.password.message}
+                  </p>
+                )}
+                <Input
+                  icon={<Lock size={18} />}
+                  placeholder="Re-type password"
+                  type="password"
+                  {...register("rePassword", {
+                    required: "Password not match",
+                    pattern: {
+                      value: /^[A-Za-z]{1,10}$/,
+                      message: "Password must be 1–10 letters only",
+                    },
+                    minLength: 4,
+                  })}
+                />
+                {errors.rePassword && (
+                  <p className="text-red-500 text-sm mt-1 ml-1">
+                    {errors.rePassword.message}
+                  </p>
+                )}
 
-            <Toaster position="top-center" expand={false} richColors />
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer"
-            >
-              Submit
-            </button>
+                <Toaster position="top-center" expand={false} richColors />
+                <button
+                  type="submit"
+                  className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer"
+                >
+                  Submit
+                </button>
+              </>
+            )}
           </form>
 
           {/* Divider */}
