@@ -5,6 +5,12 @@ import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import { FaAngleDoubleLeft } from "react-icons/fa";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "../../components/ui/otp";
 
 type Input = {
   email: string;
@@ -65,6 +71,19 @@ export default function AuthForm() {
               </p>
             )}
 
+            <InputOTP maxLength={6}>
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
             <Input
               icon={<Lock size={18} />}
               placeholder="New password"
