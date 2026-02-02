@@ -17,7 +17,7 @@ export default function DashboardPage() {
               subtitle="Currently active projects"
             />
             <StatCard
-              title="Tasks Due Today"
+              title="Tasks Due Today 1"
               value="5"
               subtitle="Critical tasks to complete"
             />
