@@ -11,12 +11,13 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "../../components/ui/otp";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Input = {
   email: string;
   password: string;
-  rePassword: string;
+  confirmPassword: string;
+  otp?: string;
 };
 
 export default function AuthForm() {
@@ -28,46 +29,86 @@ export default function AuthForm() {
   } = useForm<Input>();
 
   const onSubmit: SubmitHandler<Input> = async (data) => {
-    console.log(data);
+    const { password, confirmPassword } = data;
+
+    if (mode === "reset" && password !== confirmPassword) {
+      toast.error("Password does not match");
+      return;
+    }
 
     try {
-      const url =
-        mode === "otp"
-          ? "http://localhost:5000/api/auth/otp"
-          : "http://localhost:5000/api/auth/verifyotp";
+      let url = "";
+      let payload = {};
+
+      if (mode === "send") {
+        url = "http://localhost:5000/api/auth/otp";
+        payload = { email: data.email };
+      }
+
+      if (mode === "otp") {
+        url = "http://localhost:5000/api/auth/verifyotp";
+        payload = { email: data.email, otp };
+      }
+
+      if (mode === "reset") {
+        url = "http://localhost:5000/api/auth/resetpassword";
+        payload = {
+          email: data.email,
+          otp,
+          newPassword: password,
+          confirmPassword: confirmPassword,
+        };
+      }
 
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-      let result;
-      const contentType = res.headers.get("content-type");
-
-      if (contentType?.includes("application/json")) {
-        result = await res.json();
-      } else {
-        const text = await res.text();
-        throw new Error(text || "Invalid server response");
-      }
+      const result = await res.json();
 
       if (!res.ok) {
-        toast.error(result.message || "sorry you have not access");
-        return reset();
+        toast.error(result.message || "Something went wrong");
+        return;
       }
-    } catch (error) {
-      console.log("Error in frotend otp verification", error);
-    }
 
-    if (data.email && data.password && data.rePassword) {
-      toast.success("Successfully created");
+      if (mode === "send") {
+        toast.success("OTP sent successfully");
+        setMode("otp");
+      }
+
+      if (mode === "otp") {
+        toast.success("OTP verified");
+        setMode("reset");
+      }
+
+      if (mode === "reset") {
+        toast.success("Password reset successful");
+        setResetSuccess(true);
+        reset();
+      }
+    } catch (err) {
+      toast.error("Server error");
+      console.log(err);
     }
   };
 
-  const [mode, setmode] = useState<"otp" | "verify">();
+  type Mode = "send" | "otp" | "reset";
+  const [mode, setMode] = useState<Mode>("send");
+  const [otp, setOtp] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
+
   const router = useRouter();
+  useEffect(() => {
+    if (!resetSuccess) return;
+
+    const timer = setTimeout(() => {
+      router.push("/auth");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [resetSuccess, router]);
 
   return (
     <>
@@ -85,7 +126,7 @@ export default function AuthForm() {
           <p className="text-gray-500 mb-6">
             Enter your email and we we&apos;ll send otp to reset your password
           </p>
-
+          <Toaster position="top-center" richColors />
           {/* Form */}
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <Input
@@ -106,16 +147,22 @@ export default function AuthForm() {
               </p>
             )}
 
-            <button
-              onClick={() => setmode("otp")}
-              className={`w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer ${mode === "otp" ? "ring-1 ring-blue-200" : "border"}`}
-            >
-              Send OTP
-            </button>
+            {mode === "send" && (
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white cursor-pointer py-3 rounded-lg font-semibold"
+              >
+                Send OTP
+              </button>
+            )}
             {mode === "otp" && (
-              <div className="p-2 space-y-5">
-                <div className=" flex justify-center align-middle">
-                  <InputOTP maxLength={4}>
+              <div className="space-y-5">
+                <div className="flex justify-center">
+                  <InputOTP
+                    maxLength={4}
+                    value={otp}
+                    onChange={(value) => setOtp(value)}
+                  >
                     <InputOTPGroup>
                       <InputOTPSlot index={0} />
                       <InputOTPSlot index={1} />
@@ -130,57 +177,33 @@ export default function AuthForm() {
 
                 <button
                   type="submit"
-                  onClick={() => setmode("verify")}
-                  className="w-full bg-blue-500 cursor-pointer text-white py-3 rounded-lg font-semibold"
+                  disabled={otp.length !== 4}
+                  className="w-full bg-blue-500 cursor-pointer disabled:opacity-50 text-white py-3 rounded-lg font-semibold"
                 >
-                  Verify
+                  Verify OTP
                 </button>
               </div>
             )}
 
-            {mode === "verify" && (
+            {mode === "reset" && (
               <>
                 <Input
                   icon={<Lock size={18} />}
                   placeholder="New password"
                   type="password"
-                  {...register("password", {
-                    required: "Enter your new password",
-                    pattern: {
-                      value: /^[A-Za-z]{1,10}$/,
-                      message: "Enter a new password",
-                    },
-                    minLength: 4,
-                  })}
+                  {...register("password", { required: true })}
                 />
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1 ml-1">
-                    {errors.password.message}
-                  </p>
-                )}
+
                 <Input
                   icon={<Lock size={18} />}
                   placeholder="Re-type password"
                   type="password"
-                  {...register("rePassword", {
-                    required: "Password not match",
-                    pattern: {
-                      value: /^[A-Za-z]{1,10}$/,
-                      message: "Password must be 1–10 letters only",
-                    },
-                    minLength: 4,
-                  })}
+                  {...register("confirmPassword", { required: true })}
                 />
-                {errors.rePassword && (
-                  <p className="text-red-500 text-sm mt-1 ml-1">
-                    {errors.rePassword.message}
-                  </p>
-                )}
 
-                <Toaster position="top-center" expand={false} richColors />
                 <button
                   type="submit"
-                  className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold cursor-pointer"
+                  className="w-full bg-blue-500 text-white py-3 cursor-pointer rounded-lg font-semibold"
                 >
                   Submit
                 </button>

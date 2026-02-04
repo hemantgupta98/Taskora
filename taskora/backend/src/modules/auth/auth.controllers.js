@@ -1,8 +1,14 @@
 import jwt from "jsonwebtoken";
-import { comparePassword } from "./auth.hashed.js";
-import { LoginHistory } from "./auth.model.js";
-import { createUser, findUserByEmail } from "./auth.service.js";
+import { comparePassword, hashpassword } from "./auth.hashed.js";
+import { LoginHistory, ResetPassword } from "./auth.model.js";
+import {
+  createUser,
+  findUserByEmail,
+  createResetPasswordRecord,
+} from "./auth.service.js";
 import sendOtp from "./auth.gmail.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -48,7 +54,8 @@ export const login = async (req, res) => {
       email: user.email,
     });
 
-    const token = jwt.sign({ id: user._id }, "Anshu", { expiresIn: "20h" });
+    const jwtToken = process.env.JWT_TOKEN;
+    const token = jwt.sign({ id: user._id }, jwtToken, { expiresIn: "20h" });
 
     res.json({
       success: true,
@@ -64,18 +71,125 @@ export const login = async (req, res) => {
   }
 };
 
-const optGenerator = () => {
+const otpGenerator = () => {
   return Math.floor(1000 + Math.random() * 9000).toString();
 };
 
 export const registerUser = async (req, res) => {
   const { email } = req.body;
 
-  const otp = optGenerator();
+  try {
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-  const sent = await sendOtp(email, otp);
+    const otp = otpGenerator();
+    const hashedOtp = await hashpassword(otp);
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
 
-  if (sent) return res.status(200).json({ message: "Otp send successfully" });
+    user.otpCode = hashedOtp;
+    user.otpExpiresAt = expiresAt;
+    await user.save();
 
-  res.status(500).json({ message: "Sending otp failed" });
+    const sent = await sendOtp(email, otp);
+    if (sent) {
+      return res
+        .status(200)
+        .json({ success: true, message: "OTP sent successfully" });
+    }
+
+    return res
+      .status(500)
+      .json({ success: false, message: "Sending OTP failed" });
+  } catch (error) {
+    console.log("Register OTP error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const verifyotp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.otpCode || !user.otpExpiresAt) {
+      return res.status(400).json({ message: "No OTP requested" });
+    }
+
+    if (user.otpExpiresAt < new Date()) {
+      return res.status(410).json({ message: "OTP expired" });
+    }
+
+    const isValid = await comparePassword(otp, user.otpCode);
+    if (!isValid) {
+      return res.status(401).json({ message: "Invalid OTP" });
+    }
+
+    user.otpCode = undefined;
+    user.otpExpiresAt = undefined;
+    await user.save();
+
+    return res.status(200).json({ success: true, message: "OTP verified" });
+  } catch (error) {
+    console.log("Verify OTP error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const resetpassword = async (req, res) => {
+  const { email, otp, newPassword, confirmPassword } = req.body;
+
+  if (!email || !otp || !newPassword || !confirmPassword) {
+    return res.status(400).json({
+      message: "All fields are required",
+    });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({
+      message: "Passwords do not match",
+    });
+  }
+
+  try {
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.otpExpiresAt < new Date()) {
+      return res.status(410).json({ message: "OTP expired" });
+    }
+
+    {
+      /**if (!user.otpCode || !user.otpExpiresAt) {
+      return res.status(400).json({ message: "OTP already used or expired" });
+    } */
+    }
+
+    user.password = newPassword;
+    user.otpCode = undefined;
+    user.otpExpiresAt = undefined;
+    await user.save();
+
+    // Record the reset event in the "resetpassword" collection
+    await createResetPasswordRecord(user);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successful",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
 };

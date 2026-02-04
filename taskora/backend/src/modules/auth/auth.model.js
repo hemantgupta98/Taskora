@@ -6,6 +6,8 @@ const authSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    otpCode: { type: String },
+    otpExpiresAt: { type: Date },
   },
   { timestamps: true },
 );
@@ -34,5 +36,26 @@ const loginSchema = new mongoose.Schema(
 );
 
 const LoginHistory = mongoose.model("LoginHistory", loginSchema);
+const resetPasswordSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SignupHistory",
+      required: true,
+    },
+    email: { type: String, required: true },
+    password: { type: String, required: true }, // hashed new password
+    confirmPassword: { type: String, required: true }, // hashed confirm password (same as password)
+    changedAt: { type: Date, default: Date.now },
+  },
+  { timestamps: true },
+);
 
-export { User, LoginHistory };
+// Use explicit collection name "resetpassword" per requirement
+const ResetPassword = mongoose.model(
+  "ResetPassword",
+  resetPasswordSchema,
+  "resetpassword",
+);
+
+export { User, LoginHistory, ResetPassword };
