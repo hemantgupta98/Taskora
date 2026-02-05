@@ -94,12 +94,11 @@ POST	/tasks	Create task
 GET	/tasks	Get all tasks
 PUT	/tasks/:id	Update task
 DELETE	/tasks/:id	Delete task
+
 🌍 Deployment
 
 Frontend can be deployed on Vercel
-
 Backend can be deployed on Render / Railway
-
 MongoDB hosted on MongoDB Atlas
 
 🎯 Project Objective
@@ -115,13 +114,9 @@ Build a clean, scalable project suitable for internships and job portfolios
 🚧 Future Improvements
 
 Google OAuth authentication
-
 Team-based task collaboration
-
 File attachments for tasks
-
 Activity logs & analytics
-
 Dark mode support
 
 👨‍💻 Author
@@ -131,5 +126,4 @@ Full Stack Developer (MERN)
 📌 Built as part of an internship / learning project
 
 ⭐ Support
-
 If you like this project, consider giving it a ⭐ on GitHub — it really helps!
