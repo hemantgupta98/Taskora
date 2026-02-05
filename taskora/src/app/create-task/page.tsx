@@ -4,6 +4,7 @@ import { useState } from "react";
 import Input from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { Calendar } from "../../components/ui/calendar";
+import { ScrollArea } from "../../components/ui/scroll-area";
 import {
   Popover,
   PopoverContent,
@@ -48,192 +49,209 @@ export default function CreateTaskPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="mx-auto max-w-xl rounded-xl bg-white p-8 shadow-sm">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            Create New Task
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Add details for your new task
-          </p>
-
-          <div className="mt-8 space-y-6">
-            <Input
-              label="Task Title"
-              placeholder="Design Landing Page"
-              className=" "
-            />
-
-            <div className="space-y-1">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="description"
-              >
-                Description
-              </label>
-              <Textarea
-                id="description"
-                placeholder="Create a modern landing page design with responsive layout."
-              />
+      <ScrollArea className=" h-200 rounded-sm ">
+        <div className="min-h-screen bg-gray-50 p-6">
+          <div className="mx-auto max-w-xl rounded-xl bg-white p-8 shadow-sm">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Create New Task
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">
+              Add details for your new task
+            </p>
+            <div className=" mt-5">
+              <Input label={"Admin"} placeholder="user" />
             </div>
 
-            <div className=" gap-6  ">
+            <div className="mt-8 space-y-6">
+              <div className=" ">
+                <Input label="Task Title" placeholder="Design Landing Page" />
+              </div>
+
+              <div className="space-y-1 ">
+                <Textarea
+                  id="description"
+                  placeholder="Create a modern landing page design with responsive layout."
+                />
+              </div>
+
+              <div className=" gap-6  ">
+                <div className="space-y-1">
+                  <label className="text-md font-medium text-gray-700">
+                    Priority
+                  </label>
+                  <Select defaultValue="high">
+                    <SelectTrigger className="w-full md:w-[320px]">
+                      <SelectValue placeholder="Select priority" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="high">
+                        <div className="flex items-center gap-2">
+                          <ChevronsUpIcon size={14} className=" text-red-700" />
+                          <span>High</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="medium">
+                        <div className="flex items-center gap-2">
+                          <ChevronUpIcon size={14} className=" text-red-500" />
+                          <span>Medium</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="low">
+                        <div className="flex items-center gap-2">
+                          <ChevronDownIcon
+                            size={14}
+                            className=" text-blue-500"
+                          />
+                          <span>Low</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="lowest">
+                        <div className="flex items-center gap-2">
+                          <ChevronsDownIcon
+                            size={14}
+                            className=" text-blue-300"
+                          />
+                          <span>Lowest</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className=" grid space-y-1">
+                <label className="text-md font-medium text-gray-700">
+                  Start date
+                </label>
+                <Popover>
+                  <PopoverTrigger asChild className="w-full md:w-[320px]">
+                    <Button
+                      variant="outline"
+                      data-empty={!date}
+                      className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                    >
+                      {date ? format(date, "PPP") : <span>Pick a date</span>}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      defaultMonth={date}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 ">
+                <div className="space-y-1">
+                  <label className="text-md font-medium text-gray-700">
+                    Assign To
+                  </label>
+                  <Select defaultValue="michael">
+                    <SelectTrigger className="w-full md:w-[320px]">
+                      <SelectValue placeholder="Select assignee" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="michael">Michael Scott</SelectItem>
+                      <SelectItem value="pam">Pam Beesly</SelectItem>
+                      <SelectItem value="jim">Jim Halpert</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-md font-medium text-gray-700">
+                    Category
+                  </label>
+                  <Select defaultValue="design">
+                    <SelectTrigger className="w-full md:w-[320px]">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="design">Design</SelectItem>
+                      <SelectItem value="dev">Development</SelectItem>
+                      <SelectItem value="marketing">Marketing</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
               <div className="space-y-1">
                 <label className="text-md font-medium text-gray-700">
-                  Priority
+                  Status
                 </label>
-                <Select defaultValue="high">
-                  <SelectTrigger className="w-full md:w-[320px]">
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="high">
-                      <div className="flex items-center gap-2">
-                        <ChevronsUpIcon size={14} className=" text-red-700" />
-                        <span>High</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="medium">
-                      <div className="flex items-center gap-2">
-                        <ChevronUpIcon size={14} className=" text-red-500" />
-                        <span>Medium</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="low">
-                      <div className="flex items-center gap-2">
-                        <ChevronDownIcon size={14} className=" text-blue-500" />
-                        <span>Low</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="lowest">
-                      <div className="flex items-center gap-2">
-                        <ChevronsDownIcon
-                          size={14}
-                          className=" text-blue-300"
-                        />
-                        <span>Lowest</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className=" grid space-y-1">
-              <label className="text-md font-medium text-gray-700">
-                Start date
-              </label>
-              <Popover>
-                <PopoverTrigger asChild className="w-full md:w-[320px]">
-                  <Button
-                    variant="outline"
-                    data-empty={!date}
-                    className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                <Select
+                  value={status}
+                  onValueChange={(v) =>
+                    setStatus(v as "todo" | "progress" | "done")
+                  }
+                >
+                  <SelectTrigger
+                    className={`w-full md:w-[320px] ${statusStyles[status]}`}
                   >
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
-                    <ChevronDownIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    defaultMonth={date}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 ">
-              <div className="space-y-1">
-                <label className="text-md font-medium text-gray-700">
-                  Assign To
-                </label>
-                <Select defaultValue="michael">
-                  <SelectTrigger className="w-full md:w-[320px]">
-                    <SelectValue placeholder="Select assignee" />
+                    <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="michael">Michael Scott</SelectItem>
-                    <SelectItem value="pam">Pam Beesly</SelectItem>
-                    <SelectItem value="jim">Jim Halpert</SelectItem>
+                    {statusCode.map((e) => (
+                      <SelectItem
+                        key={e.value}
+                        value={e.value}
+                        className={statusStyles[e.value]}
+                      >
+                        {e.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1">
+              <div className=" grid space-y-1">
                 <label className="text-md font-medium text-gray-700">
-                  Category
+                  Due date
+                </label>
+                <Popover>
+                  <PopoverTrigger asChild className="w-full md:w-[320px]">
+                    <Button
+                      variant="outline"
+                      data-empty={!date}
+                      className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                    >
+                      {date ? format(date, "PPP") : <span>Pick a date</span>}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      defaultMonth={date}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="space-y-5">
+                <label className="text-md font-medium text-gray-700">
+                  Restrict to
                 </label>
                 <Select defaultValue="design">
                   <SelectTrigger className="w-full md:w-[320px]">
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Select Roles" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="dev">Development</SelectItem>
-                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="design">Administrator</SelectItem>
+                    <SelectItem value="dev">Member</SelectItem>
+                    <SelectItem value="marketing">View</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-md font-medium text-gray-700">
-                Status
-              </label>
-              <Select
-                value={status}
-                onValueChange={(v) =>
-                  setStatus(v as "todo" | "progress" | "done")
-                }
-              >
-                <SelectTrigger
-                  className={`w-full md:w-[320px] ${statusStyles[status]}`}
-                >
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusCode.map((e) => (
-                    <SelectItem
-                      key={e.value}
-                      value={e.value}
-                      className={statusStyles[e.value]}
-                    >
-                      {e.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className=" grid space-y-1">
-              <label className="text-md font-medium text-gray-700">
-                Due date
-              </label>
-              <Popover>
-                <PopoverTrigger asChild className="w-full md:w-[320px]">
-                  <Button
-                    variant="outline"
-                    data-empty={!date}
-                    className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
-                  >
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
-                    <ChevronDownIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    defaultMonth={date}
-                  />
-                </PopoverContent>
-              </Popover>
             </div>
 
             {/* Attachments & Tags */}
 
-            <div>
+            <div className=" mt-5">
               <h3 className="mb-2 text-sm font-medium text-gray-700">
                 Attachments
               </h3>
@@ -249,7 +267,7 @@ export default function CreateTaskPage() {
               </label>
             </div>
 
-            <div className=" ">
+            <div className=" mt-5 ">
               <h3 className="mb-2 text-sm font-medium text-gray-700">Tags</h3>
               <div className="flex flex-wrap gap-2">
                 <Tag color="blue">UI/UX</Tag>
@@ -268,7 +286,7 @@ export default function CreateTaskPage() {
             </div>
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </>
   );
 }
