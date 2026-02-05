@@ -3,6 +3,9 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { googleDB } from "./auth.model.js";
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
+const API_BASE_URL = (
+  process.env.API_BASE_URL ?? "http://localhost:5000"
+).replace(/\/$/, "");
 
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
   console.warn(
@@ -14,24 +17,25 @@ if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "/api/auth/google/callback",
+        callbackURL: `${API_BASE_URL}/api/auth/google/callback`,
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await googleDB.findOne({ email: profile.emails[0].value });
+          const email = profile.emails?.[0]?.value;
+          let user = await googleDB.findOne({ email });
 
           if (!user) {
             user = await googleDB.create({
               name: profile.displayName,
-              email: profile.emails[0].value,
+              email,
               googleId: profile.id,
-              avatar: profile.photos[0].value,
+              avatar: profile.photos?.[0]?.value,
             });
           }
 
-          done(null, user);
+          return done(null, user);
         } catch (err) {
-          done(err, null);
+          return done(err, null);
         }
       },
     ),

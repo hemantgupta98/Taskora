@@ -62,7 +62,8 @@ export default function AuthForm() {
     }
   };
   const loginWithGoogle = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+    window.location.href = `${API_URL}/api/auth/google`;
   };
 
   return (
