@@ -51,6 +51,17 @@ const resetPasswordSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+const googleschema = new mongoose.Schema(
+  {
+    name: String,
+    email: { type: String, unique: true },
+    googleId: String,
+    avatar: String,
+  },
+  { timestamps: true },
+);
+
+const googleDB = mongoose.model("googlelogin", googleschema);
 // Use explicit collection name "resetpassword" per requirement
 const ResetPassword = mongoose.model(
   "ResetPassword",
@@ -58,4 +69,4 @@ const ResetPassword = mongoose.model(
   "resetpassword",
 );
 
-export { User, LoginHistory, ResetPassword };
+export { User, LoginHistory, ResetPassword, googleDB };

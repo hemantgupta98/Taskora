@@ -61,6 +61,9 @@ export default function AuthForm() {
       toast.error("Server error. Please try again.");
     }
   };
+  const loginWithGoogle = () => {
+    window.location.href = "http://localhost:5000/api/auth/google";
+  };
 
   return (
     <div className="p-8 sm:p-12">
@@ -145,13 +148,14 @@ export default function AuthForm() {
 
       {/* Social */}
       <div className="grid grid-cols-2 gap-4">
-        <SocialButton label="Google" />
+        <SocialButton label="Google" onClick={loginWithGoogle} />
         <SocialButton label="GitHub" />
       </div>
     </div>
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Input = forwardRef<HTMLInputElement, any>(({ icon, ...props }, ref) => (
   <div className="flex items-center gap-3 border rounded-lg px-4 py-3">
     <span className="text-gray-400">{icon}</span>
