@@ -18,21 +18,38 @@ import {
 } from "../../components/ui/select";
 import { Button } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
-import { ChevronDownIcon, Upload } from "lucide-react";
+import {
+  ChevronsDownIcon,
+  ChevronDownIcon,
+  Upload,
+  ChevronsUpIcon,
+  ChevronUpIcon,
+} from "lucide-react";
 import { format } from "date-fns";
 
+type Status = "todo" | "progress" | "done";
+
+const statusCode: { value: Status; label: string }[] = [
+  { value: "todo", label: "TO DO" },
+  { value: "progress", label: "PROGRESS" },
+  { value: "done", label: "DONE" },
+];
+
 export default function CreateTaskPage() {
-  const [subtasks, setSubtasks] = useState([
-    "Create wireframe",
-    "Design UI mockup",
-    "Get feedback & revisions",
-  ]);
   const [date, setDate] = useState<Date>();
+
+  const [status, setStatus] = useState<Status>("todo");
+
+  const statusStyles: Record<Status, string> = {
+    todo: "bg-red-100 text-red-700 border-red-200",
+    progress: "bg-blue-100 text-blue-700 border-blue-200",
+    done: "bg-green-100 text-green-700 border-green-200",
+  };
 
   return (
     <>
       <div className="min-h-screen bg-gray-50 p-6">
-        <div className="mx-auto max-w-4xl rounded-xl bg-white p-8 shadow-sm">
+        <div className="mx-auto max-w-xl rounded-xl bg-white p-8 shadow-sm">
           <h1 className="text-2xl font-semibold text-gray-900">
             Create New Task
           </h1>
@@ -41,7 +58,11 @@ export default function CreateTaskPage() {
           </p>
 
           <div className="mt-8 space-y-6">
-            <Input label="Task Title" placeholder="Design Landing Page" />
+            <Input
+              label="Task Title"
+              placeholder="Design Landing Page"
+              className=" "
+            />
 
             <div className="space-y-1">
               <label
@@ -56,7 +77,7 @@ export default function CreateTaskPage() {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 ">
+            <div className=" gap-6  ">
               <div className="space-y-1">
                 <label className="text-md font-medium text-gray-700">
                   Priority
@@ -66,12 +87,61 @@ export default function CreateTaskPage() {
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="high">
+                      <div className="flex items-center gap-2">
+                        <ChevronsUpIcon size={14} className=" text-red-700" />
+                        <span>High</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="medium">
+                      <div className="flex items-center gap-2">
+                        <ChevronUpIcon size={14} className=" text-red-500" />
+                        <span>Medium</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="low">
+                      <div className="flex items-center gap-2">
+                        <ChevronDownIcon size={14} className=" text-blue-500" />
+                        <span>Low</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="lowest">
+                      <div className="flex items-center gap-2">
+                        <ChevronsDownIcon
+                          size={14}
+                          className=" text-blue-300"
+                        />
+                        <span>Lowest</span>
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+            <div className=" grid space-y-1">
+              <label className="text-md font-medium text-gray-700">
+                Start date
+              </label>
+              <Popover>
+                <PopoverTrigger asChild className="w-full md:w-[320px]">
+                  <Button
+                    variant="outline"
+                    data-empty={!date}
+                    className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                  >
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    <ChevronDownIcon />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    defaultMonth={date}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="grid grid-cols-1 gap-6 ">
@@ -106,6 +176,35 @@ export default function CreateTaskPage() {
                 </Select>
               </div>
             </div>
+
+            <div className="space-y-1">
+              <label className="text-md font-medium text-gray-700">
+                Status
+              </label>
+              <Select
+                value={status}
+                onValueChange={(v) =>
+                  setStatus(v as "todo" | "progress" | "done")
+                }
+              >
+                <SelectTrigger
+                  className={`w-full md:w-[320px] ${statusStyles[status]}`}
+                >
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusCode.map((e) => (
+                    <SelectItem
+                      key={e.value}
+                      value={e.value}
+                      className={statusStyles[e.value]}
+                    >
+                      {e.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className=" grid space-y-1">
               <label className="text-md font-medium text-gray-700">
                 Due date
@@ -115,7 +214,7 @@ export default function CreateTaskPage() {
                   <Button
                     variant="outline"
                     data-empty={!date}
-                    className="data-[empty=true]:text-muted-foreground w-[212px] justify-between text-left font-normal"
+                    className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
                   >
                     {date ? format(date, "PPP") : <span>Pick a date</span>}
                     <ChevronDownIcon />
@@ -130,21 +229,6 @@ export default function CreateTaskPage() {
                   />
                 </PopoverContent>
               </Popover>
-            </div>
-
-            {/* Subtasks */}
-            <div>
-              <h3 className="mb-3 text-sm font-medium text-gray-700">
-                Subtasks
-              </h3>
-              <div className="space-y-3 rounded-lg bg-gray-50 p-4">
-                {subtasks.map((task) => (
-                  <Checkbox key={task} id={task} />
-                ))}
-                <button className="text-sm font-medium text-blue-600 hover:underline">
-                  + Add Subtask
-                </button>
-              </div>
             </div>
 
             {/* Attachments & Tags */}
