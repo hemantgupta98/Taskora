@@ -8,6 +8,8 @@ import {
   verifyotp,
   resetpassword,
 } from "./auth.controllers.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const router = express.Router();
 
@@ -42,8 +44,9 @@ router.get(
         return res.redirect(`${FRONTEND_URL}/login?oauth=missing_user`);
       }
 
-      const secret = process.env.JWT_SECRET;
+      const secret = process.env.JWT_TOKEN;
       if (!secret) {
+        console.error("JWT_SECRET is missing");
         return res.redirect(`${FRONTEND_URL}/login?oauth=server_misconfig`);
       }
 
@@ -52,7 +55,7 @@ router.get(
       });
 
       return res.redirect(`${FRONTEND_URL}/dashboard/?token=${token}`);
-    } catch {
+    } catch (err) {
       return res.redirect(`${FRONTEND_URL}/login?oauth=error`);
     }
   },
