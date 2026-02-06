@@ -8,12 +8,8 @@ router.get("/createtask", (req, res) => {
   res.send("Babbe");
 });
 
-{
-  /**
 router.get("/", getTasks);
 
 router.get("/:id", getTaskById);
- */
-}
 
 export default router;
