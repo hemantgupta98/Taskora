@@ -1,27 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskDrawer from "../../components/Task/TaskDrawer";
+import { api } from "../../lib/socket";
 
-const tasks = [
-  {
-    id: 1,
-    title: "Implement Authentication",
-    description: "Login, signup and protected routes",
-    status: "In Progress",
-  },
-  {
-    id: 2,
-    title: "Design Dashboard UI",
-    description: "Create main dashboard layout",
-    status: "Todo",
-  },
-];
+type Task = {
+  _id: string;
+  admin: string;
+  title: string;
+  descripition: string;
+  priority: string;
+  status: string;
+  category: string;
+  assign: string;
+  dueDate: number;
+};
 
 export default function ProjectPage() {
   const [open, setOpen] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedTask, setSelectedTask] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await api.get("/task");
+        setTasks(res.data.data);
+      } catch (err) {
+        console.error("Failed to fetch tasks", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
@@ -30,7 +48,7 @@ export default function ProjectPage() {
       <div className="grid gap-4">
         {tasks.map((task) => (
           <div
-            key={task.id}
+            key={task.title}
             onClick={() => {
               setSelectedTask(task);
               setOpen(true);
@@ -43,7 +61,6 @@ export default function ProjectPage() {
         ))}
       </div>
 
-      {/* Drawer */}
       <TaskDrawer
         open={open}
         onClose={() => setOpen(false)}
