@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Toaster, toast } from "sonner";
 import Input from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { Calendar } from "../../components/ui/calendar";
@@ -76,12 +77,67 @@ export default function CreateTaskPage() {
   if (!open) return null;
 
   const onSubmit: SubmitHandler<Data> = async (data) => {
-    console.log("Form data", data);
-    reset();
+    if (!data.startDate || !data.dueDate) {
+      toast.error("Start date and Due date are required");
+      return;
+    }
+
+    const attachmentName =
+      typeof data.attachment === "object" &&
+      data.attachment &&
+      "name" in data.attachment
+        ? (data.attachment as File).name
+        : "";
+
+    const payload = {
+      admin: data.admin,
+      title: data.title,
+      descripition: data.descripition,
+      priority: data.priority,
+      startDate: data.startDate,
+      assign: data.assign,
+      category: data.category,
+      status: data.status,
+      dueDate: data.dueDate,
+      restrict: data.restrict,
+      attachment: attachmentName,
+    };
+
+    try {
+      const url = "http://localhost:5000/api/task/createtask";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      let result;
+      const contentType = res.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
+        result = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || "Invalid server response");
+      }
+
+      if (!res.ok) {
+        toast.error(result.message || "Failed to create task");
+        return reset();
+      }
+
+      reset();
+      toast.success("Successfully created task");
+    } catch (error) {
+      console.log("Error in sending", error);
+      toast.error("Can't create task");
+    }
   };
   return (
     <>
       <ScrollArea className=" h-180 m-30 border-2 rounded-md ">
+        <Toaster richColors position="top-center" />
         <div className="min-h-screen bg-gray-50 p-6">
           <div className="ml-auto  max-w-2xl rounded-xl bg-white p-8 shadow-sm">
             <div className=" flex justify-between">
@@ -138,7 +194,10 @@ export default function CreateTaskPage() {
                       control={control}
                       rules={{ required: true }}
                       render={({ field }) => (
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger className="w-full md:w-[320px]">
                             <SelectValue placeholder="Select priority" />
                           </SelectTrigger>
@@ -196,7 +255,11 @@ export default function CreateTaskPage() {
                         data-empty={!startDate}
                         className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
                       >
-                        {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                        {startDate ? (
+                          format(startDate, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
@@ -224,12 +287,17 @@ export default function CreateTaskPage() {
                       control={control}
                       rules={{ required: true }}
                       render={({ field }) => (
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger className="w-full md:w-[320px]">
                             <SelectValue placeholder="Select assignee" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="michael">Michael Scott</SelectItem>
+                            <SelectItem value="michael">
+                              Michael Scott
+                            </SelectItem>
                             <SelectItem value="pam">Pam Beesly</SelectItem>
                             <SelectItem value="jim">Jim Halpert</SelectItem>
                           </SelectContent>
@@ -247,7 +315,10 @@ export default function CreateTaskPage() {
                       control={control}
                       rules={{ required: true }}
                       render={({ field }) => (
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger className="w-full md:w-[320px]">
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
@@ -302,7 +373,11 @@ export default function CreateTaskPage() {
                         data-empty={!dueDate}
                         className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
                       >
-                        {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
+                        {dueDate ? (
+                          format(dueDate, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
@@ -329,7 +404,10 @@ export default function CreateTaskPage() {
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <SelectTrigger className="w-full md:w-[320px]">
                           <SelectValue placeholder="Select Roles" />
                         </SelectTrigger>

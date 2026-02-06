@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import passport from "passport";
 import corsOption from "./config/cors.js";
 import routes from "./modules/auth/auth.routes.js";
+import taskRoutes from "./modules/task/task.routes.js";
 // Load environment variables before any strategy imports
 dotenv.config();
 // Register Google OAuth strategy (side-effect import)
@@ -17,6 +18,7 @@ app.use(cors(corsOption));
 app.use(passport.initialize());
 
 app.use("/api/auth", routes);
+app.use("/api/task", taskRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello word baby");
