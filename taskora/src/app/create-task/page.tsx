@@ -18,13 +18,14 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { Button } from "../../components/ui/button";
-import { Checkbox } from "../../components/ui/checkbox";
+
 import {
   ChevronsDownIcon,
   ChevronDownIcon,
   Upload,
   ChevronsUpIcon,
   ChevronUpIcon,
+  X,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -38,6 +39,7 @@ const statusCode: { value: Status; label: string }[] = [
 
 export default function CreateTaskPage() {
   const [date, setDate] = useState<Date>();
+  const [open, setOpen] = useState(true);
 
   const [status, setStatus] = useState<Status>("todo");
 
@@ -46,15 +48,27 @@ export default function CreateTaskPage() {
     progress: "bg-blue-100 text-blue-700 border-blue-200",
     done: "bg-green-100 text-green-700 border-green-200",
   };
+  if (!open) return null;
 
   return (
     <>
-      <ScrollArea className=" h-200 rounded-sm ">
+      <ScrollArea className=" h-180 m-30 border-2 rounded-md ">
         <div className="min-h-screen bg-gray-50 p-6">
-          <div className="mx-auto max-w-xl rounded-xl bg-white p-8 shadow-sm">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Create New Task
-            </h1>
+          <div className="ml-auto  max-w-2xl rounded-xl bg-white p-8 shadow-sm">
+            <div className=" flex justify-between">
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Create New Task
+              </h1>
+              <span>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="text-gray-500 mt-2"
+                >
+                  <X size={28} />
+                </button>
+              </span>
+            </div>
+
             <p className="mt-1 text-sm text-gray-500">
               Add details for your new task
             </p>
@@ -67,7 +81,8 @@ export default function CreateTaskPage() {
                 <Input label="Task Title" placeholder="Design Landing Page" />
               </div>
 
-              <div className="space-y-1 ">
+              <div className="space-y-1 text-sm font-semibold text-gray-800">
+                <label htmlFor="">Description</label>
                 <Textarea
                   id="description"
                   placeholder="Create a modern landing page design with responsive layout."
