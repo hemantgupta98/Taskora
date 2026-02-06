@@ -1,14 +1,11 @@
 "use client";
-
-import Image from "next/image";
 import { useState } from "react";
-import { Flag, MoreVertical, Search } from "lucide-react";
+import { Flag } from "lucide-react";
 
-// ------------------ TYPES ------------------
 type Task = {
   id: string;
   title: string;
-  assignees: string[]; // initials
+  assignees: string[];
   label?: string;
   priority?: "low" | "medium" | "high";
   startDate?: string;
@@ -21,7 +18,6 @@ type Section = {
   tasks: Task[];
 };
 
-// ------------------ MOCK DATA ------------------
 const sections: Section[] = [
   {
     name: "To Do",
@@ -58,7 +54,7 @@ const sections: Section[] = [
       {
         id: "TASK-007",
         title: "API contract",
-        assignees: ["A", "E"],
+        assignees: ["Arayn", "Emplaye", "sdadefdae"],
         priority: "high",
         startDate: "29-OCT-2021",
         dueDate: "06-NOV-2021",
@@ -87,40 +83,10 @@ const sections: Section[] = [
   },
 ];
 
-// ------------------ COMPONENT ------------------
 export default function TaskBoardPage() {
-  const [query, setQuery] = useState("");
-
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      {/* Main */}
       <main className="flex-1 p-6">
-        {/* Top Bar */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="relative w-80">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search Task..."
-              className="w-full pl-9 pr-3 py-2 rounded-lg border bg-white text-sm"
-            />
-          </div>
-          <div className="flex gap-3">
-            <button className="px-3 py-1.5 border rounded-full text-sm">
-              PRIORITY
-            </button>
-            <button className="px-3 py-1.5 border rounded-full text-sm">
-              LABEL
-            </button>
-            <button className="px-3 py-1.5 text-sm text-gray-500">
-              CLEAR FILTERS
-            </button>
-            <MoreVertical />
-          </div>
-        </div>
-
-        {/* Board */}
         <div className="space-y-10">
           {sections.map((section) => (
             <div key={section.name}>
@@ -128,7 +94,6 @@ export default function TaskBoardPage() {
                 {section.name}
               </h3>
 
-              {/* Table Header */}
               <div className="grid grid-cols-8 text-xs bg-gray-50 border rounded-t-md px-3 py-2">
                 <span>Task Title</span>
                 <span>Assignee</span>
@@ -151,15 +116,22 @@ export default function TaskBoardPage() {
                 {section.tasks.map((task) => (
                   <div
                     key={task.id}
-                    className={`grid grid-cols-7 items-center px-3 py-3 text-sm border-l-4 ${section.color}`}
+                    className={`grid grid-cols-8 items-center px-3 py-3 text-sm border-l-4 ${section.color}`}
                   >
                     <span className="font-medium text-gray-700">{task.id}</span>
 
-                    <div className="flex -space-x-2">
+                    <div
+                      className="grid "
+                      style={{
+                        width:
+                          28 +
+                          Math.max(0, task.assignees.length - 1) * (28 - 8),
+                      }}
+                    >
                       {task.assignees.map((a) => (
                         <div
                           key={a}
-                          className="h-7 w-7 rounded-full bg-gray-300 text-xs flex items-center justify-center border"
+                          className="h-7  text-xs flex items-center justify-center  "
                         >
                           {a}
                         </div>
@@ -193,6 +165,7 @@ export default function TaskBoardPage() {
                     <span className="text-xs text-green-600">
                       {task.startDate}
                     </span>
+                    <span className="text-xs text-red-500">{task.dueDate}</span>
                     <span className="text-xs text-red-500">{task.dueDate}</span>
                   </div>
                 ))}
