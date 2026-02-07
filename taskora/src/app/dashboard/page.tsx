@@ -1,157 +1,90 @@
-"use client";
+import StatCard from "../../components/layout/Startcard";
+import BarChart from "../../components/layout/barchart";
+import DonutChart from "../../components/layout/donutchart";
+import SectionCard from "../../components/layout/sectioncard";
 
 export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-900">
-      {/* Main */}
-      <main className="flex-1 flex flex-col">
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          <h1 className="text-2xl font-semibold">Good morning, John!</h1>
+    <div className="p-6 bg-slate-100 min-h-screen">
+      <h1 className="text-xl font-semibold mb-6">
+        Kanban Project Management Dashboard
+      </h1>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <StatCard
-              title="Total Projects"
-              value="0"
-              subtitle="Taskora projects"
-            />
-            <StatCard
-              title="Tasks Due Today 2"
-              value="5"
-              subtitle="Critical tasks to complete"
-            />
-            <StatCard
-              title="Irelevent"
-              value="15"
-              subtitle="Active members in your team"
-            />
-            <StatCard
-              title="Upcoming Milestones"
-              value="3"
-              subtitle="Key deadlines approaching"
-            />
-          </div>
-
-          {/* Projects */}
-          <section>
-            <h2 className="font-semibold mb-3">Your Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <ProjectCard
-                title="Taskora v2.0 Redesign"
-                progress={75}
-                date="2024-09-15"
-              />
-              <ProjectCard
-                title="Marketing Campaign Launch"
-                progress={40}
-                date="2024-10-01"
-              />
-              <ProjectCard
-                title="Backend API Optimization"
-                progress={90}
-                date="2024-08-30"
-              />
-              <ProjectCard
-                title="Mobile App Development"
-                progress={10}
-                date="2024-12-15"
-              />
-            </div>
-          </section>
-
-          {/* Bottom Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card title="Tasks by Status">
-              <div className="h-48 flex items-center justify-center text-gray-400">
-                Chart Placeholder
-              </div>
-            </Card>
-            <Card title="Open Tasks by Assignee">
-              <div className="space-y-3">
-                <ProgressBar value={2} />
-                <ProgressBar value={10} />
-                <ProgressBar value={15} />
-                <ProgressBar value={25} />
-              </div>
-            </Card>
-            <Card title="Current Sprint: Alpha v1.0">
-              <p className="text-sm text-gray-500">7 days remaining</p>
-              <div className="mt-3">
-                <ProgressBar value={23} />
-              </div>
-            </Card>
-          </div>
-
-          {/* Activity + Milestones */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card title="Recent Activity">
-              <ul className="space-y-3 text-sm text-gray-600">
-                <li>Completed &quot;Refactor Auth Module&quot;</li>
-                <li>Added comment on &quot;Homepage Design Draft&quot;</li>
-                <li>Created new project &quot;Mobile App Development&quot;</li>
-              </ul>
-            </Card>
-            <Card title="Upcoming Milestones">
-              <ul className="space-y-3 text-sm">
-                <li>Taskora v2.0 Release – Sep 15</li>
-                <li>Q3 Financial Report – Oct 01</li>
-                <li>Marketing Campaign Go‑Live – Oct 10</li>
-              </ul>
-            </Card>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-}
-
-/* ---------- Components ---------- */
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function StatCard({ title, value, subtitle }: any) {
-  return (
-    <div className="bg-white p-4 rounded-xl border">
-      <p className="text-sm text-gray-500">{title}</p>
-      <h3 className="text-2xl font-semibold mt-1">{value}</h3>
-      <p className="text-xs text-gray-400 mt-1">{subtitle}</p>
-    </div>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ProjectCard({ title, progress, date }: any) {
-  return (
-    <div className="bg-white p-4 rounded-xl border space-y-3">
-      <h3 className="font-medium">{title}</h3>
-      <div className="w-full bg-gray-200 h-2 rounded">
-        <div
-          className="bg-blue-500 h-2 rounded"
-          style={{ width: `${progress}%` }}
+      {/* Top Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <StatCard
+          title="Total Project"
+          actual="50"
+          planned="85"
+          percent={78}
+          color="green"
+        />
+        <StatCard
+          title="Total Revenue"
+          actual="£150,000"
+          planned="£200,000"
+          percent={75}
+          color="blue"
+        />
+        <StatCard
+          title="Total Cost"
+          actual="£40,000"
+          planned="£170,000"
+          percent={41}
+          color="yellow"
+        />
+        <StatCard
+          title="Total Margin"
+          actual="£13,000"
+          planned="£30,000"
+          percent={41}
+          color="purple"
         />
       </div>
-      <p className="text-xs text-gray-500">
-        {progress}% Completed • Due {date}
-      </p>
-    </div>
-  );
-}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Card({ title, children }: any) {
-  return (
-    <div className="bg-white p-4 rounded-xl border">
-      <h3 className="font-medium mb-3">{title}</h3>
-      {children}
-    </div>
-  );
-}
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SectionCard title="Project by Status">
+          <BarChart
+            labels={[
+              "In Progress",
+              "Completed",
+              "Planned",
+              "On Hold",
+              "Cancelled",
+            ]}
+            values={[16, 10, 6, 20, 5]}
+          />
+        </SectionCard>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ProgressBar({ value = 50 }: any) {
-  return (
-    <div className="w-full bg-gray-200 h-3 rounded">
-      <div className="bg-blue-500 h-3 rounded" style={{ width: `${value}%` }} />
+        <SectionCard title="Project by Due Date">
+          <DonutChart
+            data={[
+              { label: "On Time", value: 41, color: "green" },
+              { label: "Due", value: 11, color: "blue" },
+              { label: "Over Due", value: 10, color: "yellow" },
+            ]}
+          />
+        </SectionCard>
+
+        <SectionCard title="Workload">
+          <DonutChart
+            data={[
+              { label: "Underutilised", value: 13, color: "blue" },
+              { label: "Healthy", value: 85, color: "green" },
+              { label: "Overutilised", value: 3, color: "yellow" },
+            ]}
+          />
+        </SectionCard>
+
+        <SectionCard title="Project by Project Manager">
+          <BarChart
+            horizontal
+            labels={["James", "Sophia", "Sean", "Jim", "Lucy"]}
+            values={[32, 21, 16, 18, 10]}
+          />
+        </SectionCard>
+      </div>
     </div>
   );
 }
