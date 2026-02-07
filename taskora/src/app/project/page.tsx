@@ -31,7 +31,7 @@ function getBorderColorForTask(priority?: string) {
   if (!priority) return "border-gray-300";
   if (priority === "high") return "border-red-500";
   if (priority === "medium") return "border-yellow-500";
-  // default/low
+
   return "border-blue-500";
 }
 

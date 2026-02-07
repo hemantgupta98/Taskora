@@ -2,6 +2,7 @@ import StatCard from "../../components/layout/Startcard";
 import BarChart from "../../components/layout/barchart";
 import DonutChart from "../../components/layout/donutchart";
 import SectionCard from "../../components/layout/sectioncard";
+import { api } from "../../lib/socket";
 
 export default function DashboardPage() {
   return (
