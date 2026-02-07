@@ -15,9 +15,9 @@ import {
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Project Board", href: "/project", icon: KanbanSquare },
-  { name: "Sprint & Timeline", href: "", icon: Puzzle },
+  { name: "Sprint & Timeline", href: "/timeline", icon: Puzzle },
   { name: "Team", href: "/team", icon: Users },
-  { name: "Components Library", href: "", icon: BarChart3 },
+  { name: "Components Library", href: "/library", icon: BarChart3 },
 ];
 
 const downLink = [
