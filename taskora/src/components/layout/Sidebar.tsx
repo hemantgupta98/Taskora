@@ -12,6 +12,8 @@ import {
   HelpCircle,
   LogOut,
   CodeXml,
+  Rows4Icon,
+  BadgeQuestionMark,
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -20,6 +22,8 @@ const links = [
   { name: "Team", href: "/team", icon: Users },
   { name: "Backlog", href: "/backlog", icon: WorkflowIcon },
   { name: "Code", href: "/code", icon: CodeXml },
+  { name: "Plans", href: "/plan", icon: Rows4Icon },
+  { name: "Developer", href: "/developer", icon: BadgeQuestionMark },
 ];
 
 const downLink = [
