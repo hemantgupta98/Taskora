@@ -249,7 +249,6 @@ const PersonRow = ({ person }: { person: Person }) => {
   );
 };
 
-// -------------------- Page --------------------
 export default function SchedulePage() {
   return (
     <div className="h-screen w-full overflow-hidden">

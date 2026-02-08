@@ -1,23 +1,25 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import {
   LayoutDashboard,
   KanbanSquare,
-  Timer,
+  WorkflowIcon,
   Users,
-  BarChart3,
   Puzzle,
   Settings,
   HelpCircle,
   LogOut,
+  CodeXml,
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Project Board", href: "/project", icon: KanbanSquare },
   { name: "Sprint & Timeline", href: "/timeline", icon: Puzzle },
   { name: "Team", href: "/team", icon: Users },
-  { name: "Components Library", href: "/library", icon: BarChart3 },
+  { name: "Backlog", href: "/backlog", icon: WorkflowIcon },
+  { name: "Code", href: "/code", icon: CodeXml },
 ];
 
 const downLink = [
