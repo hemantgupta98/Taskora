@@ -19,12 +19,15 @@ type TaskItem = {
   dueDate: number;
   restrict?: string;
   attachment?: string;
+  delete?: boolean;
 };
 
 type Section = {
   admin: string;
   tasks: TaskItem[];
 };
+
+type Status = "todo" | "progress" | "done";
 
 // Maps task priority to a Tailwind border color class
 function getBorderColorForTask(priority?: string) {
@@ -34,6 +37,17 @@ function getBorderColorForTask(priority?: string) {
 
   return "border-blue-500";
 }
+const statusCode: { value: "todo" | "progress" | "done"; label: string }[] = [
+  { value: "todo", label: "TO DO" },
+  { value: "progress", label: "PROGRESS" },
+  { value: "done", label: "DONE" },
+];
+
+const statusStyles: Record<Status, string> = {
+  todo: "bg-red-100 text-red-700 border-red-200",
+  progress: "bg-blue-100 text-blue-700 border-blue-200",
+  done: "bg-green-100 text-green-700 border-green-200",
+};
 
 function groupByAdmin(list: TaskItem[]): Section[] {
   const map = new Map<string, TaskItem[]>();
@@ -52,6 +66,20 @@ export default function ProjectPage() {
   const [sectionsData, setSectionsData] = useState<Section[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedTask, setSelectedTask] = useState<any>(null);
+
+  const handleDeleteTask = async (id: string) => {
+    const confirmed = window.confirm("Are you sure you want to delete this?");
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/task/${id}`);
+      const updated = tasks.filter((t) => t._id !== id);
+      setTasks(updated);
+      setSectionsData(groupByAdmin(updated));
+    } catch (err) {
+      console.error("Failed to delete task", err);
+    }
+  };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -76,85 +104,121 @@ export default function ProjectPage() {
     <>
       <div className="min-h-screen bg-gray-100 flex">
         <main className="flex-1 p-6">
-          <div className="space-y-10">
-            {sectionsData.map((section) => (
-              <div key={section.admin}>
-                <h3 className="text-sm font-semibold text-gray-600 mb-2">
-                  {section.admin}
-                </h3>
+          {tasks.length === 0 ? (
+            <p>No tasks available.</p>
+          ) : (
+            <div className="space-y-10">
+              {sectionsData.map((section) => (
+                <div key={section.admin}>
+                  <h3 className="text-sm font-semibold text-gray-600 mb-2">
+                    {section.admin}
+                  </h3>
 
-                <div className="grid grid-cols-8 text-xs bg-gray-50 border rounded-t-md px-3 py-2">
-                  <span>Task Title</span>
-                  <span>Assignee</span>
-                  <span>Sub Status</span>
-                  <span>Labels</span>
-                  <span>Priority</span>
-                  <span>Start Date</span>
-                  <span>Due Date</span>
-                  <span>Delete</span>
-                </div>
+                  <div className="grid grid-cols-8 text-xs bg-gray-50 border rounded-t-md px-3 py-2">
+                    <span>Task Title</span>
+                    <span>Assignee</span>
+                    <span>Status</span>
+                    <span>Category</span>
+                    <span>Priority</span>
+                    <span>Start Date</span>
+                    <span>Due Date</span>
+                    <span>Delete</span>
+                  </div>
 
-                {/* Rows */}
-                <div className="border rounded-b-md divide-y bg-white">
-                  {section.tasks.length === 0 && (
-                    <div className="text-center py-4 text-blue-500 text-sm">
-                      Drop here
-                    </div>
-                  )}
-
-                  {section.tasks.map((task) => (
-                    <div
-                      key={task._id}
-                      className={`grid grid-cols-8 items-center px-3 py-3 text-sm border-l-4 ${getBorderColorForTask(task.priority)}`}
-                      onClick={() => {
-                        setSelectedTask({
-                          id: task._id,
-                          title: task.title,
-                          description: task.descripition,
-                          status: task.status,
-                        });
-                        setOpen(true);
-                      }}
-                    >
-                      <span className="font-medium text-gray-700">
-                        {task.title}
-                      </span>
-
-                      <div className="h-7 text-xs flex items-center justify-center">
-                        {task.assign}
+                  {/* Rows */}
+                  <div className="border rounded-b-md divide-y bg-white">
+                    {section.tasks.length === 0 && (
+                      <div className="text-center py-4 text-blue-500 text-sm">
+                        Drop here
                       </div>
+                    )}
 
-                      <span />
+                    {section.tasks.map((task) => (
+                      <div
+                        key={task._id}
+                        className={`grid grid-cols-8 items-center px-3 py-3 text-sm border-l-4 ${getBorderColorForTask(task.priority)}`}
+                        onClick={() => {
+                          setSelectedTask({
+                            id: task._id,
+                            title: task.title,
+                            description: task.descripition,
+                            status: task.status,
+                          });
+                          setOpen(true);
+                        }}
+                      >
+                        {/* Task Title */}
+                        <span className="font-medium text-gray-700">
+                          {task.title}
+                        </span>
 
-                      <span>{/* No labels in schema; left blank */}</span>
+                        {/* Assignee */}
+                        <span className="text-xs">{task.assign}</span>
 
-                      <span>
-                        {task.priority && (
-                          <Flag
-                            className={`h-4 w-4 ${
-                              task.priority === "high"
-                                ? "text-red-500"
-                                : task.priority === "medium"
-                                  ? "text-yellow-500"
-                                  : "text-blue-500"
-                            }`}
-                          />
-                        )}
-                      </span>
+                        {/* Status */}
+                        <span>
+                          {(() => {
+                            const statusClass =
+                              statusStyles[task.status as Status] ||
+                              "bg-gray-100 text-gray-700";
+                            return (
+                              <span
+                                className={`${statusClass} px-2 py-0.5 text-xs font-semibold rounded-md`}
+                              >
+                                {task.status}
+                              </span>
+                            );
+                          })()}
+                        </span>
 
-                      <span className="text-xs text-green-600">
-                        {formatMMDDYYYY(task.startDate)}
-                      </span>
-                      <span className="text-xs text-red-500">
-                        {formatMMDDYYYY(task.dueDate)}
-                      </span>
-                      <span />
-                    </div>
-                  ))}
+                        {/* Category */}
+                        <span className="text-xs">{task.category}</span>
+
+                        {/* Priority */}
+                        <span>
+                          {task.priority && (
+                            <Flag
+                              className={`h-4 w-4 ${
+                                task.priority === "high"
+                                  ? "text-red-500"
+                                  : task.priority === "medium"
+                                    ? "text-yellow-500"
+                                    : "text-blue-500"
+                              }`}
+                            />
+                          )}
+                        </span>
+
+                        {/* Start Date */}
+                        <span className="text-xs text-green-600">
+                          {formatMMDDYYYY(task.startDate)}
+                        </span>
+
+                        {/* Due Date */}
+                        <span className="text-xs text-red-500">
+                          {formatMMDDYYYY(task.dueDate)}
+                        </span>
+
+                        {/* Delete */}
+                        <span>
+                          <button
+                            type="button"
+                            className="text-red-500 hover:underline text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteTask(task._id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </main>
       </div>
 

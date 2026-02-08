@@ -3,7 +3,7 @@
 export default function ProjectShowcasePage() {
   return (
     <div className="min-h-screen bg-white px-6 py-12">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-5 max-w-4xl">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-3xl font-semibold text-gray-900">Taskora</h1>
