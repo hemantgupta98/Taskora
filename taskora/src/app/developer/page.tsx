@@ -1,10 +1,23 @@
 "use client";
 
+import { BackgroundGradient } from "../../ui/background";
+import Image from "next/image";
+
 export default function ProjectShowcasePage() {
   return (
     <div className="min-h-screen bg-white px-6 py-12">
       <div className="mx-5 max-w-4xl">
-        {/* Header */}
+        <div className="flex justify-center md:justify-end ">
+          <BackgroundGradient className="rounded-full ">
+            <Image
+              src="/developer.png"
+              alt="Hero Image"
+              width={400}
+              height={400}
+              className="rounded-full "
+            />
+          </BackgroundGradient>
+        </div>
         <div className="mb-10">
           <h1 className="text-3xl font-semibold text-gray-900">Taskora</h1>
           <p className="mt-2 max-w-2xl text-gray-600">
