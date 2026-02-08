@@ -5,22 +5,22 @@ import Image from "next/image";
 
 export default function ProjectShowcasePage() {
   return (
-    <div className="min-h-screen bg-white px-6 py-12">
+    <div id="top" className="min-h-screen  px-6 py-12 ">
       <div className="mx-5 max-w-4xl">
-        <div className="flex justify-center md:justify-end ">
-          <BackgroundGradient className="rounded-full ">
+        <div className="flex justify-center md:justify-center ">
+          <BackgroundGradient className=" rounded-full ">
             <Image
-              src="/developer.png"
+              src="/newOne.png"
               alt="Hero Image"
-              width={400}
-              height={400}
+              width={300}
+              height={200}
               className="rounded-full "
             />
           </BackgroundGradient>
         </div>
-        <div className="mb-10">
-          <h1 className="text-3xl font-semibold text-gray-900">Taskora</h1>
-          <p className="mt-2 max-w-2xl text-gray-600">
+        <div className="mb-10 mt-10">
+          <h1 className="text-5xl font-semibold text-gray-900 mb-5">Taskora</h1>
+          <p className="mt-2 max-w-2xl text-2xl text-gray-600">
             A modern project management platform inspired by Jira, built to
             plan, track, and manage work efficiently across teams and projects.
           </p>
@@ -28,10 +28,10 @@ export default function ProjectShowcasePage() {
 
         {/* Overview */}
         <section className="mb-10">
-          <h2 className="mb-3 text-xl font-semibold text-gray-900">
+          <h2 className="mb-3 text-2xl font-semibold text-gray-900">
             Project Overview
           </h2>
-          <p className="leading-relaxed text-gray-700">
+          <p className="leading-relaxed text-gray-700 text-2xl">
             Taskora is a full-stack project management application designed to
             simulate real-world SaaS workflows. The platform focuses on clean
             UI/UX, scalable architecture, and secure authentication, making it
@@ -45,7 +45,7 @@ export default function ProjectShowcasePage() {
           <h2 className="mb-3 text-xl font-semibold text-gray-900">
             Inspiration
           </h2>
-          <p className="leading-relaxed text-gray-700">
+          <p className="leading-relaxed text-gray-700 text-2xl">
             This project is inspired by Jira’s workflow-driven approach to
             project management. Taskora is built from scratch to deeply
             understand how large-scale task management platforms work, while
@@ -65,7 +65,7 @@ export default function ProjectShowcasePage() {
               <h3 className="mb-2 text-lg font-semibold text-gray-800">
                 Frontend
               </h3>
-              <ul className="space-y-1 text-gray-700">
+              <ul className="space-y-1 text-gray-700 text-2xl">
                 <li>• Next.js (React + TypeScript)</li>
                 <li>• Tailwind CSS</li>
                 <li>• Shadcn UI & Radix UI</li>
@@ -79,7 +79,7 @@ export default function ProjectShowcasePage() {
               <h3 className="mb-2 text-lg font-semibold text-gray-800">
                 Backend
               </h3>
-              <ul className="space-y-1 text-gray-700">
+              <ul className="space-y-1 text-gray-700 text-2xl">
                 <li>• Node.js & Express.js</li>
                 <li>• MongoDB & Mongoose</li>
                 <li>• JWT Authentication</li>
@@ -95,7 +95,7 @@ export default function ProjectShowcasePage() {
           <h2 className="mb-3 text-xl font-semibold text-gray-900">
             Development Approach
           </h2>
-          <p className="leading-relaxed text-gray-700">
+          <p className="leading-relaxed text-gray-700 text-2xl">
             Taskora is developed using a clean separation between frontend and
             backend responsibilities. APIs are REST-based, components are
             modular and reusable, and the overall structure follows
@@ -109,8 +109,9 @@ export default function ProjectShowcasePage() {
           <h2 className="mb-2 text-xl font-semibold text-gray-900">
             About the Developer
           </h2>
-          <p className="leading-relaxed text-gray-700">
-            Hi, I’m <span className="font-medium">Hemant Gupta</span>, a
+          <p className="leading-relaxed text-gray-700 text-2xl">
+            Hi, I’m{" "}
+            <span className="font-medium text-red-300">Hemant Gupta</span>, a
             full-stack developer focused on building real-world, scalable
             applications. Taskora reflects my approach to development—clean
             code, thoughtful architecture, and user interfaces that feel
