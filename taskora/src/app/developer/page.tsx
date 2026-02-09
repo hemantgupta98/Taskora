@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { BackgroundGradient } from "../../ui/background";
+import { BackgroundGradient } from "../../components/UI/background";
 import Image from "next/image";
 
 export default function ProjectShowcasePage() {
