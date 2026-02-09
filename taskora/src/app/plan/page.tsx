@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
+import { da, id } from "date-fns/locale";
 
 type Data = {
   name: string;
@@ -38,8 +39,35 @@ export default function CreatePlanPage() {
 
   const onSubmit: SubmitHandler<Data> = async (data) => {
     console.log(data);
-    reset();
-    toast.success("Plans created");
+
+    try {
+      const url = "http://localhost:5000/api/plans/createplans";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+      let result;
+      const contentType = res.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
+        result = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || "Invalid server response");
+      }
+
+      if (!res.ok) {
+        toast.error(result.message || "Plans failed");
+        return reset();
+      }
+      reset();
+      toast.success("Plans created");
+    } catch (error) {
+      console.log("Error in Api", error);
+      toast.warning("server error please try again later");
+    }
   };
 
   return (

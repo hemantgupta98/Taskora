@@ -19,6 +19,5 @@ export const createPlans = async (req, res) => {
     return res.status(200).json({ success: true, data: plans });
   } catch (error) {
     console.log("Error in creating plans", error.message);
-    alert("Error in creating plans");
   }
 };
