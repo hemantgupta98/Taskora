@@ -1,6 +1,5 @@
 import task from "./task.model.js";
 
-// Allowed fields based on the Mongoose schema
 const allowedFields = [
   "admin",
   "title",
