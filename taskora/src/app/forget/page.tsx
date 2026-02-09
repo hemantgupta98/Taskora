@@ -10,7 +10,7 @@ import {
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "../../components/ui/otp";
+} from "../../UI/otp";
 import { useState, useEffect } from "react";
 
 type Input = {
