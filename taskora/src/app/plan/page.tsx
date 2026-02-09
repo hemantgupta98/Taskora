@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ChevronDown, Search, Plus } from "lucide-react";
 
 export default function CreatePlanPage() {
@@ -15,10 +16,8 @@ export default function CreatePlanPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-blue-600 text-white font-bold">
-              J
-            </div>
-            <span className="text-xl font-semibold">Jira</span>
+            <Image src="/logo.png" alt="logo" height={50} width={50} />
+            <span className="text-xl font-semibold">Taskora</span>
           </div>
 
           <h1 className="mb-2 text-2xl font-semibold text-gray-900">
