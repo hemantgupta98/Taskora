@@ -6,6 +6,14 @@ import { Plus } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { forwardRef } from "react";
+import { Calendar } from "../../components/ui/calendar";
+import { Button } from "../../components/ui/button";
+import { ChevronDownIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -13,16 +21,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { da, id } from "date-fns/locale";
+import { format } from "date-fns";
 
 type Data = {
+  startDate: number;
+  dueDate: number;
   name: string;
   access: string;
   work: string;
-  project: string;
+  board: string;
 };
 
 export default function CreatePlanPage() {
+  const [startDate, setStartDate] = useState<Date>();
+  const [dueDate, setDueDate] = useState<Date>();
   const [mode, setMode] = useState<"createplans" | "viewplans">("createplans");
   const {
     register,
@@ -30,6 +42,7 @@ export default function CreatePlanPage() {
     reset,
     formState: { errors },
     control,
+    setValue,
   } = useForm<Data>({
     defaultValues: {
       access: "select",
@@ -39,6 +52,10 @@ export default function CreatePlanPage() {
 
   const onSubmit: SubmitHandler<Data> = async (data) => {
     console.log(data);
+    if (!data.startDate || !data.dueDate) {
+      toast.error("Start date and Due date are required");
+      return;
+    }
 
     try {
       const url = "http://localhost:5000/api/plans/createplans";
@@ -65,6 +82,7 @@ export default function CreatePlanPage() {
       reset();
       toast.success("Plans created");
     } catch (error) {
+      reset();
       console.log("Error in Api", error);
       toast.warning("server error please try again later");
     }
@@ -169,7 +187,71 @@ export default function CreatePlanPage() {
                   )}
                 </div>
               </div>
+              <div className=" grid space-y-1">
+                <label className="text-md font-medium text-gray-700">
+                  Start date
+                </label>
+                <Popover>
+                  <PopoverTrigger asChild className="w-full md:w-[320px]">
+                    <Button
+                      variant="outline"
+                      data-empty={!startDate}
+                      className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                    >
+                      {startDate ? (
+                        format(startDate, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={(d) => {
+                        setStartDate(d ?? undefined);
+                        if (d) setValue("startDate", d.getTime());
+                      }}
+                      defaultMonth={startDate}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
+              <div className=" grid space-y-1 mt-5 mb-5">
+                <label className="text-md font-medium text-gray-700">
+                  Complete date
+                </label>
+                <Popover>
+                  <PopoverTrigger asChild className="w-full md:w-[320px]">
+                    <Button
+                      variant="outline"
+                      data-empty={!dueDate}
+                      className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                    >
+                      {dueDate ? (
+                        format(dueDate, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dueDate}
+                      onSelect={(d) => {
+                        setDueDate(d ?? undefined);
+                        if (d) setValue("dueDate", d.getTime());
+                      }}
+                      defaultMonth={dueDate}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
               {/* Add work */}
               <div className="mb-10">
                 <h2 className="mb-1 text-lg font-semibold text-gray-900">
@@ -222,16 +304,16 @@ export default function CreatePlanPage() {
                   {/* Board name */}
                   <div className=" relative flex-row">
                     <Input
-                      {...register("project", {
+                      {...register("board", {
                         required: "Enter board name",
                       })}
                       placeholder="Enter board name"
                       className="w-full rounded border border-gray-300 px-3 py-2 pr-9 text-sm focus:border-blue-600 focus:outline-none"
                     />
 
-                    {errors.project && (
+                    {errors.board && (
                       <p className=" text-sm text-red-500 mt-2 ml-2">
-                        {errors.project.message}
+                        {errors.board.message}
                       </p>
                     )}
                   </div>
@@ -271,7 +353,7 @@ export default function CreatePlanPage() {
 const Input = forwardRef<HTMLInputElement, any>(({ icon, ...props }, ref) => (
   <div className="flex items-center gap-3 border rounded-lg px-4 py-3">
     <span className="text-gray-400">{icon}</span>
-    <input ref={ref} {...props} className="w-full outline-none text-sm" />
+    <Input ref={ref} {...props} className="w-full outline-none text-sm" />
   </div>
 ));
 

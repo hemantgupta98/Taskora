@@ -5,7 +5,7 @@ const allowedFields = [
   "access",
   "work",
   "startDate",
-  "duedate",
+  "dueDate",
   "board",
 ];
 
@@ -13,7 +13,7 @@ export const createPlans = async (req, res) => {
   try {
     const data = {};
     for (const key of allowedFields) {
-      if ((req.body[key] = !undefined)) data[key] = req.body[key];
+      if (req.body[key] !== undefined) data[key] = req.body[key];
     }
     const plans = await planModel.create(data);
     return res.status(200).json({ success: true, data: plans });
