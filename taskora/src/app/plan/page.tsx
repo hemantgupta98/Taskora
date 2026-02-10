@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Plus } from "lucide-react";
 import { Toaster, toast } from "sonner";
@@ -9,6 +9,7 @@ import { forwardRef } from "react";
 import { Calendar } from "../../components/ui/calendar";
 import { Button } from "../../components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
+import { api } from "../../lib/socket";
 import {
   Popover,
   PopoverContent,
@@ -24,6 +25,7 @@ import {
 import { format } from "date-fns";
 
 type Data = {
+  _id: string;
   startDate: number;
   dueDate: number;
   name: string;
@@ -34,7 +36,9 @@ type Data = {
 
 export default function CreatePlanPage() {
   const [startDate, setStartDate] = useState<Date>();
+  const [loading, setLoading] = useState(true);
   const [dueDate, setDueDate] = useState<Date>();
+  const [plans, setPlans] = useState<Data[]>([]);
   const [mode, setMode] = useState<"createplans" | "viewplans">("createplans");
   const {
     register,
@@ -87,6 +91,23 @@ export default function CreatePlanPage() {
       toast.warning("server error please try again later");
     }
   };
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await api.get("/plans");
+        const list: Data[] = res.data.data;
+        setPlans(list);
+      } catch (err) {
+        console.error("Failed to fetch plans", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
@@ -342,7 +363,61 @@ export default function CreatePlanPage() {
           </div>
         )}
         <div className="mx-auto  p-5 max-w-3xl rounded-xl shadow-2xl">
-          {mode === "viewplans" && <p>view it</p>}
+          {mode === "viewplans" && (
+            <div className="grid gap-4">
+              {plans.length === 0 ? (
+                <p className="text-gray-500 text-center">No plans found</p>
+              ) : (
+                plans.map((plan) => (
+                  <div
+                    key={plan._id}
+                    className="rounded-lg border bg-white p-4 shadow-md"
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <h2 className="text-lg font-semibold text-gray-800">
+                        {plan.name}
+                      </h2>
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full ${
+                          plan.access === "public"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {plan.access}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+                      <p>
+                        <span className="font-medium text-gray-800">Work:</span>{" "}
+                        {plan.work}
+                      </p>
+
+                      <p>
+                        <span className="font-medium text-gray-800">
+                          Board:
+                        </span>{" "}
+                        {plan.board}
+                      </p>
+
+                      <p>
+                        <span className="font-medium text-gray-800">
+                          Start:
+                        </span>{" "}
+                        {new Date(plan.startDate).toLocaleDateString()}
+                      </p>
+
+                      <p>
+                        <span className="font-medium text-gray-800">Due:</span>{" "}
+                        {new Date(plan.dueDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -358,3 +433,6 @@ const Input = forwardRef<HTMLInputElement, any>(({ icon, ...props }, ref) => (
 ));
 
 Input.displayName = "Input";
+function setPlans(list: Data[]) {
+  throw new Error("Function not implemented.");
+}
