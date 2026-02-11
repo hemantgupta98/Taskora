@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { comparePassword, hashpassword } from "./auth.hashed.js";
-import { LoginHistory, ResetPassword } from "./auth.model.js";
+import { LoginHistory } from "./auth.model.js";
 import {
   createUser,
   findUserByEmail,
