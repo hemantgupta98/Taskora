@@ -25,6 +25,7 @@ import {
 import { format } from "date-fns";
 
 type Data = {
+  admin: string;
   _id: string;
   startDate: number;
   dueDate: number;
@@ -34,11 +35,28 @@ type Data = {
   board: string;
 };
 
+type Section = {
+  admin: string;
+  tasks: Data[];
+};
+
+function groupByAdmin(list: Data[]) {
+  const map = new Map<string, Data[]>();
+  for (const t of list) {
+    const key = t._id || "Unassigned";
+    const arr = map.get(key) || [];
+    arr.push(t);
+    map.set(key, arr);
+  }
+  return Array.from(map.entries()).map(([admin, tasks]) => ({ admin, tasks }));
+}
+
 export default function CreatePlanPage() {
   const [startDate, setStartDate] = useState<Date>();
-  const [loading, setLoading] = useState(true);
+  const [, setSectionsData] = useState<Section[]>([]);
   const [dueDate, setDueDate] = useState<Date>();
   const [plans, setPlans] = useState<Data[]>([]);
+  const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<"createplans" | "viewplans">("createplans");
   const {
     register,
@@ -91,12 +109,28 @@ export default function CreatePlanPage() {
       toast.warning("server error please try again later");
     }
   };
+
+  const handleDeleteTask = async (id: string) => {
+    const confirmed = window.confirm("Are you sure you want to delete this?");
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/plans/${id}`);
+      const updated = plans.filter((t) => t._id !== id);
+      setPlans(updated);
+      setSectionsData(groupByAdmin(updated));
+    } catch (err) {
+      console.error("Failed to delete plans", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchPlans = async () => {
       try {
         const res = await api.get("/plans");
         const list: Data[] = res.data.data;
         setPlans(list);
+        setSectionsData(groupByAdmin(list));
       } catch (err) {
         console.error("Failed to fetch plans", err);
       } finally {
@@ -104,7 +138,7 @@ export default function CreatePlanPage() {
       }
     };
 
-    fetchTasks();
+    fetchPlans();
   }, []);
 
   if (loading) return <p>Loading...</p>;
@@ -425,14 +459,17 @@ export default function CreatePlanPage() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Input = forwardRef<HTMLInputElement, any>(({ icon, ...props }, ref) => (
-  <div className="flex items-center gap-3 border rounded-lg px-4 py-3">
-    <span className="text-gray-400">{icon}</span>
-    <Input ref={ref} {...props} className="w-full outline-none text-sm" />
-  </div>
-));
+const Input = forwardRef<HTMLInputElement, any>(
+  ({ icon, className = "", ...props }, ref) => (
+    <div className="flex items-center gap-3 border rounded-lg px-4 py-2">
+      {icon && <span className="text-gray-400">{icon}</span>}
+      <input
+        ref={ref}
+        {...props}
+        className={`w-full outline-none text-sm ${className}`}
+      />
+    </div>
+  ),
+);
 
 Input.displayName = "Input";
-function setPlans(list: Data[]) {
-  throw new Error("Function not implemented.");
-}
