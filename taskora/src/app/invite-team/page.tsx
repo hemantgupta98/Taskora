@@ -1,9 +1,5 @@
 "use client";
 
-// COMPLETE Invite Team Members modal UI
-// Stack: Next.js App Router + React + TypeScript + TailwindCSS
-// Place this file anywhere, e.g. components/InviteTeamModal.tsx
-
 import { X, Send, Copy } from "lucide-react";
 import { useState } from "react";
 
