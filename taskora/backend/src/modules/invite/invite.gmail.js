@@ -15,15 +15,55 @@ export const sendLink = async (email, link) => {
     const mailOption = {
       from: `"Taskora" <${process.env.EMAIL_APP_USER}>`,
       to: email,
-      subject: "Password Reset OTP",
-      text: `Your One-Time Password (OTP) is ${link}`,
+      subject: "You're Invited to Join the Team",
+      text: `You have been invited to join a team on Taskora. Use the link below to accept the invitation: ${link}`,
       html: `
-        <h2>We received a request to reset your password.</h2>
-        <p>Your 4-digit OTP is:</p>
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+
+       
+      <h2>You're Invited to Join Taskora</h2>
+
+      <p>Hello,</p>
+
+      <p>
+        You have been invited to join a team on <strong>Taskora</strong>.
+        Click the button below to accept your invitation and get started.
+      </p>
+
+      <p style="margin: 24px 0;">
+        <a 
+          href="${link}" 
+          style="
+            background-color: #4f46e5;
+            color: #ffffff;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+          "
+        >
+          Accept Team Invitation
+        </a>
+      </p>
+
+      <p>
+        If the button does not work, copy and paste the following link into your browser:
+      </p>
+
+      <p>
         <a href="${link}">${link}</a>
-        <p>This OTP is valid for the next 2 minutes</p>
-        <p>Please do not share this code with anyone.</p>
-        <h3>Taskora</h3>
+      </p>
+
+      <p style="margin-top: 24px;">
+        If you were not expecting this invitation, you can safely ignore this email.
+      </p>
+
+      <p>
+        Best regards,<br />
+        <strong>Taskora Team</strong>
+      </p>
+    </div>
       `,
     };
 
