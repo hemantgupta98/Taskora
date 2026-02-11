@@ -57,18 +57,18 @@ const people: Person[] = [
 ];
 
 const days = [
-  "25 Mon",
-  "26 Tue",
-  "27 Wed",
-  "28 Thu",
-  "29 Fri",
-  "30 Sat",
-  "31 Sun",
-  "1 Mon",
-  "2 Tue",
-  "3 Wed",
-  "4 Thu",
-  "5 Fri",
+  "JANUARY",
+  "FEBRUARY",
+  "MARCH",
+  "APRIL",
+  "MAY",
+  "JUNE",
+  "JULY",
+  "AUGUST",
+  "SEPTEMBER",
+  "OCTOBER",
+  "NOVEMBER",
+  "DECEMBER",
 ];
 
 const tasks: Task[] = [
@@ -175,9 +175,6 @@ const TopBar = () => (
       className="w-72 rounded-md px-3 py-1.5 text-sm text-black outline-none"
     />
     <div className="flex items-center gap-3">
-      <button className="flex items-center gap-1 rounded-md bg-emerald-400 px-3 py-1.5 text-sm font-medium text-white">
-        <Plus size={16} /> Task
-      </button>
       <nav className="hidden md:flex gap-5 text-sm font-semibold">
         <span>SCHEDULE</span>
         <span>LOG TIME</span>
@@ -185,7 +182,6 @@ const TopBar = () => (
         <span>PROJECTS</span>
         <span>REPORTS</span>
       </nav>
-      <Bell size={18} />
       <HelpCircle size={18} />
       {/**  <img
         className="h-8 w-8 rounded-full"

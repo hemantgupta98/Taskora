@@ -8,7 +8,7 @@ export default function InviteTeamModal() {
   const [emails, setEmails] = useState("");
   const [open, setOpen] = useState(true);
 
-  const teamLink = "https://taskora.com/join/team-abc-123";
+  const teamLink = "http://taskora.com/join/team-abc-123";
 
   const copyToClipboard = async (text: string) => {
     try {
