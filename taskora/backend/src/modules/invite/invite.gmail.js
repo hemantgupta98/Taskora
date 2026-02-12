@@ -18,7 +18,7 @@ export const sendLink = async (email, link) => {
       subject: "You're Invited to Join the Team",
       text: `You have been invited to join a team on Taskora. Use the link below to accept the invitation: ${link}`,
       html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; ;">
 
        
       <h2>You're Invited to Join Taskora</h2>

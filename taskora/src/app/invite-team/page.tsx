@@ -2,6 +2,7 @@
 
 import { X, Send, Copy } from "lucide-react";
 import { useState } from "react";
+import { toast, Toaster } from "sonner";
 
 export default function InviteTeamModal() {
   const [role, setRole] = useState("Viewer");
@@ -20,8 +21,40 @@ export default function InviteTeamModal() {
   };
   if (!open) return null;
 
+  const sendInvites = async () => {
+    if (!emails.trim()) {
+      toast.warning("Please enter at least one email");
+      return;
+    }
+
+    const emailList = emails
+      .split(",")
+      .map((email) => email.trim())
+      .filter(Boolean);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/invite/check", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emails: emailList,
+        }),
+      });
+      const data = res.json
+
+      toast.success("Invites sent successfully ✅");
+      setEmails("");
+    } catch (error) {
+      console.error(error);
+      toast.warning("Something went wrong ❌");
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <Toaster richColors position="top-center" />
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-start justify-between p-6 border-b">
@@ -67,7 +100,10 @@ export default function InviteTeamModal() {
                 Separate multiple emails with commas.
               </p>
             </div>
-            <button className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white py-2.5 rounded-lg text-sm font-medium">
+            <button
+              onClick={sendInvites}
+              className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white py-2.5 rounded-lg text-sm font-medium"
+            >
               <Send size={16} /> Send Invites
             </button>
           </div>

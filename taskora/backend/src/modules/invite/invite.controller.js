@@ -26,7 +26,7 @@ export const user = async (req, res) => {
 
 export const check = async (req, res) => {
   const { email } = req.body;
-  const link = "http://taskora.com/join/team-abc-123";
+  const link = "http://localhost:3000/auth";
   try {
     const sent = await sendLink(email, link);
     if (sent) {
