@@ -436,7 +436,7 @@ export default function CreateTaskPage() {
                     accept="image/*"
                     className="hidden"
                     label=""
-                    {...register("attachment", { required: true })}
+                    {...register("attachment", { required: false })}
                   />
                 </label>
               </div>
