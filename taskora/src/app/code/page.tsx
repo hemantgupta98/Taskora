@@ -37,7 +37,7 @@ const contacts: Contact[] = [
     email: "masaopeter586@freenet.info",
     createdAt: "Jun 3, 2021",
     type: "Customer",
-    status: "New",
+    status: "Active",
   },
 ];
 
