@@ -22,7 +22,7 @@ export default function InviteTeamModal() {
   const [open, setOpen] = useState(true);
   const { register, reset, handleSubmit, control } = useForm<Invite>({
     defaultValues: {
-      role: "viewer",
+      role: "select",
     },
   });
 
@@ -39,9 +39,6 @@ export default function InviteTeamModal() {
   if (!open) return null;
 
   const onsubmit: SubmitHandler<Invite> = async (data) => {
-    if (!data.email || !data.role)
-      return toast.warning("Enter your email and role");
-
     try {
       const res = await fetch("http://localhost:5000/api/invite/check", {
         method: "POST",
@@ -105,6 +102,7 @@ export default function InviteTeamModal() {
                       <SelectValue placeholder="Select Roles" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="viewer">Viewer</SelectItem>
                       <SelectItem value="editor">Editor</SelectItem>
                       <SelectItem value="management">Management</SelectItem>
