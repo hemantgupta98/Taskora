@@ -5,11 +5,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const user = async (req, res) => {
-  const { name, email } = req.body;
+  const { role, email } = req.body;
 
   try {
     const savedUser = await inviteModel.create({
-      name,
+      role,
       email,
     });
     res.status(201).json({

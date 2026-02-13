@@ -26,11 +26,7 @@ export default function InviteTeamModal() {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<Invite>({
-    defaultValues: {
-      role: "select",
-    },
-  });
+  } = useForm<Invite>();
 
   const teamLink = "http://taskora.com/join/team-abc-123";
 
@@ -105,10 +101,12 @@ export default function InviteTeamModal() {
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="w-full md:w-[320px]">
-                      <SelectValue placeholder="Select Roles" />
+                      <SelectValue
+                        defaultValue="select"
+                        placeholder="Select Roles"
+                      />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="viewer">Viewer</SelectItem>
                       <SelectItem value="editor">Editor</SelectItem>
                       <SelectItem value="management">Management</SelectItem>
