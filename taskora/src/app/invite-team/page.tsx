@@ -20,7 +20,13 @@ type Invite = {
 
 export default function InviteTeamModal() {
   const [open, setOpen] = useState(true);
-  const { register, reset, handleSubmit, control } = useForm<Invite>({
+  const {
+    register,
+    reset,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<Invite>({
     defaultValues: {
       role: "select",
     },
@@ -95,7 +101,7 @@ export default function InviteTeamModal() {
               <Controller
                 name="role"
                 control={control}
-                rules={{ required: true }}
+                rules={{ required: "Role is required" }}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="w-full md:w-[320px]">
@@ -110,6 +116,11 @@ export default function InviteTeamModal() {
                   </Select>
                 )}
               />
+              {errors.role && (
+                <p className="text-red-500 text-sm mt-1 ml-1">
+                  {errors.role.message}
+                </p>
+              )}
             </div>
 
             {/* Invite by Email */}
@@ -117,11 +128,16 @@ export default function InviteTeamModal() {
               <h3 className="font-medium">Invite by Email</h3>
               <div className="space-y-1">
                 <Input
-                  {...register("email", { required: true })}
+                  {...register("email", { required: "Gmail is required" })}
                   placeholder="e.g. jane.doe@example.com, john.smith@example.com"
                   className="w-full border rounded-lg px-3 py-2 text-sm"
                   label={"Email Addresses"}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1 ml-1">
+                    {errors.email.message}
+                  </p>
+                )}
                 <p className="text-xs text-gray-500">
                   Separate multiple emails with commas.
                 </p>
