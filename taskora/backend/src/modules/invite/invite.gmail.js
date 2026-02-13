@@ -68,10 +68,10 @@ export const sendLink = async (email, link) => {
     };
 
     const info = await transporter.sendMail(mailOption);
-    console.log("OTP sent successfully: otp chal gya", info.messageId);
+    console.log("OTP sent successfully: Link chal gya", info.messageId);
     return true;
   } catch (error) {
-    console.log("Error in sending OTP: otp nhi gya", error.message);
+    console.log("Error in sending OTP: Link nhi gya", error.message);
     return false;
   }
 };

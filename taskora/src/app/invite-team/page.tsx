@@ -3,11 +3,28 @@
 import { X, Send, Copy } from "lucide-react";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";
+import Input from "../../components/ui/input";
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+
+type Invite = {
+  email: string;
+  role: string;
+};
 
 export default function InviteTeamModal() {
-  const [role, setRole] = useState("Viewer");
-  const [emails, setEmails] = useState("");
   const [open, setOpen] = useState(true);
+  const { register, reset, handleSubmit, control } = useForm<Invite>({
+    defaultValues: {
+      role: "viewer",
+    },
+  });
 
   const teamLink = "http://taskora.com/join/team-abc-123";
 
@@ -21,16 +38,9 @@ export default function InviteTeamModal() {
   };
   if (!open) return null;
 
-  const sendInvites = async () => {
-    if (!emails.trim()) {
-      toast.warning("Please enter at least one email");
-      return;
-    }
-
-    const emailList = emails
-      .split(",")
-      .map((email) => email.trim())
-      .filter(Boolean);
+  const onsubmit: SubmitHandler<Invite> = async (data) => {
+    if (!data.email || !data.role)
+      return toast.warning("Enter your email and role");
 
     try {
       const res = await fetch("http://localhost:5000/api/invite/check", {
@@ -38,14 +48,24 @@ export default function InviteTeamModal() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          emails: emailList,
-        }),
+        body: JSON.stringify(data),
       });
-      const data = res.json
+
+      let result;
+      const contentType = res.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
+        result = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || "Invalid server response");
+      }
+      if (!res.ok) {
+        toast.error(result.message || "Failed to connect");
+      }
 
       toast.success("Invites sent successfully ✅");
-      setEmails("");
+      reset();
     } catch (error) {
       console.error(error);
       toast.warning("Something went wrong ❌");
@@ -72,41 +92,50 @@ export default function InviteTeamModal() {
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Role */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Select Role</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option>Viewer</option>
-              <option>Editor</option>
-              <option>Admin</option>
-            </select>
-          </div>
-
-          {/* Invite by Email */}
-          <div className="border rounded-xl p-4 space-y-3">
-            <h3 className="font-medium">Invite by Email</h3>
-            <div className="space-y-1">
-              <label className="text-sm">Email Addresses</label>
-              <input
-                value={emails}
-                onChange={(e) => setEmails(e.target.value)}
-                placeholder="e.g. jane.doe@example.com, john.smith@example.com"
-                className="w-full border rounded-lg px-3 py-2 text-sm"
+          <form onSubmit={handleSubmit(onsubmit)}>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Select Role</label>
+              <Controller
+                name="role"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full md:w-[320px]">
+                      <SelectValue placeholder="Select Roles" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="viewer">Viewer</SelectItem>
+                      <SelectItem value="editor">Editor</SelectItem>
+                      <SelectItem value="management">Management</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               />
-              <p className="text-xs text-gray-500">
-                Separate multiple emails with commas.
-              </p>
             </div>
-            <button
-              onClick={sendInvites}
-              className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white py-2.5 rounded-lg text-sm font-medium"
-            >
-              <Send size={16} /> Send Invites
-            </button>
-          </div>
+
+            {/* Invite by Email */}
+            <div className="border rounded-xl p-4 space-y-3">
+              <h3 className="font-medium">Invite by Email</h3>
+              <div className="space-y-1">
+                <Input
+                  {...register("email", { required: true })}
+                  placeholder="e.g. jane.doe@example.com, john.smith@example.com"
+                  className="w-full border rounded-lg px-3 py-2 text-sm"
+                  label={"Email Addresses"}
+                />
+                <p className="text-xs text-gray-500">
+                  Separate multiple emails with commas.
+                </p>
+              </div>
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white py-2.5 rounded-lg text-sm font-medium"
+              >
+                <Send size={16} /> Send Invites
+              </button>
+            </div>
+          </form>
 
           {/* Shareable Link */}
           <div className="border rounded-xl p-4 space-y-3">
