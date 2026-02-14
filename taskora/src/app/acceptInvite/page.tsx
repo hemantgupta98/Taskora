@@ -4,11 +4,14 @@ import { useState } from "react";
 import Image from "next/image";
 import Input from "@/src/components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { Toaster, toast } from "sonner";
 
 type Accept = {
   name: string;
   phone: number;
+  email: string;
   password: string;
+  confirmpassword: string;
 };
 
 export default function AcceptInvite() {
@@ -27,8 +30,45 @@ export default function AcceptInvite() {
   };
 
   const onSubmit: SubmitHandler<Accept> = async (data) => {
+    const { password, confirmpassword } = data;
+
+    if (password !== confirmpassword) {
+      toast.error("Password does not match");
+      return;
+    }
     console.log(data);
-    reset();
+    try {
+      const url = "http://localhost:5000/api/accept/acceptinvite";
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+
+      let result;
+      const contentType = res.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
+        result = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || "Invalid server response");
+      }
+
+      if (!res.ok) {
+        toast.error(result.message || "Authentication failed");
+        return reset();
+      }
+
+      toast.success("Account create successfully");
+
+      reset();
+    } catch (error) {
+      console.error("AUTH ERROR 👉", error);
+      toast.error("Server error. Please try again.");
+    }
   };
 
   return (
@@ -41,6 +81,7 @@ export default function AcceptInvite() {
             You’re invited to join <b>Team Alpha</b> as <b>Editor</b>
           </p>
         </div>
+        <Toaster position="top-center" richColors />
 
         {/* Profile Image */}
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -99,6 +140,20 @@ export default function AcceptInvite() {
                 {errors.phone.message}
               </p>
             )}
+            <Input
+              type="email"
+              placeholder="Email ID"
+              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              label=""
+              {...register("email", {
+                required: "Email is required is required",
+              })}
+            />
+            {errors.email && (
+              <p className=" text-sm text-red-500 mt-2 ml-2">
+                {errors.email.message}
+              </p>
+            )}
 
             <Input
               type="password"
@@ -118,12 +173,10 @@ export default function AcceptInvite() {
               placeholder="Confirm Password"
               className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               label=""
+              {...register("confirmpassword", {
+                required: "Password does not match",
+              })}
             />
-            {errors.name && (
-              <p className=" text-sm text-red-500 mt-2 ml-2">
-                {errors.name.message}
-              </p>
-            )}
 
             <button
               type="submit"

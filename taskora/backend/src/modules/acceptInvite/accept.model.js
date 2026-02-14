@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { hashpassword } from "../auth/auth.hashed.js";
-import { type } from "os";
 
 const acceptSchema = new mongoose.Schema(
   {
