@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { hashpassword } from "../auth/auth.hashed.js";
+import { type } from "os";
 
 const acceptSchema = new mongoose.Schema(
   {
@@ -9,7 +10,10 @@ const acceptSchema = new mongoose.Schema(
       required: true,
       match: [/^[0-9]{10,15}$/, "Invalid phone number"],
     },
+    email: { type: String, required: true },
     password: { type: String, required: true },
+
+    confirmPassword: { type: String, required: true },
   },
   { timeseries: true },
 );

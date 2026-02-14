@@ -1,14 +1,20 @@
-import { measureMemory } from "vm";
-import acceptModel from "./accept.model.js";
+import { findUserByEmail, User } from "./accept.service.js";
 
 export const accept = async (req, res) => {
-  const { name, phone, password } = req.body;
+  const { name, phone, email, password, confirmpassword } = req.body;
 
   try {
-    const savedUser = await acceptModel.create({
+    const userExist = await findUserByEmail(email);
+    if (userExist) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+
+    const savedUser = await User({
       name,
       phone,
+      email,
       password,
+      confirmpassword,
     });
     res.status(201).json({
       success: true,
