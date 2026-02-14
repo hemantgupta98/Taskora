@@ -2,6 +2,7 @@
 
 import { UserPlus, SlidersHorizontal, Mail, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const teamMembers = [
   {
@@ -11,38 +12,6 @@ const teamMembers = [
     phone: "+1 555-123-4567",
     avatar: "https://i.pravatar.cc/100?img=1",
     status: "online",
-  },
-  {
-    name: "Bob Williams",
-    role: "Software Engineer",
-    email: "bob.w@taskora.com",
-    phone: "+1 555-987-6543",
-    avatar: "https://i.pravatar.cc/100?img=2",
-    status: "away",
-  },
-  {
-    name: "Charlie Brown",
-    role: "UX Designer",
-    email: "charlie.b@taskora.com",
-    phone: "+1 555-111-2222",
-    avatar: "https://i.pravatar.cc/100?img=3",
-    status: "offline",
-  },
-  {
-    name: "Diana Prince",
-    role: "Quality Assurance",
-    email: "diana.p@taskora.com",
-    phone: "+1 555-333-4444",
-    avatar: "https://i.pravatar.cc/100?img=4",
-    status: "online",
-  },
-  {
-    name: "Eve Adams",
-    role: "Scrum Master",
-    email: "eve.a@taskora.com",
-    phone: "+1 555-555-6666",
-    avatar: "https://i.pravatar.cc/100?img=5",
-    status: "busy",
   },
 ];
 
@@ -60,11 +29,11 @@ export default function TeamManagementPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => router.push("/invite-team")}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+                className="flex items-center cursor-pointer gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
               >
                 <UserPlus size={16} /> Invite Member
               </button>
-              <button className="flex items-center gap-2 border px-4 py-2 rounded-lg text-sm">
+              <button className="flex items-center gap-2 border px-4 py-2 rounded-lg text-sm cursor-pointer">
                 <SlidersHorizontal size={16} /> Bulk Assign Role
               </button>
             </div>
@@ -82,29 +51,19 @@ export default function TeamManagementPage() {
   );
 }
 
-/* ---------- Components ---------- */
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function SidebarItem({ icon, label, active }: any) {
-  return (
-    <div
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-sm ${
-        active ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-100"
-      }`}
-    >
-      {icon}
-      {label}
-    </div>
-  );
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function MemberCard({ member }: any) {
   return (
     <div className="bg-white border rounded-2xl p-5 space-y-4">
       <div className="flex items-center gap-3">
         <div className="relative">
-          <img src={member.avatar} className="w-12 h-12 rounded-full" />
+          <Image
+            src="/logo.png"
+            alt="card"
+            height={50}
+            width={50}
+            className=" rounded-full"
+          />
           <span
             className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
               member.status === "online"
@@ -135,10 +94,12 @@ function MemberCard({ member }: any) {
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50">
+        <button className="flex-1 cursor-pointer border rounded-lg py-2 text-sm hover:bg-gray-50">
           View Profile
         </button>
-        <button className="text-blue-600 text-sm">Edit Role</button>
+        <button className="text-blue-600 cursor-pointer text-sm">
+          Edit Role
+        </button>
       </div>
     </div>
   );
