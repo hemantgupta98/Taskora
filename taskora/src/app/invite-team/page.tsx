@@ -42,7 +42,7 @@ export default function InviteTeamModal() {
 
   const onsubmit: SubmitHandler<Invite> = async (data) => {
     try {
-      const res = await fetch("http://localhost:5000/api/invite/check", {
+      const res = await fetch("http://localhost:5000/api/invite/sendinvite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

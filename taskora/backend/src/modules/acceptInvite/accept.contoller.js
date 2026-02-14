@@ -1,4 +1,5 @@
 import { findUserByEmail, User } from "./accept.service.js";
+import acceptModel from "./accept.model.js";
 
 export const accept = async (req, res) => {
   const { name, phone, email, password, confirmpassword } = req.body;
@@ -30,4 +31,21 @@ export const accept = async (req, res) => {
   }
 };
 
-export default accept;
+export const getAcceptUsers = async (req, res) => {
+  try {
+    const users = await acceptModel.find();
+
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Accept API error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export default { accept, getAcceptUsers };

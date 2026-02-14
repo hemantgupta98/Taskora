@@ -105,7 +105,7 @@ export default function AuthForm() {
 
     const timer = setTimeout(() => {
       router.push("/auth");
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [resetSuccess, router]);

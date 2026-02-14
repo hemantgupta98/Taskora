@@ -24,7 +24,7 @@ export const user = async (req, res) => {
   }
 };
 
-export const check = async (req, res) => {
+export const sendInvite = async (req, res) => {
   const { email } = req.body;
   const link = "http://localhost:3000/acceptInvite";
   try {
@@ -46,4 +46,4 @@ export const check = async (req, res) => {
   }
 };
 
-export default { user, check };
+export default { user, sendInvite };
