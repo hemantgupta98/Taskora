@@ -1,27 +1,6 @@
 "use client";
 
-import { AnyARecord } from "dns";
-// COMPLETE Team Management page UI
-// Stack: Next.js App Router + React + TypeScript + TailwindCSS
-// File: app/team/page.tsx (or similar)
-
-import {
-  Search,
-  Plus,
-  Bell,
-  Users,
-  LayoutDashboard,
-  Kanban,
-  Calendar,
-  BarChart2,
-  Settings,
-  HelpCircle,
-  LogOut,
-  UserPlus,
-  SlidersHorizontal,
-  Mail,
-  Phone,
-} from "lucide-react";
+import { UserPlus, SlidersHorizontal, Mail, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const teamMembers = [
