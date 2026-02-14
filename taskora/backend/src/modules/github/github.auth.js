@@ -2,37 +2,63 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const githubCallback = async (req, res) => {
-  const { code } = req.query;
+const GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token";
+const GITHUB_USER_URL = "https://api.github.com/user";
+const GITHUB_EMAILS_URL = "https://api.github.com/user/emails";
 
-  try {
-    // 1️⃣ Exchange code for access token
-    const tokenRes = await axios.post(
-      "https://github.com/login/oauth/access_token",
-      {
-        client_id: process.env.GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
-        code,
-      },
-      {
-        headers: { Accept: "application/json" },
-      },
-    );
+export async function exchangeCodeForToken(code) {
+  const resp = await axios.post(
+    GITHUB_TOKEN_URL,
+    {
+      client_id: process.env.GITHUB_CLIENT_ID,
+      client_secret: process.env.GITHUB_CLIENT_SECRET,
+      code,
+    },
+    {
+      headers: { Accept: "application/json" },
+    },
+  );
 
-    const accessToken = tokenRes.data.access_token;
-
-    // 2️⃣ Fetch user info
-    const userRes = await axios.get("https://api.github.com/user", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    res.json({
-      success: true,
-      user: userRes.data,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "GitHub auth failed" });
+  if (resp.data.error) {
+    throw new Error(resp.data.error_description || resp.data.error);
   }
+
+  return resp.data.access_token;
+}
+
+export async function fetchGithubUser(accessToken) {
+  const resp = await axios.get(GITHUB_USER_URL, {
+    headers: {
+      Authorization: `token ${accessToken}`,
+      Accept: "application/vnd.github.v3+json",
+    },
+  });
+  return resp.data;
+}
+
+export async function fetchPrimaryEmail(accessToken) {
+  try {
+    const resp = await axios.get(GITHUB_EMAILS_URL, {
+      headers: {
+        Authorization: `token ${accessToken}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
+
+    // resp.data is an array of emails; find primary or first verified
+    const emails = resp.data || [];
+    const primary =
+      emails.find((e) => e.primary && e.verified) ||
+      emails.find((e) => e.verified) ||
+      emails[0];
+    return primary ? primary.email : null;
+  } catch (err) {
+    return null; // emails may be private
+  }
+}
+
+export default {
+  exchangeCodeForToken,
+  fetchGithubUser,
+  fetchPrimaryEmail,
 };
