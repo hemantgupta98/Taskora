@@ -47,14 +47,6 @@ export const sendLink = async (email, link) => {
         </a>
       </p>
 
-      <p>
-        If the button does not work, copy and paste the following link into your browser:
-      </p>
-
-      <p>
-        <a href="${link}">${link}</a>
-      </p>
-
       <p style="margin-top: 24px;">
         If you were not expecting this invitation, you can safely ignore this email.
       </p>
@@ -68,10 +60,10 @@ export const sendLink = async (email, link) => {
     };
 
     const info = await transporter.sendMail(mailOption);
-    console.log("OTP sent successfully: Link chal gya", info.messageId);
+    console.log("Link sent successfully", info.messageId);
     return true;
   } catch (error) {
-    console.log("Error in sending OTP: Link nhi gya", error.message);
+    console.log("Error in sending Link", error.message);
     return false;
   }
 };
