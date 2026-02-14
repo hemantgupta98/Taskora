@@ -3,6 +3,7 @@
 import { UserPlus, SlidersHorizontal, Mail, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Input from "@/src/components/ui/input";
 
 const teamMembers = [
   {
