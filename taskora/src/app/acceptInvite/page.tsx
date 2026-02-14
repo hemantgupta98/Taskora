@@ -2,14 +2,33 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Input from "@/src/components/ui/input";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type Accept = {
+  name: string;
+  phone: number;
+  password: string;
+};
 
 export default function AcceptInvite() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Accept>();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
+  };
+
+  const onSubmit: SubmitHandler<Accept> = async (data) => {
+    console.log(data);
+    reset();
   };
 
   return (
@@ -24,64 +43,95 @@ export default function AcceptInvite() {
         </div>
 
         {/* Profile Image */}
-        <div className="flex flex-col items-center mb-5">
-          <div className="w-24 h-24 rounded-full border flex items-center justify-center overflow-hidden bg-gray-100">
-            {imagePreview ? (
-              <Image
-                src={imagePreview}
-                alt="Profile Preview"
-                width={96}
-                height={96}
-                className="object-cover"
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col items-center mb-5">
+            <div className="w-24 h-24 rounded-full border flex items-center justify-center overflow-hidden bg-gray-100">
+              {imagePreview ? (
+                <Image
+                  src={imagePreview}
+                  alt="Profile Preview"
+                  width={96}
+                  height={96}
+                  className="object-cover"
+                />
+              ) : (
+                <span className="text-gray-400 text-sm">Upload</span>
+              )}
+            </div>
+            <label className="mt-2 text-sm text-blue-600 cursor-pointer">
+              Upload Photo
+              <Input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleImageUpload}
+                label={""}
               />
-            ) : (
-              <span className="text-gray-400 text-sm">Upload</span>
-            )}
+            </label>
           </div>
 
-          <label className="mt-2 text-sm text-blue-600 cursor-pointer">
-            Upload Photo
-            <input
-              type="file"
-              hidden
-              accept="image/*"
-              onChange={handleImageUpload}
+          {/* Form */}
+          <div className="space-y-4">
+            <Input
+              type="text"
+              placeholder="Full Name"
+              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              label=""
+              {...register("name", { required: "Full name is required" })}
             />
-          </label>
-        </div>
+            {errors.name && (
+              <p className=" text-sm text-red-500 mt-2 ml-2">
+                {errors.name.message}
+              </p>
+            )}
 
-        {/* Form */}
-        <form className="space-y-4">
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            <Input
+              type="tel"
+              placeholder="Phone Number"
+              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              label=""
+              {...register("phone", {
+                required: "Phone number is required is required",
+              })}
+            />
+            {errors.phone && (
+              <p className=" text-sm text-red-500 mt-2 ml-2">
+                {errors.phone.message}
+              </p>
+            )}
 
-          <input
-            type="tel"
-            placeholder="Phone Number"
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            <Input
+              type="password"
+              placeholder="Set Password"
+              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              label=""
+              {...register("password", { required: "Password is required" })}
+            />
+            {errors.password && (
+              <p className=" text-sm text-red-500 mt-2 ml-2">
+                {errors.password.message}
+              </p>
+            )}
 
-          <input
-            type="password"
-            placeholder="Set Password"
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            <Input
+              type="password"
+              placeholder="Confirm Password"
+              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              label=""
+            />
+            {errors.name && (
+              <p className=" text-sm text-red-500 mt-2 ml-2">
+                {errors.name.message}
+              </p>
+            )}
 
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            Join Team
-          </button>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            >
+              Join Team
+            </button>
+          </div>
         </form>
 
         {/* Footer */}
