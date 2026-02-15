@@ -1,7 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import axios from "axios";
 import jwt from "jsonwebtoken";
+
 import {
   exchangeCodeForToken,
   fetchGithubUser,
@@ -10,13 +12,19 @@ import {
 import { githubDB } from "./github.model.js";
 
 const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
+const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5000";
 
-export const githubLogin = async (req, res, profile) => {
+/**
+ * 🔐 STEP 1: Redirect user to GitHub
+ */
+export const githubLogin = async (req, res) => {
   const base = "https://github.com/login/oauth/authorize";
-  const redirectUri = `${process.env.BACKEND_URL ?? "http://localhost:5000"}/api/github/callback`;
+
+  const redirectUri = `${BACKEND_URL}/api/github/callback`;
+
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_CLIENT_ID,
-    scope: "read:user user:email",
+    scope: "read:user user:email repo", // ✅ repo access
     redirect_uri: redirectUri,
     allow_signup: "true",
   }).toString();
@@ -24,15 +32,23 @@ export const githubLogin = async (req, res, profile) => {
   return res.redirect(`${base}?${params}`);
 };
 
+/**
+ * 🔁 STEP 2: GitHub callback
+ */
 export const githubCallback = async (req, res) => {
   const { code } = req.query;
-  if (!code) return res.redirect(`${FRONTEND_URL}/auth?oauth=missing_code`);
+  if (!code) {
+    return res.redirect(`${FRONTEND_URL}/auth?oauth=missing_code`);
+  }
 
   try {
+    // Exchange code → access token
     const accessToken = await exchangeCodeForToken(code);
+
+    // Fetch GitHub user
     const ghUser = await fetchGithubUser(accessToken);
-    const email =
-      (ghUser && ghUser.email) || (await fetchPrimaryEmail(accessToken));
+
+    const email = ghUser?.email || (await fetchPrimaryEmail(accessToken));
 
     const payload = {
       provider: "github",
@@ -40,8 +56,10 @@ export const githubCallback = async (req, res) => {
       name: ghUser.name || ghUser.login,
       email: email || null,
       avatar: ghUser.avatar_url,
+      githubToken: accessToken,
     };
 
+    // Save / update DB
     try {
       const update = {
         githubId: ghUser.id,
@@ -62,24 +80,71 @@ export const githubCallback = async (req, res) => {
         { upsert: true, new: true, setDefaultsOnInsert: true },
       );
 
-      if (userRecord && userRecord._id) payload.userId = userRecord._id;
+      if (userRecord?._id) {
+        payload.userId = userRecord._id;
+      }
     } catch (dbErr) {
       console.error("GitHub DB upsert error:", dbErr);
     }
 
-    const secret = process.env.JWT_TOKEN;
-    if (!secret) {
-      console.error("Missing JWT_TOKEN env var");
-      return res.redirect(`${FRONTEND_URL}/auth?oauth=server_misconfig`);
-    }
+    // Sign JWT
+    const token = jwt.sign(payload, process.env.JWT_TOKEN, {
+      expiresIn: "2d",
+    });
 
-    const token = jwt.sign(payload, secret, { expiresIn: "7d" });
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false, // true in production (https)
+    });
 
-    return res.redirect(`${FRONTEND_URL}/dashboard/?token=${token}`);
+    // Redirect back to frontend
+    return res.redirect(`${FRONTEND_URL}/dashboard`);
   } catch (err) {
-    console.error("GitHub callback error:", err.message || err);
+    console.error("GitHub callback error:", err);
     return res.redirect(`${FRONTEND_URL}/auth?oauth=failed`);
   }
 };
 
-export default { githubLogin, githubCallback };
+export const getGithubRepos = async (req, res) => {
+  try {
+    // ✅ Read JWT from cookie
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ message: "GitHub not connected" });
+    }
+
+    // ✅ Decode JWT
+    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+
+    const githubToken = decoded.githubToken; // 👈 MUST exist
+
+    if (!githubToken) {
+      return res.status(401).json({ message: "Invalid GitHub token" });
+    }
+
+    // ✅ Fetch repos from GitHub
+    const response = await axios.get("https://api.github.com/user/repos", {
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+        Accept: "application/vnd.github+json",
+      },
+      params: {
+        visibility: "all",
+        sort: "updated",
+        per_page: 50,
+      },
+    });
+
+    return res.json({
+      success: true,
+      repos: response.data,
+    });
+  } catch (err) {
+    console.error("Repo fetch error:", err.response?.data || err);
+    return res.status(401).json({
+      message: "Failed to fetch repositories",
+    });
+  }
+};

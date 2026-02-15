@@ -1,148 +1,141 @@
 "use client";
 
-import { useState } from "react";
-import StatusBadge from "../../components/layout/StatusBadge";
-import TypeBadge from "../../components/layout/typebadge";
+import { useState, useEffect } from "react";
 import Github from "../../components/layout/github";
+import { toast, Toaster } from "sonner";
 
-type Contact = {
+type Repo = {
   id: number;
   name: string;
-  email: string;
-  createdAt: string;
-  type: "Lead" | "Customer";
-  status: "Active" | "Inactive" | "New";
+  description: string;
+  stargazers_count: number;
+  forks_count: number;
+  html_url: string;
 };
 
-const contacts: Contact[] = [
-  {
-    id: 1,
-    name: "Thabo Isaac",
-    email: "thabo-isaac355@bellsouth.biz",
-    createdAt: "Oct 2, 2021",
-    type: "Lead",
-    status: "Inactive",
-  },
-  {
-    id: 2,
-    name: "Sergio Koch",
-    email: "sergiokoch@me.info",
-    createdAt: "Apr 15, 2020",
-    type: "Lead",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Masao Peter",
-    email: "masaopeter586@freenet.info",
-    createdAt: "Jun 3, 2021",
-    type: "Customer",
-    status: "Active",
-  },
-];
-
 export default function ContactsTable() {
-  const [activeTab, setActiveTab] = useState<"All" | "Leads" | "Customers">(
-    "All",
-  );
-  const [open, setOpen] = useState(true);
+  const [repos, setRepos] = useState<Repo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [githubConnected, setGithubConnected] = useState(false);
 
-  const filteredContacts = contacts.filter((c) => {
-    if (activeTab === "Leads") return c.type === "Lead";
-    if (activeTab === "Customers") return c.type === "Customer";
-    return true;
-  });
+  const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+
   const loginWithGithub = () => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
-    window.location.href = `${API_URL}/api/github/login`;
+    const oauthUrl = `${API_URL}/api/github/login`;
+    const popup = window.open(oauthUrl, "github_oauth", "width=600,height=700");
+
+    if (!popup) {
+      window.location.href = oauthUrl;
+      return;
+    }
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/github/repos`, {
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setRepos(data.repos || []);
+          setGithubConnected(true);
+          setLoading(false);
+          clearInterval(interval);
+          try {
+            popup.close();
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      } catch (err) {
+        console.log(err);
+        return toast.error("error");
+      }
+
+      if (popup.closed) {
+        clearInterval(interval);
+      }
+    }, 1500);
   };
+
+  useEffect(() => {
+    const fetchRepos = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/github/repos`, {
+          credentials: "include",
+        });
+
+        if (res.status === 401) {
+          // Not connected
+          setGithubConnected(false);
+          setLoading(false);
+          return;
+        }
+
+        const data = await res.json();
+        setRepos(data.repos);
+        setGithubConnected(true);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRepos();
+  }, [API_URL]);
+
   return (
     <main className="min-h-screen bg-white p-6">
       <div className="max-w-6xl mx-5">
-        {/* Header */}
-        <div onClick={loginWithGithub}>
-          <Github open={open} onClose={() => setOpen(false)} />
-        </div>
-
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-semibold text-gray-900">Contacts</h1>
-
-          <div className="flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="Search by name or email..."
-              className="w-64 rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+        {!githubConnected && !loading && (
+          <button
+            onClick={loginWithGithub}
+            className="mb-4 flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-white"
+          >
+            <Github
+              open={false}
+              onClose={function (): void {
+                throw new Error("Function not implemented.");
+              }}
             />
-
-            <button className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700">
-              Add person
-            </button>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex items-center gap-2 mb-4">
-          {["All", "Leads", "Customers"].map((tab) => (
-            <button
-              key={tab}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onClick={() => setActiveTab(tab as any)}
-              className={`rounded-md px-4 py-2 text-sm font-medium ${
-                activeTab === tab
-                  ? "bg-gray-100 text-gray-900"
-                  : "text-gray-500 hover:bg-gray-50"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-
-          <button className="ml-2 rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
-            Filter
+            Connect GitHub
           </button>
-        </div>
+        )}
+        <Toaster position="top-center" richColors />
 
-        {/* Table */}
-        <div className="overflow-hidden rounded-lg border border-gray-200">
-          <table className="w-full border-collapse">
-            <thead className="bg-gray-50">
-              <tr className="text-left text-sm text-gray-500">
-                <th className="px-4 py-3">
-                  <input type="checkbox" />
-                </th>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Created at</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
+        {loading && <p>Loading GitHub data...</p>}
+        {githubConnected && repos.length === 0 && (
+          <p className="text-gray-500">No repositories found</p>
+        )}
 
-            <tbody>
-              {filteredContacts.map((contact) => (
-                <tr
-                  key={contact.id}
-                  className="border-t text-sm text-gray-700 hover:bg-gray-50"
+        {githubConnected && (
+          <div className="grid gap-4 mb-6">
+            {repos.map((repo) => (
+              <div
+                key={repo.id}
+                className="rounded-md border p-4 hover:bg-gray-50"
+              >
+                <h3 className="font-semibold">{repo.name}</h3>
+                <p className="text-sm text-gray-600">
+                  {repo.description || "No description"}
+                </p>
+
+                <div className="mt-2 text-sm">
+                  ⭐ {repo.stargazers_count} | 🍴 {repo.forks_count}
+                </div>
+
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  className="text-sm text-violet-600"
                 >
-                  <td className="px-4 py-3">
-                    <input type="checkbox" />
-                  </td>
-                  <td className="px-4 py-3 font-medium text-gray-900">
-                    {contact.name}
-                  </td>
-                  <td className="px-4 py-3">{contact.email}</td>
-                  <td className="px-4 py-3">{contact.createdAt}</td>
-                  <td className="px-4 py-3">
-                    <TypeBadge type={contact.type} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={contact.status} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  Open on GitHub →
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
