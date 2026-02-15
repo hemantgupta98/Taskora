@@ -22,13 +22,11 @@ router.post("/otp", registerUser);
 router.post("/verifyotp", verifyotp);
 router.post("/resetpassword", resetpassword);
 
-// Google OAuth start
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
-// Google OAuth callback (ONLY ONE)
 router.get(
   "/google/callback",
   passport.authenticate("google", {

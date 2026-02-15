@@ -52,7 +52,7 @@ export async function fetchPrimaryEmail(accessToken) {
       emails[0];
     return primary ? primary.email : null;
   } catch (err) {
-    return null; // emails may be private
+    return null;
   }
 }
 

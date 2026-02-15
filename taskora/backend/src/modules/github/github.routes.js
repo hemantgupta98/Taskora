@@ -3,7 +3,7 @@ import { githubLogin, githubCallback } from "./github.controllers.js";
 
 const router = express.Router();
 
-router.get("/", githubLogin);
+router.get("/login", githubLogin);
 
 router.get("/callback", githubCallback);
 

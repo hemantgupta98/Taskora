@@ -62,7 +62,7 @@ const googleschema = new mongoose.Schema(
 );
 
 const googleDB = mongoose.model("googlelogin", googleschema);
-// Use explicit collection name "resetpassword" per requirement
+
 const ResetPassword = mongoose.model(
   "ResetPassword",
   resetPasswordSchema,

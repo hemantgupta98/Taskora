@@ -65,6 +65,10 @@ export default function AuthForm() {
     const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
     window.location.href = `${API_URL}/api/auth/google`;
   };
+  const loginWithGithub = () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+    window.location.href = `${API_URL}/api/github/login`;
+  };
 
   return (
     <div className="p-8 sm:p-12">
@@ -150,7 +154,7 @@ export default function AuthForm() {
       {/* Social */}
       <div className="grid grid-cols-2 gap-4">
         <SocialButton label="Google" onClick={loginWithGoogle} />
-        <SocialButton label="GitHub" />
+        <SocialButton label="GitHub" onClick={loginWithGithub} />
       </div>
     </div>
   );

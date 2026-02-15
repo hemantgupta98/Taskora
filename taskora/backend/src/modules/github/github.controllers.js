@@ -7,18 +7,18 @@ import {
   fetchGithubUser,
   fetchPrimaryEmail,
 } from "./github.auth.js";
+import { githubDB } from "./github.model.js";
 
 const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
 
-export const githubLogin = (req, res) => {
+export const githubLogin = async (req, res, profile) => {
   const base = "https://github.com/login/oauth/authorize";
+  const redirectUri = `${process.env.BACKEND_URL ?? "http://localhost:5000"}/api/github/callback`;
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_CLIENT_ID,
     scope: "read:user user:email",
-    // optional: you can set redirect_uri via env if needed
-    redirect_uri:
-      process.env.GITHUB_REDIRECT_URI ||
-      `${process.env.BACKEND_URL || "http://localhost:5000"}/api/github/callback`,
+    redirect_uri: redirectUri,
+    allow_signup: "true",
   }).toString();
 
   return res.redirect(`${base}?${params}`);
@@ -26,7 +26,7 @@ export const githubLogin = (req, res) => {
 
 export const githubCallback = async (req, res) => {
   const { code } = req.query;
-  if (!code) return res.redirect(`${FRONTEND_URL}/login?oauth=missing_code`);
+  if (!code) return res.redirect(`${FRONTEND_URL}/auth?oauth=missing_code`);
 
   try {
     const accessToken = await exchangeCodeForToken(code);
@@ -42,10 +42,35 @@ export const githubCallback = async (req, res) => {
       avatar: ghUser.avatar_url,
     };
 
+    try {
+      const update = {
+        githubId: ghUser.id,
+        provider: "github",
+        username: ghUser.login,
+        displayName: ghUser.name || ghUser.login,
+        profileUrl: ghUser.html_url,
+        email: email || null,
+        avatarUrl: ghUser.avatar_url,
+        accessToken,
+        raw: ghUser,
+        lastLoginAt: new Date(),
+      };
+
+      const userRecord = await githubDB.findOneAndUpdate(
+        { githubId: ghUser.id },
+        { $set: update },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
+
+      if (userRecord && userRecord._id) payload.userId = userRecord._id;
+    } catch (dbErr) {
+      console.error("GitHub DB upsert error:", dbErr);
+    }
+
     const secret = process.env.JWT_TOKEN;
     if (!secret) {
       console.error("Missing JWT_TOKEN env var");
-      return res.redirect(`${FRONTEND_URL}/login?oauth=server_misconfig`);
+      return res.redirect(`${FRONTEND_URL}/auth?oauth=server_misconfig`);
     }
 
     const token = jwt.sign(payload, secret, { expiresIn: "7d" });
@@ -53,7 +78,7 @@ export const githubCallback = async (req, res) => {
     return res.redirect(`${FRONTEND_URL}/dashboard/?token=${token}`);
   } catch (err) {
     console.error("GitHub callback error:", err.message || err);
-    return res.redirect(`${FRONTEND_URL}/login?oauth=failed`);
+    return res.redirect(`${FRONTEND_URL}/auth?oauth=failed`);
   }
 };
 
