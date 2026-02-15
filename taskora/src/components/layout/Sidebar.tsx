@@ -20,11 +20,11 @@ const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Project Board", href: "/project", icon: KanbanSquare },
   { name: "Sprint & Timeline", href: "/timeline", icon: Puzzle },
+  { name: "Pendings", href: "/duetask", icon: Workflow },
   { name: "Team", href: "/team", icon: Users },
   { name: "Backlog", href: "/backlog", icon: WorkflowIcon },
   { name: "Code", href: "/code", icon: CodeXml },
   { name: "Plans", href: "/plan", icon: Rows4Icon },
-  { name: "Pendings", href: "/duetask", icon: Workflow },
   { name: "Developer", href: "/developer", icon: BadgeQuestionMark },
 ];
 
