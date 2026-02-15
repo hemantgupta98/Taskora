@@ -57,7 +57,9 @@ export default function CreatePlanPage() {
   const [dueDate, setDueDate] = useState<Date>();
   const [plans, setPlans] = useState<Data[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mode, setMode] = useState<"createplans" | "viewplans">("createplans");
+  const [mode, setMode] = useState<
+    "createplans" | "viewplans" | "backlogplans"
+  >("createplans");
   const {
     register,
     handleSubmit,
@@ -158,10 +160,16 @@ export default function CreatePlanPage() {
         >
           View Plans
         </button>
+        <button
+          onClick={() => setMode("backlogplans")}
+          className={` flex p-2 rounded-md shadow-xl ${mode === "backlogplans" ? " ring-1 ring-blue-400" : "border"}`}
+        >
+          Backlog Plans
+        </button>
       </div>
       <div>
         {mode === "createplans" && (
-          <div className="mx-auto  p-5 max-w-3xl rounded-xl shadow-2xl">
+          <div className="mx-auto  p-5 mt-5 max-w-3xl rounded-xl shadow-2xl">
             {/* Header */}
             <Toaster richColors position="top-center" />
             <div className="mb-8">
@@ -396,7 +404,7 @@ export default function CreatePlanPage() {
             </form>
           </div>
         )}
-        <div className="mx-auto  p-5 max-w-3xl rounded-xl shadow-2xl">
+        <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
           {mode === "viewplans" && (
             <div className="grid gap-4">
               {plans.length === 0 ? (
@@ -449,6 +457,18 @@ export default function CreatePlanPage() {
                     </div>
                   </div>
                 ))
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
+          {mode === "backlogplans" && (
+            <div className="grid gap-4">
+              {plans.length === 0 ? (
+                <p className="text-gray-500 text-center">No plans found</p>
+              ) : (
+                <h1>hi</h1>
               )}
             </div>
           )}
