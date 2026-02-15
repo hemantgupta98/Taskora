@@ -129,6 +129,9 @@ export default function ProjectShowcasePage() {
                   <li>• Shadcn UI & Radix UI</li>
                   <li>• React Hook Form + Zod</li>
                   <li>• Lucide Icons</li>
+                  <li>• socket-io-client</li>
+                  <li>• framer Motion</li>
+                  <li>• React Bits</li>
                 </ul>
               </div>
 
@@ -141,8 +144,11 @@ export default function ProjectShowcasePage() {
                   <li>• Node.js & Express.js</li>
                   <li>• MongoDB & Mongoose</li>
                   <li>• JWT Authentication</li>
-                  <li>• Bcrypt for password security</li>
                   <li>• Nodemailer for email & OTP</li>
+                  <li>• Google Authentication</li>
+                  <li>• GitHub Authentication</li>
+                  <li>• web-sockets</li>
+                  <li>• Bcrypt for password security</li>
                 </ul>
               </div>
             </div>
@@ -191,11 +197,24 @@ export default function ProjectShowcasePage() {
             </h2>
             <p className="leading-relaxed text-gray-700 text-2xl">
               Hi, I’m{" "}
-              <span className="font-medium text-red-300">Hemant Gupta</span>, a
-              full-stack developer focused on building real-world, scalable
-              applications. Taskora reflects my approach to development—clean
-              code, thoughtful architecture, and user interfaces that feel
-              intuitive and purposeful.
+              <span className=" text-3xl font-semibold text-orange-400">
+                Hemant Gupta
+              </span>
+              , a 2nd-year BCA student at Jharkhand Rai University, Ranchi, and
+              a passionate full-stack developer focused on building real-world,
+              scalable, and user-centric applications. I enjoy turning ideas
+              into reliable software through clean code, thoughtful
+              architecture, and intuitive user interfaces. My development
+              approach balances strong fundamentals with practical
+              problem-solving—writing code that is not just functional, but
+              maintainable and purposeful.
+            </p>
+            <p className=" pt-5 text-2xl text-red-500">
+              {" "}
+              Through these roles, I’ve learned how real production systems are
+              built—collaboration with teams, writing scalable features,
+              debugging complex issues, and shipping reliable code under real
+              constraints.
             </p>
           </section>
         </motion.div>
