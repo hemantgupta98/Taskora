@@ -45,7 +45,6 @@ export async function fetchPrimaryEmail(accessToken) {
       },
     });
 
-    // resp.data is an array of emails; find primary or first verified
     const emails = resp.data || [];
     const primary =
       emails.find((e) => e.primary && e.verified) ||
