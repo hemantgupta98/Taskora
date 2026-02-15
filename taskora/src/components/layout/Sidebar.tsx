@@ -14,6 +14,7 @@ import {
   CodeXml,
   Rows4Icon,
   BadgeQuestionMark,
+  Workflow,
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -23,6 +24,7 @@ const links = [
   { name: "Backlog", href: "/backlog", icon: WorkflowIcon },
   { name: "Code", href: "/code", icon: CodeXml },
   { name: "Plans", href: "/plan", icon: Rows4Icon },
+  { name: "Pendings", href: "/duetask", icon: Workflow },
   { name: "Developer", href: "/developer", icon: BadgeQuestionMark },
 ];
 
