@@ -52,7 +52,10 @@ export default function ContactsTable() {
     if (activeTab === "Customers") return c.type === "Customer";
     return true;
   });
-
+  const loginWithGithub = () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+    window.location.href = `${API_URL}/api/github/login`;
+  };
   return (
     <main className="min-h-screen bg-white p-6">
       <div className="max-w-6xl mx-5">
