@@ -7,6 +7,7 @@ const allowedFields = [
   "startDate",
   "dueDate",
   "board",
+  "status",
 ];
 
 export const createPlans = async (req, res) => {
@@ -72,6 +73,100 @@ export const deletePlan = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error",
+    });
+  }
+};
+
+export const updatePlanStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["todo", "progress", "done"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status value",
+      });
+    }
+
+    const plan = await planModel.findById(id);
+    if (!plan) {
+      return res.status(404).json({
+        success: false,
+        message: "Plan not found",
+      });
+    }
+
+    const today = new Date();
+    const due = new Date(plan.dueDate);
+
+    const diffDays = Math.floor(
+      (today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    // ❌ cannot mark done if overdue more than 1 day
+    if (status === "done" && diffDays > 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Overdue plan cannot be marked as done",
+      });
+    }
+
+    plan.status = status;
+    await plan.save();
+
+    return res.status(200).json({
+      success: true,
+      data: plan,
+    });
+  } catch (error) {
+    console.error("Update status error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update plan status",
+    });
+  }
+};
+
+export const getBacklogPlans = async (req, res) => {
+  try {
+    const today = new Date();
+
+    const plans = await planModel
+      .find({
+        status: { $ne: "done" },
+        dueDate: { $lt: today },
+      })
+      .sort({ dueDate: 1 });
+
+    const backlog = plans.map((plan) => {
+      const pendingDays = Math.floor(
+        (today.getTime() - new Date(plan.dueDate).getTime()) /
+          (1000 * 60 * 60 * 24),
+      );
+
+      return {
+        _id: plan._id,
+        admin: plan.name,
+        work: plan.work,
+        board: plan.board,
+        startDate: plan.startDate,
+        dueDate: plan.dueDate,
+        status: plan.status,
+        pendingDays,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: backlog.length,
+      data: backlog,
+    });
+  } catch (error) {
+    console.error("Backlog fetch error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch backlog plans",
     });
   }
 };

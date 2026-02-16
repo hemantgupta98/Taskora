@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Plus, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { forwardRef } from "react";
@@ -33,12 +33,15 @@ type Data = {
   access: string;
   work: string;
   board: string;
+  status: PlanStatus;
 };
 
 type Section = {
   admin: string;
   tasks: Data[];
 };
+
+type PlanStatus = "todo" | "progress" | "done";
 
 function groupByAdmin(list: Data[]) {
   const map = new Map<string, Data[]>();
@@ -71,6 +74,7 @@ export default function CreatePlanPage() {
     defaultValues: {
       access: "select",
       work: "select",
+      status: "todo",
     },
   });
 
@@ -104,7 +108,7 @@ export default function CreatePlanPage() {
         return reset();
       }
       reset();
-      toast.success("Plans created");
+      toast.success("Plans created ");
     } catch (error) {
       reset();
       console.log("Error in Api", error);
@@ -133,7 +137,7 @@ export default function CreatePlanPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await api.get("/plans");
+        const res = await api.get(`/plans`);
         const list: Data[] = res.data.data;
         setPlans(list);
         setSectionsData(groupByAdmin(list));
@@ -147,10 +151,58 @@ export default function CreatePlanPage() {
     fetchPlans();
   }, []);
 
+  // Show a one-time popup + refresh when user opens View Plans and there are no plans
+  useEffect(() => {
+    try {
+      if (mode === "viewplans" && !loading) {
+        const shown = localStorage.getItem("viewplans_popup_shown");
+        if (plans.length === 0 && !shown) {
+          // notify user and refresh once
+          toast("No plans found — refreshing the page once");
+          localStorage.setItem("viewplans_popup_shown", "1");
+          // slight delay so user sees the toast
+          setTimeout(() => {
+            window.location.reload();
+          }, 1400);
+        }
+      }
+    } catch (err) {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, loading]);
+
+  const updateStatus = async (plan: Data, value: PlanStatus) => {
+    const today = new Date();
+    const due = new Date(plan.dueDate);
+    const diffDays = Math.floor(
+      (today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (value === "done" && diffDays > 1) {
+      toast.error("This plan is overdue. You cannot mark it as done.");
+      return;
+    }
+
+    try {
+      await api.patch(`/plans/update-status/${plan._id}`, {
+        status: value,
+      });
+
+      setPlans((prev) =>
+        prev.map((p) => (p._id === plan._id ? { ...p, status: value } : p)),
+      );
+
+      toast.success("Status updated");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Update failed");
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
     <>
+      <Toaster richColors position="top-center" />
       <div className="flex  gap-6 bg-white border shadow-xl rounded-lg p-4 w-fit">
         <button
           onClick={() => setMode("createplans")}
@@ -175,7 +227,6 @@ export default function CreatePlanPage() {
         {mode === "createplans" && (
           <div className="mx-auto  p-5 mt-5 max-w-3xl rounded-xl shadow-2xl">
             {/* Header */}
-            <Toaster richColors position="top-center" />
             <div className="mb-8">
               <div className=" flex">
                 <div className="mb-4 flex items-center gap-2">
@@ -202,13 +253,13 @@ export default function CreatePlanPage() {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="mb-6">
                 <label className="mb-1 block text-sm font-medium text-gray-800">
-                  Name <span className="text-red-500">*</span>
+                  Admin Name <span className="text-red-500">*</span>
                 </label>
                 <Input
                   {...register("name", {
-                    required: "Enter your plan",
+                    required: "Enter your name",
                   })}
-                  placeholder="Enter a plan name"
+                  placeholder="Enter a admin name"
                   className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
                 />
 
@@ -256,7 +307,7 @@ export default function CreatePlanPage() {
               </div>
               <div className=" grid space-y-1">
                 <label className="text-md font-medium text-gray-700">
-                  Start date
+                  Start date <span className="text-red-500">*</span>
                 </label>
                 <Popover>
                   <PopoverTrigger asChild className="w-full md:w-[320px]">
@@ -264,6 +315,9 @@ export default function CreatePlanPage() {
                       variant="outline"
                       data-empty={!startDate}
                       className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                      {...register("startDate", {
+                        required: "Date should be mandatory",
+                      })}
                     >
                       {startDate ? (
                         format(startDate, "PPP")
@@ -285,11 +339,16 @@ export default function CreatePlanPage() {
                     />
                   </PopoverContent>
                 </Popover>
+                {errors.startDate && (
+                  <p className="mt-2 ml-2 text-sm text-red-500">
+                    {errors.startDate.message}
+                  </p>
+                )}
               </div>
 
               <div className=" grid space-y-1 mt-5 mb-5">
                 <label className="text-md font-medium text-gray-700">
-                  Complete date
+                  Complete date <span className="text-red-500">*</span>
                 </label>
                 <Popover>
                   <PopoverTrigger asChild className="w-full md:w-[320px]">
@@ -297,6 +356,9 @@ export default function CreatePlanPage() {
                       variant="outline"
                       data-empty={!dueDate}
                       className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                      {...register("dueDate", {
+                        required: "Date should be mandatory",
+                      })}
                     >
                       {dueDate ? (
                         format(dueDate, "PPP")
@@ -318,6 +380,11 @@ export default function CreatePlanPage() {
                     />
                   </PopoverContent>
                 </Popover>
+                {errors.dueDate && (
+                  <p className="mt-2 ml-2 text-sm text-red-500">
+                    {errors.dueDate.message}
+                  </p>
+                )}
               </div>
               {/* Add work */}
               <div className="mb-10">
@@ -372,9 +439,9 @@ export default function CreatePlanPage() {
                   <div className=" relative flex-row">
                     <Input
                       {...register("board", {
-                        required: "Enter board name",
+                        required: "Enter work type name",
                       })}
-                      placeholder="Enter board name"
+                      placeholder="Enter work type name"
                       className="w-full rounded border border-gray-300 px-3 py-2 pr-9 text-sm focus:border-blue-600 focus:outline-none"
                     />
 
@@ -385,15 +452,6 @@ export default function CreatePlanPage() {
                     )}
                   </div>
                 </div>
-
-                {/* Add more work */}
-                <button
-                  type="button"
-                  className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-gray-400 cursor-not-allowed"
-                >
-                  <Plus size={16} />
-                  Add more work
-                </button>
               </div>
 
               {/* Footer */}
@@ -449,9 +507,7 @@ export default function CreatePlanPage() {
                       </p>
 
                       <p>
-                        <span className="font-medium text-gray-800">
-                          Board:
-                        </span>{" "}
+                        <span className="font-medium text-gray-800">Name:</span>{" "}
                         {plan.board}
                       </p>
 
@@ -466,6 +522,21 @@ export default function CreatePlanPage() {
                         <span className="font-medium text-gray-800">Due:</span>{" "}
                         {new Date(plan.dueDate).toLocaleDateString()}
                       </p>
+                      <Select
+                        value={plan.status}
+                        onValueChange={(value) =>
+                          updateStatus(plan, value as PlanStatus)
+                        }
+                      >
+                        <SelectTrigger className="w-40">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="todo">To Do</SelectItem>
+                          <SelectItem value="progress">Progress</SelectItem>
+                          <SelectItem value="done">Done</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 ))
@@ -476,12 +547,26 @@ export default function CreatePlanPage() {
 
         {mode === "backlogplans" && (
           <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
-            <div className="grid gap-4">
-              {plans.length === 0 ? (
-                <p className="text-gray-500 text-center">No Backlog found</p>
-              ) : (
-                <h1>hi</h1>
+            <div className="grid  gap-4">
+              {plans.length === 0 && (
+                <p className="text-gray-500 text-center"> No backlog plans!</p>
               )}
+
+              {plans.map((plan) => (
+                <div key={plan._id} className="border rounded-lg p-4 space-y-2">
+                  <h3 className="font-semibold text-red-500">{plan.name}</h3>
+                  <p>{plan.work}</p>
+                  <p>
+                    <b>Start:</b> {new Date(plan.startDate).toDateString()}
+                  </p>
+                  <p>
+                    <b>Due:</b> {new Date(plan.dueDate).toDateString()}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    ⚠ Overdue Plan
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         )}

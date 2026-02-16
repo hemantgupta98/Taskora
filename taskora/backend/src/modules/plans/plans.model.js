@@ -8,6 +8,11 @@ const planSchema = new mongoose.Schema(
     startDate: { type: Number, required: true },
     access: { type: String, required: true },
     dueDate: { type: Number, required: true },
+    status: {
+      type: String,
+      enum: ["todo", "progress", "done"],
+      default: "todo",
+    },
   },
   { timestamps: true },
 );
