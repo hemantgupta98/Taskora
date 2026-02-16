@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { Toaster, toast } from "sonner";
@@ -34,6 +35,7 @@ type Data = {
   work: string;
   board: string;
   status: PlanStatus;
+  teamMembers: string[];
 };
 
 type Section = {
@@ -60,6 +62,8 @@ export default function CreatePlanPage() {
   const [dueDate, setDueDate] = useState<Date>();
   const [plans, setPlans] = useState<Data[]>([]);
   const [loading, setLoading] = useState(true);
+  const [input, setInput] = useState("");
+
   const [mode, setMode] = useState<
     "createplans" | "viewplans" | "backlogplans"
   >("createplans");
@@ -75,6 +79,7 @@ export default function CreatePlanPage() {
       access: "select",
       work: "select",
       status: "todo",
+      teamMembers: [],
     },
   });
 
@@ -268,8 +273,73 @@ export default function CreatePlanPage() {
                 )}
               </div>
 
-              {/* Access */}
-              <div className="mb-8">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-800">
+                  Team Members<span className="text-red-500">*</span>
+                </label>
+                <Controller
+                  name="teamMembers"
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      value.length > 0 || "Add at least one team member",
+                  }}
+                  render={({ field, fieldState }) => (
+                    <div className="w-full md:w-[320px]">
+                      <div
+                        className={`flex flex-wrap gap-2 rounded-md border px-3 py-2 min-h-10.5
+            ${fieldState.error ? "border-red-500" : "border-input"}
+          `}
+                      >
+                        {field.value.map((member, index) => (
+                          <span
+                            key={index}
+                            className="flex items-center gap-1 bg-muted px-2 py-1 rounded text-sm"
+                          >
+                            {member}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                field.onChange(
+                                  field.value.filter((_, i) => i !== index),
+                                )
+                              }
+                            >
+                              <X size={14} />
+                            </button>
+                          </span>
+                        ))}
+
+                        {/* Input */}
+                        <Input
+                          value={input}
+                          onChange={(e: any) => setInput(e.target.value)}
+                          onKeyDown={(e: any) => {
+                            if (e.key === "Enter" && input.trim()) {
+                              e.preventDefault();
+                              if (!field.value.includes(input.trim())) {
+                                field.onChange([...field.value, input.trim()]);
+                              }
+                              setInput("");
+                            }
+                          }}
+                          placeholder="Enter team member name"
+                          className="flex-1 outline-none bg-transparent text-sm min-w-30"
+                        />
+                      </div>
+
+                      {/* Error */}
+                      {fieldState.error && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {fieldState.error.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
+
+              <div className="mb-8 mt-10">
                 <label className="mb-1 block text-sm font-medium text-gray-800">
                   Access <span className="text-red-500">*</span>
                 </label>
@@ -290,7 +360,9 @@ export default function CreatePlanPage() {
                           <SelectValue placeholder="Select access" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="select">Select</SelectItem>
+                          <SelectItem value="select" disabled>
+                            Select
+                          </SelectItem>
                           <SelectItem value="public">Public</SelectItem>
                           <SelectItem value="private">Private</SelectItem>
                         </SelectContent>
@@ -305,6 +377,7 @@ export default function CreatePlanPage() {
                   )}
                 </div>
               </div>
+
               <div className=" grid space-y-1">
                 <label className="text-md font-medium text-gray-700">
                   Start date <span className="text-red-500">*</span>
@@ -419,7 +492,9 @@ export default function CreatePlanPage() {
                             <SelectValue placeholder="Select work" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="select">Select</SelectItem>
+                            <SelectItem value="select" disabled>
+                              select
+                            </SelectItem>
                             <SelectItem value="board">Board</SelectItem>
                             <SelectItem value="project">Project</SelectItem>
                             <SelectItem value="filter">Filter</SelectItem>
