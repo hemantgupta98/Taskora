@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { forwardRef } from "react";
@@ -415,12 +415,19 @@ export default function CreatePlanPage() {
                     key={plan._id}
                     className="rounded-lg border bg-white p-4 shadow-md"
                   >
+                    <div className=" flex justify-end ">
+                      <X
+                        onClick={() => handleDeleteTask(plan._id)}
+                        size={20}
+                        className=" text-red-500"
+                      />
+                    </div>
                     <div className="flex justify-between items-center mb-2">
                       <h2 className="text-lg font-semibold text-gray-800">
                         {plan.name}
                       </h2>
                       <span
-                        className={`px-3 py-1 text-xs rounded-full ${
+                        className={`px-3 py-2 text-xs rounded-full ${
                           plan.access === "public"
                             ? "bg-green-100 text-green-700"
                             : "bg-gray-100 text-gray-700"
