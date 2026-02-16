@@ -408,8 +408,9 @@ export default function CreatePlanPage() {
             </form>
           </div>
         )}
-        <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
-          {mode === "viewplans" && (
+
+        {mode === "viewplans" && (
+          <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
             <div className="grid gap-4">
               {plans.length === 0 ? (
                 <p className="text-gray-500 text-center">No plans found</p>
@@ -423,7 +424,7 @@ export default function CreatePlanPage() {
                       <X
                         onClick={() => handleDeleteTask(plan._id)}
                         size={20}
-                        className=" text-red-500"
+                        className=" text-gray-500"
                       />
                     </div>
                     <div className="flex justify-between items-center mb-2">
@@ -431,7 +432,7 @@ export default function CreatePlanPage() {
                         {plan.name}
                       </h2>
                       <span
-                        className={`px-3 py-2 text-xs rounded-full ${
+                        className={`px-3 py-1 mt-3 text-xs rounded-full ${
                           plan.access === "public"
                             ? "bg-green-100 text-green-700"
                             : "bg-gray-100 text-gray-700"
@@ -470,20 +471,20 @@ export default function CreatePlanPage() {
                 ))
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
-          {mode === "backlogplans" && (
+        {mode === "backlogplans" && (
+          <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
             <div className="grid gap-4">
               {plans.length === 0 ? (
-                <p className="text-gray-500 text-center">No plans found</p>
+                <p className="text-gray-500 text-center">No Backlog found</p>
               ) : (
                 <h1>hi</h1>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );
