@@ -117,12 +117,16 @@ export default function CreatePlanPage() {
     if (!confirmed) return;
 
     try {
-      await api.delete(`/plans/${id}`);
+      await api.delete(`/plans/deleteplans/${id}`);
+
       const updated = plans.filter((t) => t._id !== id);
       setPlans(updated);
       setSectionsData(groupByAdmin(updated));
+
+      toast.success("Plan deleted successfully");
     } catch (err) {
-      console.error("Failed to delete plans", err);
+      console.error("Delete error:", err);
+      toast.error("Failed to delete plan");
     }
   };
 
