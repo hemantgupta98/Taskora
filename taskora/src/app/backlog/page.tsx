@@ -50,7 +50,6 @@ export default function BacklogMobile() {
         ))}
       </section>
 
-      {/* Floating Action Button */}
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-blue-600 text-white text-2xl shadow-lg"
