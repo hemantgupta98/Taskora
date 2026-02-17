@@ -32,7 +32,6 @@ export default function BacklogMobile() {
         </button>
       </header>
 
-      {/* Search + Filters */}
       <div className="p-4 space-y-3">
         <input
           placeholder="Search backlog…"
@@ -41,7 +40,6 @@ export default function BacklogMobile() {
         <FilterChips />
       </div>
 
-      {/* Backlog List */}
       <section className="px-4 space-y-4">
         <h2 className="text-sm font-medium text-red-600">
           🔴 High Priority (1)
