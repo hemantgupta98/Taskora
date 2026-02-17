@@ -1,22 +1,17 @@
 import mongoose from "mongoose";
 
-const createTask = new mongoose.Schema(
+const createBacklog = new mongoose.Schema(
   {
     admin: { type: String, required: true },
     title: { type: String, required: true },
     descripition: { type: String, required: true },
     priority: { type: String, required: true },
-    startDate: { type: Number, required: true },
-    assign: { type: String, required: true },
-    category: { type: String, required: true },
+    feature: { type: String, required: true },
     status: { type: String, required: true },
-    dueDate: { type: Number, required: true },
-    restrict: { type: String, required: true },
-    attachment: { type: String, required: false, default: "" },
   },
   { timestamps: true },
 );
 
-const task = mongoose.model("createTask", createTask);
+const backlog = mongoose.model("createBacklog", createBacklog);
 
-export default task;
+export default backlog;

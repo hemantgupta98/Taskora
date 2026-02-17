@@ -18,8 +18,9 @@ import {
 } from "lucide-react";
 
 type Data = {
+  admin: string;
   title: string;
-  description: string;
+  descripition: string;
   feature: string;
   priority: string;
   status: string;
@@ -47,7 +48,6 @@ export default function AddTaskSheet({
     reset,
     formState: { errors },
     control,
-    setValue,
   } = useForm<Data>({
     defaultValues: {
       feature: "select",
@@ -66,7 +66,7 @@ export default function AddTaskSheet({
   const onSubmit: SubmitHandler<Data> = async (data) => {
     console.log(data);
     try {
-      const url = "http://localhost:5000/api/backlog/userbacklog";
+      const url = "http://localhost:5000/api/backlog/createbacklog";
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -102,12 +102,28 @@ export default function AddTaskSheet({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-end">
+      <Toaster position="top-center" richColors />
       <div className="bg-white w-full rounded-t-3xl p-6 space-y-4">
         <form onSubmit={handleSubmit(onSubmit)} className=" space-y-5">
           <div className="flex justify-between items-center">
             <h2 className="font-semibold">Add Task</h2>
             <button onClick={onClose}>✕</button>
           </div>
+
+          <label className="mb-2 block text-sm font-medium text-gray-800">
+            Admin <span className="text-red-500">*</span>
+          </label>
+          <Input
+            placeholder="Task title"
+            className="w-full h-10 border rounded-lg px-3"
+            {...register("admin", { required: "Admin name is required" })}
+          />
+
+          {errors.admin && (
+            <p className="mt-2 ml-2 text-sm text-red-500">
+              {errors.admin.message}
+            </p>
+          )}
           <label className="mb-2 block text-sm font-medium text-gray-800">
             Ttile <span className="text-red-500">*</span>
           </label>
@@ -128,13 +144,13 @@ export default function AddTaskSheet({
           <Input
             placeholder="Description"
             className="w-full border rounded-lg px-3 py-2 mt-5"
-            {...register("description", {
+            {...register("descripition", {
               required: "Descripiton is required",
             })}
           />
-          {errors.description && (
+          {errors.descripition && (
             <p className="mt-2 ml-2 text-sm text-red-500">
-              {errors.description.message}
+              {errors.descripition.message}
             </p>
           )}
 
