@@ -29,7 +29,6 @@ type Section = {
 
 type Status = "todo" | "progress" | "done";
 
-// Maps task priority to a Tailwind border color class
 function getBorderColorForTask(priority?: string) {
   if (!priority) return "border-gray-300";
   if (priority === "high") return "border-red-500";
@@ -199,7 +198,6 @@ export default function ProjectPage() {
                           {formatMMDDYYYY(task.dueDate)}
                         </span>
 
-                        {/* Delete */}
                         <span>
                           <button
                             type="button"
