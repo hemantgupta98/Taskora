@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import TaskCard from "../../components/layout/taskcard";
-import FilterChips from "../../components/layout/filter";
 import AddTaskSheet from "../../components/layout/tasksheet";
 import { api } from "../../lib/socket";
+import Input from "@/src/components/ui/input";
 
 type TaskItem = {
   _id: string;
@@ -28,7 +28,7 @@ const mapTaskItemToTask = (item: TaskItem) => ({
   type: item.feature,
   priority: item.priority,
   assignee: item.admin,
-  status: item.status,
+  estimate: item.status,
 });
 
 function groupByAdmin(list: TaskItem[]): Section[] {
@@ -44,15 +44,28 @@ function groupByAdmin(list: TaskItem[]): Section[] {
 export default function BacklogMobile() {
   const [open, setOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
-  const [sectionsData, setSectionsData] = useState<Section[]>([]);
+  const [, setSectionsData] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const filteredTasks = tasks.filter((task) => {
+    const query = search.toLowerCase();
+
+    return (
+      task.title.toLowerCase().includes(query) ||
+      task.description.toLowerCase().includes(query) ||
+      task.feature.toLowerCase().includes(query) ||
+      task.priority.toLowerCase().includes(query) ||
+      task.admin.toLowerCase().includes(query)
+    );
+  });
 
   const handleDeleteTask = async (id: string) => {
     const confirmed = window.confirm("Are you sure you want to delete this?");
     if (!confirmed) return;
 
     try {
-      await api.delete(`/backlog/${id}`);
+      await api.delete(`/backlog/deletebacklog/${id}`);
       const updated = tasks.filter((t) => t._id !== id);
       setTasks(updated);
       setSectionsData(groupByAdmin(updated));
@@ -92,26 +105,29 @@ export default function BacklogMobile() {
       </header>
 
       <div className="p-4 space-y-3">
-        <input
+        <Input
           placeholder="Search backlog…"
           className="w-full h-10 rounded-lg border px-3 text-sm"
+          label=""
+          value={search}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(e: any) => setSearch(e.target.value)}
         />
-        <FilterChips />
       </div>
 
-      <section className="px-4 space-y-4">
-        <h2 className="text-sm font-medium text-red-600">
-          🔴 High Priority (1)
-        </h2>
-
-        {tasks.map((task) => (
-          <TaskCard
-            key={task._id}
-            task={mapTaskItemToTask(task)}
-            onDelete={() => handleDeleteTask(task._id)}
-          />
-        ))}
-      </section>
+      <div className="px-4 space-y-4">
+        {filteredTasks.length === 0 ? (
+          <p className="text-gray-500 text-center">No Backlog found</p>
+        ) : (
+          filteredTasks.map((task) => (
+            <TaskCard
+              key={task._id}
+              task={mapTaskItemToTask(task)}
+              onDelete={() => handleDeleteTask(task._id)}
+            />
+          ))
+        )}
+      </div>
 
       <button
         onClick={() => setOpen(true)}

@@ -20,7 +20,7 @@ import {
 type Data = {
   admin: string;
   title: string;
-  descripition: string;
+  description: string;
   feature: string;
   priority: string;
   status: string;
@@ -144,13 +144,13 @@ export default function AddTaskSheet({
           <Input
             placeholder="Description"
             className="w-full border rounded-lg px-3 py-2 mt-5"
-            {...register("descripition", {
+            {...register("description", {
               required: "Descripiton is required",
             })}
           />
-          {errors.descripition && (
+          {errors.description && (
             <p className="mt-2 ml-2 text-sm text-red-500">
-              {errors.descripition.message}
+              {errors.description.message}
             </p>
           )}
 
