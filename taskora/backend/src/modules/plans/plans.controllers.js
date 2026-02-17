@@ -8,6 +8,7 @@ const allowedFields = [
   "dueDate",
   "board",
   "status",
+  "teamMembers",
 ];
 
 export const createPlans = async (req, res) => {
@@ -16,10 +17,19 @@ export const createPlans = async (req, res) => {
     for (const key of allowedFields) {
       if (req.body[key] !== undefined) data[key] = req.body[key];
     }
+
+    if (typeof data.teamMembers === "string") {
+      data.teamMembers = [data.teamMembers];
+    }
+
     const plans = await planModel.create(data);
     return res.status(200).json({ success: true, data: plans });
   } catch (error) {
     console.log("Error in creating plans", error.message);
+    return res.status(400).json({
+      success: false,
+      message: error?.message || "Failed to create plan",
+    });
   }
 };
 
@@ -80,7 +90,7 @@ export const deletePlan = async (req, res) => {
 export const updatePlanStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, confirmDone } = req.body;
 
     if (!["todo", "progress", "done"].includes(status)) {
       return res.status(400).json({
@@ -104,11 +114,12 @@ export const updatePlanStatus = async (req, res) => {
       (today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
     );
 
-    // ❌ cannot mark done if overdue more than 1 day
-    if (status === "done" && diffDays > 1) {
-      return res.status(400).json({
+    if (status === "done" && diffDays > 1 && !confirmDone) {
+      return res.status(200).json({
         success: false,
-        message: "Overdue plan cannot be marked as done",
+        confirmRequired: true,
+        message:
+          "This plan is overdue. If your work is completed, please confirm.",
       });
     }
 
@@ -117,6 +128,7 @@ export const updatePlanStatus = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      message: "Plan status updated successfully",
       data: plan,
     });
   } catch (error) {
@@ -127,7 +139,6 @@ export const updatePlanStatus = async (req, res) => {
     });
   }
 };
-
 export const getBacklogPlans = async (req, res) => {
   try {
     const today = new Date();
@@ -153,6 +164,7 @@ export const getBacklogPlans = async (req, res) => {
         startDate: plan.startDate,
         dueDate: plan.dueDate,
         status: plan.status,
+        teamMembers: plan.teamMembers,
         pendingDays,
       };
     });

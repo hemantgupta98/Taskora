@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { Toaster, toast } from "sonner";
@@ -156,7 +156,6 @@ export default function CreatePlanPage() {
     fetchPlans();
   }, []);
 
-  // Show a one-time popup + refresh when user opens View Plans and there are no plans
   useEffect(() => {
     try {
       if (mode === "viewplans" && !loading) {
@@ -165,7 +164,7 @@ export default function CreatePlanPage() {
           // notify user and refresh once
           toast("No plans found — refreshing the page once");
           localStorage.setItem("viewplans_popup_shown", "1");
-          // slight delay so user sees the toast
+
           setTimeout(() => {
             window.location.reload();
           }, 1400);
@@ -178,12 +177,38 @@ export default function CreatePlanPage() {
   const updateStatus = async (plan: Data, value: PlanStatus) => {
     const today = new Date();
     const due = new Date(plan.dueDate);
+
     const diffDays = Math.floor(
       (today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (value === "done" && diffDays > 1) {
-      toast.error("This plan is overdue. You cannot mark it as done.");
+      toast("This plan is overdue. Is your work completed?", {
+        action: {
+          label: "Yes, Done",
+          onClick: async () => {
+            try {
+              await api.patch(`/plans/update-status/${plan._id}`, {
+                status: "done",
+                confirmDone: true,
+              });
+
+              setPlans((prev) =>
+                prev.map((p) =>
+                  p._id === plan._id ? { ...p, status: "done" } : p,
+                ),
+              );
+
+              toast.success("Plan marked as done");
+            } catch (err: any) {
+              toast.error(
+                err?.response?.data?.message || "Failed to update status",
+              );
+            }
+          },
+        },
+      });
+
       return;
     }
 
@@ -197,14 +222,12 @@ export default function CreatePlanPage() {
       );
 
       toast.success("Status updated");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Update failed");
     }
   };
 
   if (loading) return <p>Loading...</p>;
-
   return (
     <>
       <Toaster richColors position="top-center" />
@@ -254,7 +277,6 @@ export default function CreatePlanPage() {
               <span className="text-red-500">*</span>
             </p>
 
-            {/* Name */}
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="mb-6">
                 <label className="mb-1 block text-sm font-medium text-gray-800">
@@ -310,7 +332,6 @@ export default function CreatePlanPage() {
                           </span>
                         ))}
 
-                        {/* Input */}
                         <Input
                           value={input}
                           onChange={(e: any) => setInput(e.target.value)}
@@ -328,7 +349,6 @@ export default function CreatePlanPage() {
                         />
                       </div>
 
-                      {/* Error */}
                       {fieldState.error && (
                         <p className="text-sm text-red-500 mt-1">
                           {fieldState.error.message}
@@ -497,7 +517,7 @@ export default function CreatePlanPage() {
                             </SelectItem>
                             <SelectItem value="board">Board</SelectItem>
                             <SelectItem value="project">Project</SelectItem>
-                            <SelectItem value="filter">Filter</SelectItem>
+                            <SelectItem value="plans">Plans</SelectItem>
                           </SelectContent>
                         </Select>
                       )}
@@ -637,8 +657,14 @@ export default function CreatePlanPage() {
                   <p>
                     <b>Due:</b> {new Date(plan.dueDate).toDateString()}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    ⚠ Overdue Plan
+                  <p
+                    className={`text-sm font-medium ${
+                      plan.status === "done" ? "text-green-600" : "text-red-500"
+                    }`}
+                  >
+                    {plan.status === "done"
+                      ? "✅ Plan work completed"
+                      : "⚠ Overdue Plan"}
                   </p>
                 </div>
               ))}
