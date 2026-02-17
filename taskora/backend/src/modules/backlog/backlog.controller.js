@@ -6,6 +6,8 @@ const allowedFields = [
   "description",
   "priority",
   "status",
+  "startDate",
+  "dueDate",
   "feature",
 ];
 
@@ -78,7 +80,7 @@ export const deleteBacklog = async (req, res) => {
   }
 };
 
-export const updatePlanStatus = async (req, res) => {
+export const updateBacklogStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, confirmDone } = req.body;

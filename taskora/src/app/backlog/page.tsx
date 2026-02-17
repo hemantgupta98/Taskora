@@ -12,7 +12,8 @@ type TaskItem = {
   description: string;
   feature: string;
   priority: string;
-  status: string;
+  dueDate: number;
+  startDate: number;
   admin: string;
   delete?: boolean;
 };
@@ -23,12 +24,15 @@ type Section = {
 };
 
 const mapTaskItemToTask = (item: TaskItem) => ({
+  _id: item._id,
   title: item.title,
   description: item.description,
   type: item.feature,
   priority: item.priority,
   assignee: item.admin,
-  estimate: item.status,
+  dueDate: item.dueDate,
+  startDate: item.startDate,
+  estimate: "todo" as const,
 });
 
 function groupByAdmin(list: TaskItem[]): Section[] {

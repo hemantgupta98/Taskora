@@ -2,6 +2,8 @@
 import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import { forwardRef, useState } from "react";
+import { Calendar } from "../ui/calendar";
+import { format } from "date-fns";
 import {
   Select,
   SelectContent,
@@ -9,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 
 import {
   ChevronDownIcon,
@@ -23,7 +27,8 @@ type Data = {
   description: string;
   feature: string;
   priority: string;
-  status: string;
+  startDate: number;
+  dueDate: number;
 };
 
 type Status = "todo" | "progress" | "done";
@@ -41,18 +46,19 @@ export default function AddTaskSheet({
   open: boolean;
   onClose: () => void;
 }) {
-  const [status, setStatus] = useState<Status>("todo");
+  const [startDate, setStartDate] = useState<Date>();
+  const [dueDate, setDueDate] = useState<Date>();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
     control,
+    setValue,
   } = useForm<Data>({
     defaultValues: {
       feature: "select",
       priority: "select",
-      status: "todo",
     },
   });
 
@@ -154,6 +160,84 @@ export default function AddTaskSheet({
             </p>
           )}
 
+          <div className=" grid space-y-1">
+            <label className="text-md font-medium text-gray-700">
+              Start date <span className="text-red-500">*</span>
+            </label>
+            <Popover>
+              <PopoverTrigger asChild className="w-full md:w-[320px]">
+                <Button
+                  variant="outline"
+                  data-empty={!startDate}
+                  className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                  {...register("startDate", {
+                    required: "Date should be mandatory",
+                  })}
+                >
+                  {startDate ? (
+                    format(startDate, "PPP")
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                  <ChevronDownIcon />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={(d) => {
+                    setStartDate(d ?? undefined);
+                    if (d) setValue("startDate", d.getTime());
+                  }}
+                  defaultMonth={startDate}
+                />
+              </PopoverContent>
+            </Popover>
+            {errors.startDate && (
+              <p className="mt-2 ml-2 text-sm text-red-500">
+                {errors.startDate.message}
+              </p>
+            )}
+          </div>
+
+          <div className=" grid space-y-1 mt-5 mb-5">
+            <label className="text-md font-medium text-gray-700">
+              Complete date <span className="text-red-500">*</span>
+            </label>
+            <Popover>
+              <PopoverTrigger asChild className="w-full md:w-[320px]">
+                <Button
+                  variant="outline"
+                  data-empty={!dueDate}
+                  className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                  {...register("dueDate", {
+                    required: "Date should be mandatory",
+                  })}
+                >
+                  {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
+                  <ChevronDownIcon />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dueDate}
+                  onSelect={(d) => {
+                    setDueDate(d ?? undefined);
+                    if (d) setValue("dueDate", d.getTime());
+                  }}
+                  defaultMonth={dueDate}
+                />
+              </PopoverContent>
+            </Popover>
+            {errors.dueDate && (
+              <p className="mt-2 ml-2 text-sm text-red-500">
+                {errors.dueDate.message}
+              </p>
+            )}
+          </div>
+
           <div className="relative space-y-5">
             <label className="mb-2 block text-sm font-medium text-gray-800">
               Feature&apos;s <span className="text-red-500">*</span>
@@ -249,57 +333,6 @@ export default function AddTaskSheet({
                 </p>
               )}
             </div>
-          </div>
-
-          <div className="space-y-1">
-            <label className="mb-2 block text-sm font-medium text-gray-800">
-              Status <span className="text-red-500">*</span>
-            </label>
-            <Controller
-              name="status"
-              control={control}
-              rules={{
-                required: "This field is required",
-              }}
-              render={({ field }) => (
-                <Select
-                  value={field.value}
-                  onValueChange={(v) => {
-                    setStatus(v as Status);
-                    field.onChange(v);
-                  }}
-                  onOpenChange={() => {
-                    field.onBlur();
-                  }}
-                >
-                  <SelectTrigger
-                    className={`w-full h-10 border rounded-lg px-3 ${
-                      errors.status ? "border-red-500" : ""
-                    } ${statusStyles[status]}`}
-                  >
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                    {statusCode.map((e) => (
-                      <SelectItem
-                        key={e.value}
-                        value={e.value}
-                        className={statusStyles[e.value]}
-                      >
-                        {e.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-
-            {errors.status && (
-              <p className="mt-2 ml-2 text-sm text-red-500">
-                {errors.status.message}
-              </p>
-            )}
           </div>
 
           <button
