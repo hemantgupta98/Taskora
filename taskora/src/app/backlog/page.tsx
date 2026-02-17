@@ -32,7 +32,10 @@ const mapTaskItemToTask = (item: TaskItem) => ({
   assignee: item.admin,
   dueDate: item.dueDate,
   startDate: item.startDate,
-  estimate: "todo" as const,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  estimate: "not_estimated" as any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  status: "backlog" as any,
 });
 
 function groupByAdmin(list: TaskItem[]): Section[] {

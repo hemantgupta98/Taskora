@@ -20,6 +20,7 @@ type Task = {
   startDate: number;
   estimate: PlanStatus;
   assignee?: string;
+  status: PlanStatus;
 };
 
 type PlanStatus = "todo" | "progress" | "done";
