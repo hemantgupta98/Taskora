@@ -7,7 +7,6 @@ import {
   KanbanSquare,
   WorkflowIcon,
   Users,
-  Puzzle,
   Settings,
   HelpCircle,
   LogOut,
@@ -19,7 +18,6 @@ import {
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Project Board", href: "/project", icon: KanbanSquare },
-  { name: "Sprint & Timeline", href: "/timeline", icon: Puzzle },
   { name: "Pendings", href: "/duetask", icon: Workflow },
   { name: "Team", href: "/team", icon: Users },
   { name: "Backlog", href: "/backlog", icon: WorkflowIcon },
