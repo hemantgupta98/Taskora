@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TaskCard from "../../components/layout/taskcard";
+import TaskCard, { PlanStatus } from "../../components/layout/taskcard";
 import AddTaskSheet from "../../components/layout/tasksheet";
 import { api } from "../../lib/socket";
 import Input from "@/src/components/ui/input";
@@ -15,6 +15,7 @@ type TaskItem = {
   dueDate: number;
   startDate: number;
   admin: string;
+  status: PlanStatus;
   delete?: boolean;
 };
 
@@ -34,8 +35,7 @@ const mapTaskItemToTask = (item: TaskItem) => ({
   startDate: item.startDate,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   estimate: "not_estimated" as any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  status: "backlog" as any,
+  status: item.status || "todo",
 });
 
 function groupByAdmin(list: TaskItem[]): Section[] {
@@ -100,9 +100,17 @@ export default function BacklogMobile() {
 
   if (loading) return <p>Loading...</p>;
 
+  function handleStatusChange(id: string, status: PlanStatus): void {
+    setTasks((prev) =>
+      prev.map((task) => (task._id === id ? { ...task, status } : task)),
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 pb-24">
-      {/* Top Bar */}
+      <p className=" text-xs m-2  text-zinc-400 ">
+        If backlog doesn&apos;t show then refresh the page
+      </p>
       <header className="sticky top-0 z-10 bg-white border-b px-4 h-14 flex items-center justify-between">
         <span className="text-sm font-medium">Beyond Gravity</span>
         <h1 className="text-base font-semibold">Backlog</h1>
@@ -121,7 +129,6 @@ export default function BacklogMobile() {
           onChange={(e: any) => setSearch(e.target.value)}
         />
       </div>
-
       <div className="px-4 space-y-4">
         {filteredTasks.length === 0 ? (
           <p className="text-gray-500 text-center">No Backlog found</p>
@@ -131,6 +138,7 @@ export default function BacklogMobile() {
               key={task._id}
               task={mapTaskItemToTask(task)}
               onDelete={() => handleDeleteTask(task._id)}
+              onStatusChange={handleStatusChange}
             />
           ))
         )}

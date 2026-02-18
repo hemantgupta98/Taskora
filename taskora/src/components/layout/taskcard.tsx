@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+
 import { api } from "../../lib/socket";
 import { Toaster, toast } from "sonner";
 import {
@@ -9,31 +9,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useState } from "react";
 
-type Task = {
+export type PlanStatus = "todo" | "progress" | "done";
+
+export type Task = {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
   type: string;
   priority: string;
   dueDate: number;
   startDate: number;
-  estimate: PlanStatus;
   assignee?: string;
   status: PlanStatus;
 };
 
-type PlanStatus = "todo" | "progress" | "done";
-
-export default function TaskCard({
-  task,
-  onDelete,
-}: {
+type Props = {
   task: Task;
   onDelete?: () => void;
-}) {
-  const [, setPlans] = useState<Task[]>([]);
+  onStatusChange: (id: string, status: PlanStatus) => void;
+};
 
+export default function TaskCard({ task, onDelete, onStatusChange }: Props) {
+  const [tasks, setTasks] = useState<Task[]>([]);
   const updateStatus = async (plan: Task, value: PlanStatus) => {
     const today = new Date();
     const due = new Date(plan.dueDate);
@@ -42,6 +41,7 @@ export default function TaskCard({
       (today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
     );
 
+    // 🚨 Overdue confirmation
     if (value === "done" && diffDays > 1) {
       toast("This plan is overdue. Is your work completed?", {
         action: {
@@ -53,12 +53,7 @@ export default function TaskCard({
                 confirmDone: true,
               });
 
-              setPlans((prev) =>
-                prev.map((p) =>
-                  p._id === plan._id ? { ...p, status: "done" } : p,
-                ),
-              );
-
+              onStatusChange(plan._id, "done");
               toast.success("Plan marked as done");
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (err: any) {
@@ -69,94 +64,110 @@ export default function TaskCard({
           },
         },
       });
-
       return;
     }
 
+    // ✅ Normal status update
     try {
       await api.patch(`/backlog/update-status/${plan._id}`, {
         status: value,
       });
 
-      setPlans((prev) =>
-        prev.map((p) => (p._id === plan._id ? { ...p, status: value } : p)),
-      );
-
+      onStatusChange(plan._id, value);
       toast.success("Status updated");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Update failed");
     }
   };
+
+  const handleStatusChange = (id: string, status: PlanStatus) => {
+    setTasks((prev) =>
+      prev.map((task) => (task._id === id ? { ...task, status } : task)),
+    );
+  };
+
+  const handleDelete = (id: string) => {
+    setTasks((prev) => prev.filter((task) => task._id !== id));
+  };
+
   return (
-    <div className="bg-white  p-4 rounded-2xl border shadow-2xl ">
+    <div className="bg-white p-4 rounded-2xl border shadow-md">
+      <Toaster position="top-center" richColors />
+
+      {/* Header */}
       <div className="flex justify-between items-start">
-        <Toaster position="top-center" richColors />
         <p>
-          Feature :{" "}
+          Feature:{" "}
           <span className="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-700">
             {task.type}
           </span>
         </p>
-        <span className="text-slate-400">
-          {onDelete && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete();
-              }}
-              className="text-red-500 text-xs hover:underline"
-            >
-              Delete
-            </button>
-          )}
-        </span>
-      </div>
-      <span className=" mt-2 mb-2">
-        {task.assignee && <span>👤 {task.assignee}</span>}
-      </span>
 
-      <h3 className="mt-2  text-sm text-slate-500">
-        {" "}
+        {onDelete && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            className="text-red-500 text-xs hover:underline"
+          >
+            Delete
+          </button>
+        )}
+      </div>
+
+      {/* Assignee */}
+      {task.assignee && (
+        <p className="mt-2 text-sm text-slate-600">👤 {task.assignee}</p>
+      )}
+
+      {/* Title */}
+      <h3 className="mt-2 text-sm text-slate-500">
         Title:{" "}
-        <span className="font-semibold text-slate-900 ">
-          {" "}
-          {task.title}
-        </span>{" "}
+        <span className="font-semibold text-slate-900">{task.title}</span>
       </h3>
+
+      {/* Description */}
       {task.description && (
         <p className="mt-1 text-sm text-slate-600">
-          Descripition: {task.description}
+          Description: {task.description}
         </p>
       )}
+
+      {/* Dates */}
       {task.startDate && (
-        <p className="mt-1 text-sm text-slate-600">Start:{task.startDate}</p>
+        <p className="mt-1 text-sm text-slate-600">
+          Start: {new Date(task.startDate).toDateString()}
+        </p>
       )}
+
       {task.dueDate && (
-        <p className="mt-1 text-sm text-slate-600">Complete:{task.dueDate}</p>
+        <p className="mt-1 text-sm text-slate-600">
+          Complete: {new Date(task.dueDate).toDateString()}
+        </p>
       )}
 
-      <div className="flex flex-wrap gap-3 mt-3 text-sm text-slate-500">
-        {task.estimate && (
-          <span>
-            Progress:{" "}
-            <Select
-              value={task.estimate}
-              onValueChange={(value) => updateStatus(task, value as PlanStatus)}
-            >
-              <SelectTrigger className="w-40 mt-5">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todo">To Do</SelectItem>
-                <SelectItem value="progress">Progress</SelectItem>
-                <SelectItem value="done">Done</SelectItem>
-              </SelectContent>
-            </Select>
-          </span>
-        )}
+      {/* Status & Priority */}
+      <div className="flex flex-wrap gap-4 mt-4 text-sm text-slate-500 items-center">
+        <span>
+          Status:
+          <Select
+            value={task.status}
+            onValueChange={(value) => updateStatus(task, value as PlanStatus)}
+          >
+            <SelectTrigger className="w-36 ml-2">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todo">To Do</SelectItem>
+              <SelectItem value="progress">In Progress</SelectItem>
+              <SelectItem value="done">Done</SelectItem>
+            </SelectContent>
+          </Select>
+        </span>
 
-        {task.priority && <span>Priority: {task.priority}</span>}
+        <span>Priority: {task.priority}</span>
       </div>
     </div>
   );
