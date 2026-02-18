@@ -5,11 +5,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const user = async (req, res) => {
-  const { role, email } = req.body;
+  const { teamMembers, email } = req.body;
 
   try {
     const savedUser = await inviteModel.create({
-      role,
+      teamMembers,
       email,
     });
     res.status(201).json({
@@ -25,10 +25,19 @@ export const user = async (req, res) => {
 };
 
 export const sendInvite = async (req, res) => {
-  const { email } = req.body;
+  const { email, teamMembers } = req.body;
   const link = "http://localhost:3000/acceptInvite";
+
+  if (!Array.isArray(teamMembers) || teamMembers.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "teamMembers is required",
+    });
+  }
+
   try {
-    const sent = await sendLink(email, link);
+    await inviteModel.create({ teamMembers, email });
+    const sent = await sendLink(email, link, teamMembers);
     if (sent) {
       return res
         .status(200)

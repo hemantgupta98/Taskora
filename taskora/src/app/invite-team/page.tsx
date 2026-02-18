@@ -1,32 +1,37 @@
 "use client";
 
 import { X, Send, Copy } from "lucide-react";
-import { useState } from "react";
-import { toast, Toaster } from "sonner";
-import Input from "../../components/ui/input";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
+  forwardRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
+import { toast, Toaster } from "sonner";
+import LabeledInput from "../../components/ui/input";
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
 
 type Invite = {
   email: string;
-  role: string;
+
+  teamMembers: string[];
 };
 
 export default function InviteTeamModal() {
   const [open, setOpen] = useState(true);
+  const [input, setInput] = useState("");
   const {
     register,
     reset,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<Invite>();
+  } = useForm<Invite>({
+    defaultValues: {
+      email: "",
+      teamMembers: [],
+    },
+  });
 
   const teamLink = "http://taskora.com/join/team-abc-123";
 
@@ -92,40 +97,77 @@ export default function InviteTeamModal() {
         <div className="p-6 space-y-6">
           {/* Role */}
           <form onSubmit={handleSubmit(onsubmit)}>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Select Role</label>
+            <div className=" mt-2 mb-4">
+              <label className="mb-1 block text-sm font-medium text-gray-800">
+                Role<span className="text-red-500">*</span>
+              </label>
               <Controller
-                name="role"
+                name="teamMembers"
                 control={control}
-                rules={{ required: "Role is required" }}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full md:w-[320px]">
-                      <SelectValue
-                        defaultValue="select"
-                        placeholder="Select Roles"
+                rules={{
+                  validate: (value) =>
+                    (value?.length ?? 0) > 0 || "Add at least one team member",
+                }}
+                render={({ field, fieldState }) => (
+                  <div className="w-full md:w-[320px]">
+                    <div
+                      className={`flex flex-wrap gap-2 rounded-md border px-3 py-2 min-h-10.5
+                        ${fieldState.error ? "border-red-500" : "border-input"}
+                      `}
+                    >
+                      {(field.value ?? []).map((member, index) => (
+                        <span
+                          key={index}
+                          className="flex items-center gap-1 bg-muted px-2 py-1 rounded text-sm"
+                        >
+                          {member}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              field.onChange(
+                                field.value.filter((_, i) => i !== index),
+                              )
+                            }
+                          >
+                            <X size={14} />
+                          </button>
+                        </span>
+                      ))}
+
+                      <Input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                          if (e.key === "Enter" && input.trim()) {
+                            e.preventDefault();
+                            if (!(field.value ?? []).includes(input.trim())) {
+                              field.onChange([
+                                ...(field.value ?? []),
+                                input.trim(),
+                              ]);
+                            }
+                            setInput("");
+                          }
+                        }}
+                        placeholder="Enter team roles"
+                        className="flex-1 outline-none bg-transparent text-sm min-w-30"
                       />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="viewer">Viewer</SelectItem>
-                      <SelectItem value="editor">Editor</SelectItem>
-                      <SelectItem value="management">Management</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    </div>
+
+                    {fieldState.error && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
                 )}
               />
-              {errors.role && (
-                <p className="text-red-500 text-sm mt-1 ml-1">
-                  {errors.role.message}
-                </p>
-              )}
             </div>
-
             {/* Invite by Email */}
             <div className="border rounded-xl p-4 space-y-3">
               <h3 className="font-medium">Invite by Email</h3>
               <div className="space-y-1">
-                <Input
+                <LabeledInput
                   {...register("email", { required: "Gmail is required" })}
                   placeholder="e.g. jane.doe@example.com, john.smith@example.com"
                   className="w-full border rounded-lg px-3 py-2 text-sm"
@@ -191,3 +233,22 @@ export default function InviteTeamModal() {
     </div>
   );
 }
+
+type ChipInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  icon?: ReactNode;
+};
+
+const Input = forwardRef<HTMLInputElement, ChipInputProps>(
+  ({ icon, className = "", ...props }, ref) => (
+    <div className="flex items-center gap-3 border rounded-lg px-4 py-2">
+      {icon && <span className="text-gray-400">{icon}</span>}
+      <input
+        ref={ref}
+        {...props}
+        className={`w-full outline-none text-sm ${className}`}
+      />
+    </div>
+  ),
+);
+
+Input.displayName = "Input";

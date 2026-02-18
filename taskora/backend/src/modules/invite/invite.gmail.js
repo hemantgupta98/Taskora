@@ -10,13 +10,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendLink = async (email, link) => {
+export const sendLink = async (email, link, teamMembers = []) => {
   try {
+    const membersText = Array.isArray(teamMembers)
+      ? teamMembers.join(", ")
+      : String(teamMembers || "");
+
     const mailOption = {
       from: `"Taskora" <${process.env.EMAIL_APP_USER}>`,
       to: email,
       subject: "You're Invited to Join the Team",
-      text: `You have been invited to join a team on Taskora. Use the link below to accept the invitation: ${link}`,
+      text: `You have been invited to join a team on Taskora for these team members: ${membersText}. Use the link below to accept the invitation: ${link}`,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; ;">
 
@@ -26,7 +30,7 @@ export const sendLink = async (email, link) => {
       <p>Hello,</p>
 
       <p>
-        You have been invited to join a team on <strong>Taskora</strong>.
+        You have been invited to join a team on <strong>Taskora</strong> on this role <b>${membersText}</b>.
         Click the button below to accept your invitation and get started.
       </p>
 
