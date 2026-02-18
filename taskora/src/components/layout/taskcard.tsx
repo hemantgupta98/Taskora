@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useState } from "react";
 
 export type PlanStatus = "todo" | "progress" | "done";
 
@@ -32,46 +31,40 @@ type Props = {
 };
 
 export default function TaskCard({ task, onDelete, onStatusChange }: Props) {
-  const [tasks, setTasks] = useState<Task[]>([]);
   const updateStatus = async (plan: Task, value: PlanStatus) => {
-    const today = new Date();
-    const due = new Date(plan.dueDate);
-
-    const diffDays = Math.floor(
-      (today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
-    );
-
-    // 🚨 Overdue confirmation
-    if (value === "done" && diffDays > 1) {
-      toast("This plan is overdue. Is your work completed?", {
-        action: {
-          label: "Yes, Done",
-          onClick: async () => {
-            try {
-              await api.patch(`/backlog/update-status/${plan._id}`, {
-                status: "done",
-                confirmDone: true,
-              });
-
-              onStatusChange(plan._id, "done");
-              toast.success("Plan marked as done");
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (err: any) {
-              toast.error(
-                err?.response?.data?.message || "Failed to update status",
-              );
-            }
-          },
-        },
-      });
-      return;
-    }
-
-    // ✅ Normal status update
     try {
-      await api.patch(`/backlog/update-status/${plan._id}`, {
+      const response = await api.patch(`/backlog/update-status/${plan._id}`, {
         status: value,
       });
+
+      if (response?.data?.confirmRequired) {
+        toast(
+          response?.data?.message ||
+            "This plan is overdue. If your work is completed, please confirm.",
+          {
+            action: {
+              label: "Yes, Done",
+              onClick: async () => {
+                try {
+                  await api.patch(`/backlog/update-status/${plan._id}`, {
+                    status: "done",
+                    confirmDone: true,
+                  });
+
+                  onStatusChange(plan._id, "done");
+                  toast.success("Plan marked as done");
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } catch (err: any) {
+                  toast.error(
+                    err?.response?.data?.message || "Failed to update status",
+                  );
+                }
+              },
+            },
+          },
+        );
+        return;
+      }
 
       onStatusChange(plan._id, value);
       toast.success("Status updated");
@@ -79,16 +72,6 @@ export default function TaskCard({ task, onDelete, onStatusChange }: Props) {
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Update failed");
     }
-  };
-
-  const handleStatusChange = (id: string, status: PlanStatus) => {
-    setTasks((prev) =>
-      prev.map((task) => (task._id === id ? { ...task, status } : task)),
-    );
-  };
-
-  const handleDelete = (id: string) => {
-    setTasks((prev) => prev.filter((task) => task._id !== id));
   };
 
   return (

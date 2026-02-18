@@ -170,7 +170,7 @@ export default function CreatePlanPage() {
           }, 1400);
         }
       }
-    } catch (err) {}
+    } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, loading]);
 
@@ -676,7 +676,6 @@ export default function CreatePlanPage() {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Input = forwardRef<HTMLInputElement, any>(
   ({ icon, className = "", ...props }, ref) => (
     <div className="flex items-center gap-3 border rounded-lg px-4 py-2">
