@@ -12,7 +12,7 @@ type TeamMember = {
   phone: number | string;
   status: "online" | "away" | "busy" | "offline";
   avatar: string;
-  role: string;
+  teamMember: string;
 };
 
 export default function TeamManagementPage() {
@@ -28,14 +28,30 @@ export default function TeamManagementPage() {
 
         const apiData = res.data.data;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const formattedMembers: TeamMember[] = apiData.map((user: any) => ({
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          status: "online",
-          avatar: "/logo.png",
-        }));
+        const formattedMembers: TeamMember[] = await Promise.all(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          apiData.map(async (user: any) => {
+            let teamMember = "";
+
+            try {
+              const teamMemberRes = await api.get("/accept/team-member", {
+                params: { email: user.email },
+              });
+              teamMember = teamMemberRes?.data?.data?.teamMember ?? "";
+            } catch (error) {
+              console.error("Failed to fetch invited team member", error);
+            }
+
+            return {
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+              status: "online",
+              avatar: "/logo.png",
+              teamMember,
+            };
+          }),
+        );
 
         setMembers(formattedMembers);
       } catch (error) {
@@ -122,7 +138,7 @@ function MemberCard({ member }: { member: TeamMember }) {
         <div>
           <p className="font-medium">{member.name}</p>
           <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full text-gray-600">
-            {member.role}
+            {member.teamMember}
           </span>
         </div>
       </div>

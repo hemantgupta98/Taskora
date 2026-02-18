@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import Input from "@/src/components/ui/input";
+import Input from "../../components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Toaster, toast } from "sonner";
+import { api } from "../../lib/socket";
 
 type Accept = {
   name: string;
@@ -12,16 +13,66 @@ type Accept = {
   email: string;
   password: string;
   confirmpassword: string;
+  teamMembers: string;
 };
 
 export default function AcceptInvite() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [teamMemberRole, setTeamMemberRole] = useState("");
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
-  } = useForm<Accept>();
+  } = useForm<Accept>({
+    defaultValues: {
+      teamMembers: "",
+    },
+  });
+
+  const emailValue = watch("email");
+
+  useEffect(() => {
+    const email = emailValue?.trim();
+
+    if (!email) {
+      setValue("teamMembers", "");
+      setTeamMemberRole("");
+      return;
+    }
+
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValidEmail) {
+      setValue("teamMembers", "");
+      setTeamMemberRole("");
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const res = await api.get("/accept/team-member", {
+          params: { email },
+        });
+
+        const apiTeamMembers = res?.data?.data?.teamMembers;
+        const roleFromList = Array.isArray(apiTeamMembers)
+          ? apiTeamMembers.join(", ")
+          : "";
+
+        const role = roleFromList || res?.data?.data?.teamMember || "";
+        setValue("teamMembers", role);
+        setTeamMemberRole(role);
+      } catch (error) {
+        console.error("Failed to fetch team member role", error);
+        setValue("teamMembers", "");
+        setTeamMemberRole("");
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [emailValue, setValue]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -65,6 +116,7 @@ export default function AcceptInvite() {
       toast.success("Account create successfully");
 
       reset();
+      setTeamMemberRole("");
     } catch (error) {
       console.error("AUTH ERROR 👉", error);
       toast.error("Server error. Please try again.");
@@ -113,6 +165,16 @@ export default function AcceptInvite() {
 
           {/* Form */}
           <div className="space-y-4">
+            <Input
+              type="text"
+              placeholder="Role will appear here"
+              label="Role"
+              value={teamMemberRole}
+              readOnly
+              className="bg-gray-100 text-gray-500 cursor-not-allowed"
+              {...register("teamMembers", {})}
+            />
+
             <Input
               type="text"
               placeholder="Full Name"

@@ -1,5 +1,6 @@
 import { findUserByEmail, User } from "./accept.service.js";
 import acceptModel from "./accept.model.js";
+import inviteModel from "../invite/invite.model.js";
 
 export const accept = async (req, res) => {
   const { name, phone, email, password, confirmpassword } = req.body;
@@ -48,4 +49,47 @@ export const getAcceptUsers = async (req, res) => {
   }
 };
 
-export default { accept, getAcceptUsers };
+export const getInvitedTeamMember = async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "email is required",
+    });
+  }
+
+  try {
+    const invite = await inviteModel
+      .findOne({ email: String(email).trim() })
+      .sort({ createdAt: -1 });
+
+    if (!invite) {
+      return res.status(404).json({
+        success: false,
+        message: "Invite not found",
+      });
+    }
+
+    const teamMembers = Array.isArray(invite.teamMembers)
+      ? invite.teamMembers
+      : [];
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        email: invite.email,
+        teamMember: teamMembers[0] ?? "",
+        teamMembers,
+      },
+    });
+  } catch (error) {
+    console.error("Fetch invited team member API error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export default { accept, getAcceptUsers, getInvitedTeamMember };
