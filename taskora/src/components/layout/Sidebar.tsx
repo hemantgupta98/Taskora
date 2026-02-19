@@ -38,7 +38,7 @@ export default function Sidebar() {
     <aside className="w-64 bg-white border-r flex flex-col cursor-pointer">
       <div
         onClick={() => router.replace("/empty")}
-        className="p-6 text-xl font-bold text-primary"
+        className="p-6 text-2xl font-bold text-primary"
       >
         Taskora
       </div>

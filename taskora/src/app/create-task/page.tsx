@@ -136,22 +136,14 @@ export default function CreateTaskPage() {
   };
   return (
     <>
-      <ScrollArea className=" h-180 m-30 border-2 rounded-md ">
+      <ScrollArea className="h-fit w-full max-w-full border-2 rounded-md">
         <Toaster richColors position="top-center" />
         <div className="min-h-screen bg-gray-50 p-6">
-          <div className="ml-auto  max-w-2xl rounded-xl bg-white p-8 shadow-sm">
+          <div className="w-full rounded-xl bg-white p-8 shadow-sm">
             <div className=" flex justify-between">
               <h1 className="text-2xl font-semibold text-gray-900">
                 Create New Task
               </h1>
-              <span>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="text-gray-500 mt-2"
-                >
-                  <X size={28} />
-                </button>
-              </span>
             </div>
 
             <p className="mt-1 text-sm text-gray-500">
