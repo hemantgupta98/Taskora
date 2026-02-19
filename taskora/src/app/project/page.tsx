@@ -5,6 +5,7 @@ import TaskDrawer from "../../components/Task/TaskDrawer";
 import { api } from "../../lib/socket";
 import { Flag } from "lucide-react";
 import { formatMMDDYYYY } from "../../lib/date";
+import Input from "@/src/components/ui/input";
 
 type TaskItem = {
   _id: string;
@@ -62,9 +63,26 @@ export default function ProjectPage() {
   const [open, setOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sectionsData, setSectionsData] = useState<Section[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredTasks = tasks.filter((task) => {
+    const query = search.toLowerCase();
+
+    return (
+      task._id.toLowerCase().includes(query) ||
+      task.assign.toLowerCase().includes(query) ||
+      task.status.toLowerCase().includes(query) ||
+      task.title.toLowerCase().includes(query) ||
+      task.descripition.toLowerCase().includes(query) ||
+      task.priority.toLowerCase().includes(query) ||
+      task.category.toLowerCase().includes(query) ||
+      task.admin.toLowerCase().includes(query)
+    );
+  });
+
+  const filteredSections = groupByAdmin(filteredTasks);
 
   const handleDeleteTask = async (id: string) => {
     const confirmed = window.confirm("Are you sure you want to delete this?");
@@ -74,7 +92,6 @@ export default function ProjectPage() {
       await api.delete(`/task/deleteplans/${id}`);
       const updated = tasks.filter((t) => t._id !== id);
       setTasks(updated);
-      setSectionsData(groupByAdmin(updated));
     } catch (err) {
       console.error("Failed to delete task", err);
     }
@@ -86,7 +103,6 @@ export default function ProjectPage() {
         const res = await api.get("/task");
         const list: TaskItem[] = res.data.data;
         setTasks(list);
-        setSectionsData(groupByAdmin(list));
       } catch (err) {
         console.error("Failed to fetch tasks", err);
       } finally {
@@ -102,12 +118,25 @@ export default function ProjectPage() {
   return (
     <>
       <div className="min-h-screen bg-gray-100 flex">
+        <div className="p-4 space-y-3">
+          <Input
+            placeholder="Search projects…"
+            className="w-full h-10 rounded-lg border px-3 text-sm"
+            label=""
+            value={search}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearch(e.target.value)
+            }
+          />
+        </div>
         <main className="flex-1 p-6">
           {tasks.length === 0 ? (
             <p>No tasks available.</p>
+          ) : filteredTasks.length === 0 ? (
+            <p>No matching tasks found.</p>
           ) : (
             <div className="space-y-10">
-              {sectionsData.map((section) => (
+              {filteredSections.map((section) => (
                 <div key={section.admin}>
                   <h3 className="text-sm font-semibold text-gray-600 mb-2">
                     {section.admin}

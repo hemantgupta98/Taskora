@@ -63,6 +63,21 @@ export default function CreatePlanPage() {
   const [plans, setPlans] = useState<Data[]>([]);
   const [loading, setLoading] = useState(true);
   const [input, setInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  const filteredTasks = plans.filter((task) => {
+    const query = search.toLowerCase();
+
+    return (
+      task._id.toLowerCase().includes(query) ||
+      task.status.toLowerCase().includes(query) ||
+      task.status.toLowerCase().includes(query) ||
+      task.access.toLowerCase().includes(query) ||
+      task.work.toLowerCase().includes(query) ||
+      task.board.toLowerCase().includes(query) ||
+      task.admin.toLowerCase().includes(query)
+    );
+  });
 
   const [mode, setMode] = useState<
     "createplans" | "viewplans" | "backlogplans"
@@ -250,6 +265,17 @@ export default function CreatePlanPage() {
         >
           Backlog Plans
         </button>
+      </div>
+      <div className="p-4 space-y-3">
+        <Input
+          placeholder="Search plans…"
+          className="w-full h-10 rounded-lg border px-3 text-sm"
+          label=""
+          value={search}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearch(e.target.value)
+          }
+        />
       </div>
       <div>
         {mode === "createplans" && (
@@ -565,10 +591,12 @@ export default function CreatePlanPage() {
         {mode === "viewplans" && (
           <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
             <div className="grid gap-4">
-              {plans.length === 0 ? (
-                <p className="text-gray-500 text-center">No plans found</p>
+              {filteredTasks.length === 0 ? (
+                <p className="text-gray-500 text-center">
+                  No matching plans found
+                </p>
               ) : (
-                plans.map((plan) => (
+                filteredTasks.map((plan) => (
                   <div
                     key={plan._id}
                     className="rounded-lg border bg-white p-4 shadow-md"
@@ -643,11 +671,14 @@ export default function CreatePlanPage() {
         {mode === "backlogplans" && (
           <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
             <div className="grid  gap-4">
-              {plans.length === 0 && (
-                <p className="text-gray-500 text-center"> No backlog plans!</p>
+              {filteredTasks.length === 0 && (
+                <p className="text-gray-500 text-center">
+                  {" "}
+                  No matching backlog plans!
+                </p>
               )}
 
-              {plans.map((plan) => (
+              {filteredTasks.map((plan) => (
                 <div key={plan._id} className="border rounded-lg p-4 space-y-2">
                   <h3 className="font-semibold text-red-500">{plan.name}</h3>
                   <p>{plan.work}</p>
