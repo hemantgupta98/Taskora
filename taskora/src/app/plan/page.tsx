@@ -246,7 +246,7 @@ export default function CreatePlanPage() {
   return (
     <>
       <Toaster richColors position="top-center" />
-      <div className="flex  gap-6 bg-white border shadow-xl rounded-lg p-4 w-fit">
+      <div className="flex w-full flex-wrap gap-3 rounded-lg border bg-white p-3 shadow-xl sm:w-fit sm:gap-6 sm:p-4">
         <button
           onClick={() => setMode("createplans")}
           className={` flex p-2 rounded-md shadow-xl ${mode === "createplans" ? " ring-1 ring-blue-400" : "border"}`}
@@ -266,7 +266,7 @@ export default function CreatePlanPage() {
           Backlog Plans
         </button>
       </div>
-      <div className="p-4 space-y-3">
+      <div className="space-y-3 p-3 sm:p-4">
         <Input
           placeholder="Search plans…"
           className="w-full h-10 rounded-lg border px-3 text-sm"
@@ -279,7 +279,7 @@ export default function CreatePlanPage() {
       </div>
       <div>
         {mode === "createplans" && (
-          <div className="mx-auto  p-5 mt-5 max-w-3xl rounded-xl shadow-2xl">
+          <div className="mx-auto mt-5 max-w-3xl rounded-xl p-4 shadow-2xl sm:p-5">
             {/* Header */}
             <div className="mb-8">
               <div className=" flex">
@@ -433,7 +433,7 @@ export default function CreatePlanPage() {
                     <Button
                       variant="outline"
                       data-empty={!startDate}
-                      className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                      className="data-[empty=true]:text-muted-foreground w-full md:w-[320px] justify-between text-left font-normal"
                       {...register("startDate", {
                         required: "Date should be mandatory",
                       })}
@@ -474,7 +474,7 @@ export default function CreatePlanPage() {
                     <Button
                       variant="outline"
                       data-empty={!dueDate}
-                      className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                      className="data-[empty=true]:text-muted-foreground w-full md:w-[320px] justify-between text-left font-normal"
                       {...register("dueDate", {
                         required: "Date should be mandatory",
                       })}
@@ -521,7 +521,7 @@ export default function CreatePlanPage() {
 
                 <div className="grid  gap-3">
                   {/* Work type */}
-                  <div className="relative w-40">
+                  <div className="relative w-full md:w-[320px]">
                     <Controller
                       name="work"
                       control={control}
@@ -589,7 +589,7 @@ export default function CreatePlanPage() {
         )}
 
         {mode === "viewplans" && (
-          <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
+          <div className="mx-auto mt-5 max-w-6xl rounded-xl p-4 shadow-2xl sm:p-5">
             <div className="grid gap-4">
               {filteredTasks.length === 0 ? (
                 <p className="text-gray-500 text-center">
@@ -608,7 +608,7 @@ export default function CreatePlanPage() {
                         className=" text-gray-500"
                       />
                     </div>
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <h2 className="text-lg font-semibold text-gray-800">
                         {plan.name}
                       </h2>
@@ -623,7 +623,7 @@ export default function CreatePlanPage() {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+                    <div className="grid grid-cols-1 gap-3 text-sm text-gray-600 sm:grid-cols-2">
                       <p>
                         <span className="font-medium text-gray-800">Work:</span>{" "}
                         {plan.work}
@@ -651,7 +651,7 @@ export default function CreatePlanPage() {
                           updateStatus(plan, value as PlanStatus)
                         }
                       >
-                        <SelectTrigger className="w-40">
+                        <SelectTrigger className="w-full sm:w-40">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -669,7 +669,7 @@ export default function CreatePlanPage() {
         )}
 
         {mode === "backlogplans" && (
-          <div className="mx-auto  p-5 mt-5 max-w-6xl rounded-xl shadow-2xl">
+          <div className="mx-auto mt-5 max-w-6xl rounded-xl p-4 shadow-2xl sm:p-5">
             <div className="grid  gap-4">
               {filteredTasks.length === 0 && (
                 <p className="text-gray-500 text-center">

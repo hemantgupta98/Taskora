@@ -108,20 +108,20 @@ export default function TeamManagementPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 shadow-2xl rounded-2xl">
+    <div className="flex min-h-screen rounded-2xl bg-gray-50 shadow-2xl">
       <Toaster position="top-center" richColors />
       {/* Main */}
       <main className="flex-1 flex flex-col">
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="space-y-6 p-3 sm:p-4 lg:p-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-2xl font-semibold">Team Management</h1>
 
-            <div className="flex gap-3">
+            <div className="flex w-full flex-wrap gap-3 sm:w-auto">
               <button
                 onClick={() => router.push("/invite-team")}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm cursor-pointer"
+                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white cursor-pointer"
               >
                 <UserPlus size={16} />
                 Invite Member
@@ -129,7 +129,7 @@ export default function TeamManagementPage() {
 
               <button
                 onClick={() => toast.warning("can't be assign")}
-                className="flex items-center gap-2 border px-4 py-2 rounded-lg text-sm cursor-pointer"
+                className="flex items-center gap-2 rounded-lg border px-4 py-2 text-sm cursor-pointer"
               >
                 <SlidersHorizontal size={16} />
                 Bulk Assign Role
@@ -158,7 +158,7 @@ export default function TeamManagementPage() {
               ))
             )}
           </div>
-          <div className=" w-fit">
+          <div className="w-full sm:w-fit">
             {mode === "view" && selectedMember && (
               <div className="bg-white p-4 rounded-xl border">
                 <h2 className="font-semibold text-lg">Profile</h2>
@@ -186,7 +186,7 @@ function MemberCard({
   onEdit: () => void;
 }) {
   return (
-    <div className="bg-white border rounded-2xl p-5 space-y-4">
+    <div className="space-y-4 rounded-2xl border bg-white p-4 sm:p-5">
       {/* Avatar + Status */}
       <div className="flex items-center gap-3">
         <div className="relative">
@@ -228,7 +228,7 @@ function MemberCard({
 
       {/* Contact Info */}
       <div className="space-y-2 text-sm text-gray-600">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 break-all">
           <Mail size={14} />
           {member.email}
         </div>
@@ -239,7 +239,7 @@ function MemberCard({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <button
           onClick={onView}
           className="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50 cursor-pointer"

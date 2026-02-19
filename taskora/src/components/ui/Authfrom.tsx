@@ -56,6 +56,7 @@ export default function AuthForm() {
       );
 
       reset();
+      router.push("/dashboard");
     } catch (error) {
       console.error("AUTH ERROR 👉", error);
       toast.error("Server error. Please try again.");

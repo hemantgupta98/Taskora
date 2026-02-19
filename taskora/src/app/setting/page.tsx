@@ -56,30 +56,30 @@ export default function SettingsTabs() {
 
   return (
     <>
-      <div className="flex  gap-6 bg-white border shadow-xl rounded-lg p-4 w-fit">
+      <div className="flex w-full flex-wrap gap-3 rounded-lg border bg-white p-3 shadow-xl sm:w-fit sm:gap-6 sm:p-4">
         <button
           onClick={() => setMode("Profile")}
-          className={` flex p-2 rounded-md shadow-xl ${mode === "Profile" ? " ring-1 ring-blue-400" : "border"}`}
+          className={`flex items-center gap-1 rounded-md p-2 shadow-xl ${mode === "Profile" ? " ring-1 ring-blue-400" : "border"}`}
         >
           <User className="p-1 " />
           Profile
         </button>
         <button
           onClick={() => setMode("Workspace")}
-          className={`flex p-2 rounded-md shadow-xl ${mode === "Workspace" ? "ring-1 ring-blue-400" : "border"}`}
+          className={`flex items-center gap-1 rounded-md p-2 shadow-xl ${mode === "Workspace" ? "ring-1 ring-blue-400" : "border"}`}
         >
           <Briefcase className="p-1" />
           Workspace
         </button>
         <button
           onClick={() => setMode("Theme")}
-          className={`flex p-2 rounded-md shadow-xl  ${mode === "Theme" ? "ring-1 ring-blue-400" : "border"}`}
+          className={`flex items-center gap-1 rounded-md p-2 shadow-xl ${mode === "Theme" ? "ring-1 ring-blue-400" : "border"}`}
         >
           <Palette className="p-1" />
           Theme
         </button>
       </div>
-      <div className="m-5 p-5 rounded-2xl shadow-2xl">
+      <div className="m-3 rounded-2xl p-4 shadow-2xl sm:m-5 sm:p-5">
         {mode === "Profile" && (
           <div>
             <h1 className="text-2xl text-black font-semibold">
@@ -88,7 +88,7 @@ export default function SettingsTabs() {
             <p className="text-sm text-gray-400">
               Manage your personal profile details
             </p>
-            <div className="flex gap-4 mt-10">
+            <div className="mt-10 flex flex-wrap items-center gap-4">
               <div>
                 <Image
                   src="/logo.png"
@@ -109,7 +109,7 @@ export default function SettingsTabs() {
               />
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="space-x-5 grid grid-cols-2 mt-10 ">
+              <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
                 <label className="text-md font-semibold text-gray-500 ">
                   full Name
                   <Input
@@ -141,7 +141,7 @@ export default function SettingsTabs() {
               <p className="text-md pt-2 font-semibold text-gray-400 ">
                 Update your details for better communication
               </p>
-              <div className=" grid grid-cols-2 pt-10 gap-5 ">
+              <div className="grid grid-cols-1 gap-5 pt-10 md:grid-cols-2">
                 <label className="text-md font-semibold text-gray-500">
                   Phone Number
                   <Input
@@ -159,7 +159,7 @@ export default function SettingsTabs() {
                   />
                 </label>
               </div>
-              <div className="pt-10 space-x-5 flex justify-center align-top">
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-10">
                 <button
                   onClick={() => reset()}
                   className="bg-gray-300 shadow-xl text-white font-semibold rounded-sm p-2"
@@ -168,7 +168,7 @@ export default function SettingsTabs() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 shadow-xl text-white font-semibold rounded-sm p-2 w-40"
+                  className="w-full rounded-sm bg-blue-500 p-2 font-semibold text-white shadow-xl sm:w-40"
                 >
                   Save Changes
                 </button>
@@ -186,7 +186,7 @@ export default function SettingsTabs() {
               <div className="flex-1 h-px bg-gray-200" />
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className=" grid grid-cols-2 space-x-5">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <label className="text-md font-semibold text-gray-500 ">
                   Worksapce Name
                   <Input
@@ -208,11 +208,11 @@ export default function SettingsTabs() {
               <div className="flex items-center gap-4 my-6">
                 <div className="flex-1 h-px bg-gray-200" />
               </div>
-              <div className="grid grid-cols-3 space-x-5">
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
                 <h1 className="text-xl font-semibold text-black ">
                   Logo & Icons
                 </h1>
-                <label className="h-50 w-50 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
+                <label className="h-40 w-full max-w-40 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
                   <span className="text-md font-medium text-gray-500">
                     Upload Logo
                   </span>
@@ -221,7 +221,7 @@ export default function SettingsTabs() {
 
                   <Input type="file" accept="image/*" className="hidden" />
                 </label>
-                <label className="h-50 w-50 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
+                <label className="h-40 w-full max-w-40 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
                   <span className="text-md font-medium text-gray-500">
                     Upload Icon
                   </span>
@@ -234,10 +234,10 @@ export default function SettingsTabs() {
               <div className="flex items-center gap-4 my-6">
                 <div className="flex-1 h-px bg-gray-200" />
               </div>
-              <div className=" grid grid-cols-3">
+              <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3">
                 <h1 className="text-xl font-semibold text-black ">Time zone</h1>
                 <Select>
-                  <SelectTrigger className="w-[250px]">
+                  <SelectTrigger className="w-full md:w-62.5">
                     <SelectValue placeholder="Time Zone" />
                   </SelectTrigger>
                   <SelectContent>
@@ -264,7 +264,7 @@ export default function SettingsTabs() {
               <div className="flex items-center gap-4 my-6">
                 <div className="flex-1 h-px bg-gray-200" />
               </div>
-              <div className="pt-10 space-x-5 flex justify-center align-top">
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-10">
                 <button
                   onClick={() => reset()}
                   className="bg-gray-300 shadow-xl text-white font-semibold rounded-sm p-2"
@@ -273,7 +273,7 @@ export default function SettingsTabs() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 shadow-xl text-white font-semibold rounded-sm p-2 w-40"
+                  className="w-full rounded-sm bg-blue-500 p-2 font-semibold text-white shadow-xl sm:w-40"
                 >
                   Save Changes
                 </button>
@@ -283,11 +283,11 @@ export default function SettingsTabs() {
         )}
 
         {mode === "Theme" && (
-          <div className="flex min-h-screen bg-slate-100">
+          <div className="rounded-xl bg-slate-100">
             {/* Sidebar */}
 
             {/* Main Content */}
-            <main className="flex-1 p-10">
+            <main className="p-4 sm:p-6 lg:p-8">
               <h2 className="text-3xl font-bold text-slate-800">
                 Theme Settings
               </h2>
@@ -299,7 +299,7 @@ export default function SettingsTabs() {
               <section className="bg-white rounded-xl p-6 shadow mb-8">
                 <h3 className="text-xl font-semibold mb-4">Appearance</h3>
 
-                <div className="flex gap-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
                   <button
                     onClick={() => setTheme("light")}
                     className={`flex-1 border rounded-xl p-4 flex flex-col items-center gap-3 transition ${
@@ -326,7 +326,7 @@ export default function SettingsTabs() {
                 </div>
 
                 {/* System Toggle */}
-                <div className="flex items-center gap-4 mt-6">
+                <div className="mt-6 flex flex-wrap items-center gap-4">
                   <span className="text-slate-700">Use System Preference</span>
                   <button
                     onClick={() => setUseSystem(!useSystem)}
@@ -347,7 +347,7 @@ export default function SettingsTabs() {
               <section className="bg-white rounded-xl p-6 shadow mb-8">
                 <h3 className="text-xl font-semibold mb-4">Accent Color</h3>
 
-                <div className="flex gap-4 mb-4">
+                <div className="mb-4 flex flex-wrap gap-4">
                   {accentColors.map((color) => (
                     <button
                       key={color}
@@ -360,7 +360,7 @@ export default function SettingsTabs() {
                   ))}
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   <label className="font-medium">Custom Color:</label>
                   <input
                     type="color"
@@ -380,7 +380,7 @@ export default function SettingsTabs() {
               <section className="bg-white rounded-xl p-6 shadow mb-8">
                 <h3 className="text-xl font-semibold mb-4">Font Size</h3>
 
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-4">
                   {(["small", "medium", "large"] as const).map((size) => (
                     <button
                       key={size}
@@ -397,7 +397,7 @@ export default function SettingsTabs() {
                 </div>
               </section>
 
-              <div className="pt-10 space-x-5 flex justify-center align-top">
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-10">
                 <button
                   onClick={() => reset()}
                   className="bg-gray-300 shadow-xl text-white font-semibold rounded-sm p-2"
@@ -406,7 +406,7 @@ export default function SettingsTabs() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 shadow-xl text-white font-semibold rounded-sm p-2 w-40"
+                  className="w-full rounded-sm bg-blue-500 p-2 font-semibold text-white shadow-xl sm:w-40"
                 >
                   Save Changes
                 </button>

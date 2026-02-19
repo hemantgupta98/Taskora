@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 import {
   LayoutDashboard,
@@ -31,15 +32,26 @@ const downLink = [
   { name: "Logout", href: "/logout", icon: LogOut },
 ];
 
-export default function Sidebar() {
+type SidebarProps = {
+  className?: string;
+  onNavigate?: () => void;
+};
+
+export default function Sidebar({ className, onNavigate }: SidebarProps) {
   return (
-    <aside className="w-64 bg-white border-r flex flex-col cursor-pointer">
+    <aside
+      className={cn(
+        "w-64 max-w-full shrink-0 overflow-y-auto bg-white border-r flex flex-col cursor-pointer",
+        className,
+      )}
+    >
       <div className="p-6 text-2xl font-bold text-primary">Taskora</div>
       <nav className="flex-1 space-y-1 px-3">
         {links.map((item) => (
           <Link
             key={item.name}
             href={item.href}
+            onClick={onNavigate}
             className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100"
           >
             <item.icon size={18} />
@@ -54,6 +66,7 @@ export default function Sidebar() {
             <Link
               key={e.name}
               href={e.href}
+              onClick={onNavigate}
               className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100"
             >
               <e.icon size={18} />
@@ -69,15 +82,5 @@ export default function Sidebar() {
         <SidebarItem icon={LogOut} label="Log Out" /> */}
       </div>
     </aside>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function SidebarItem({ icon: Icon, label }: { icon: any; label: string }) {
-  return (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer">
-      <Icon size={18} />
-      <span>{label}</span>
-    </div>
   );
 }

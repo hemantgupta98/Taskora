@@ -117,8 +117,8 @@ export default function ProjectPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-100 flex">
-        <div className="p-4 space-y-3">
+      <div className="min-h-screen bg-gray-100">
+        <div className="p-3 sm:p-4 space-y-3">
           <Input
             placeholder="Search projects…"
             className="w-full h-10 rounded-lg border px-3 text-sm"
@@ -129,7 +129,7 @@ export default function ProjectPage() {
             }
           />
         </div>
-        <main className="flex-1 p-6">
+        <main className="p-3 sm:p-4 lg:p-6">
           {tasks.length === 0 ? (
             <p>No tasks available.</p>
           ) : filteredTasks.length === 0 ? (
@@ -137,110 +137,96 @@ export default function ProjectPage() {
           ) : (
             <div className="space-y-10">
               {filteredSections.map((section) => (
-                <div key={section.admin}>
+                <div key={section.admin} className="overflow-x-auto">
                   <h3 className="text-sm font-semibold text-gray-600 mb-2">
                     {section.admin}
                   </h3>
+                  <div className="min-w-190">
+                    <div className="grid grid-cols-8 text-xs bg-gray-50 border rounded-t-md px-3 py-2">
+                      <span>Task Title</span>
+                      <span>Assignee</span>
+                      <span>Status</span>
+                      <span>Category</span>
+                      <span>Priority</span>
+                      <span>Start Date</span>
+                      <span>Due Date</span>
+                      <span>Delete</span>
+                    </div>
 
-                  <div className="grid grid-cols-8 text-xs bg-gray-50 border rounded-t-md px-3 py-2">
-                    <span>Task Title</span>
-                    <span>Assignee</span>
-                    <span>Status</span>
-                    <span>Category</span>
-                    <span>Priority</span>
-                    <span>Start Date</span>
-                    <span>Due Date</span>
-                    <span>Delete</span>
-                  </div>
+                    <div className="border rounded-b-md divide-y bg-white">
+                      {section.tasks.length === 0 && (
+                        <div className="text-center py-4 text-blue-500 text-sm">
+                          Drop here
+                        </div>
+                      )}
 
-                  {/* Rows */}
-                  <div className="border rounded-b-md divide-y bg-white">
-                    {section.tasks.length === 0 && (
-                      <div className="text-center py-4 text-blue-500 text-sm">
-                        Drop here
-                      </div>
-                    )}
-
-                    {section.tasks.map((task) => (
-                      <div
-                        key={task._id}
-                        className={`grid grid-cols-8 items-center px-3 py-3 text-sm border-l-4 ${getBorderColorForTask(task.priority)}`}
-                        onClick={() => {
-                          setSelectedTask({
-                            id: task._id,
-                            title: task.title,
-                            description: task.descripition,
-                            status: task.status,
-                          });
-                          setOpen(true);
-                        }}
-                      >
-                        {/* Task Title */}
-                        <span className="font-medium text-gray-700">
-                          {task.title}
-                        </span>
-
-                        {/* Assignee */}
-                        <span className="text-xs">{task.assign}</span>
-
-                        {/* Status */}
-                        <span>
-                          {(() => {
-                            const statusClass =
-                              statusStyles[task.status as Status] ||
-                              "bg-gray-100 text-gray-700";
-                            return (
-                              <span
-                                className={`${statusClass} px-2 py-0.5 text-xs font-semibold rounded-md`}
-                              >
-                                {task.status}
-                              </span>
-                            );
-                          })()}
-                        </span>
-
-                        {/* Category */}
-                        <span className="text-xs">{task.category}</span>
-
-                        {/* Priority */}
-                        <span>
-                          {task.priority && (
-                            <Flag
-                              className={`h-4 w-4 ${
-                                task.priority === "high"
-                                  ? "text-red-500"
-                                  : task.priority === "medium"
-                                    ? "text-yellow-500"
-                                    : "text-blue-500"
-                              }`}
-                            />
-                          )}
-                        </span>
-
-                        {/* Start Date */}
-                        <span className="text-xs text-green-600">
-                          {formatMMDDYYYY(task.startDate)}
-                        </span>
-
-                        {/* Due Date */}
-                        <span className="text-xs text-red-500">
-                          {formatMMDDYYYY(task.dueDate)}
-                        </span>
-
-                        <span>
-                          <button
-                            type="button"
-                            className="text-red-500 hover:underline text-xs"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteTask(task._id);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </span>
-                      </div>
-                    ))}
+                      {section.tasks.map((task) => (
+                        <div
+                          key={task._id}
+                          className={`grid grid-cols-8 items-center px-3 py-3 text-sm border-l-4 ${getBorderColorForTask(task.priority)}`}
+                          onClick={() => {
+                            setSelectedTask({
+                              id: task._id,
+                              title: task.title,
+                              description: task.descripition,
+                              status: task.status,
+                            });
+                            setOpen(true);
+                          }}
+                        >
+                          <span className="font-medium text-gray-700">
+                            {task.title}
+                          </span>
+                          <span className="text-xs">{task.assign}</span>
+                          <span>
+                            {(() => {
+                              const statusClass =
+                                statusStyles[task.status as Status] ||
+                                "bg-gray-100 text-gray-700";
+                              return (
+                                <span
+                                  className={`${statusClass} px-2 py-0.5 text-xs font-semibold rounded-md`}
+                                >
+                                  {task.status}
+                                </span>
+                              );
+                            })()}
+                          </span>
+                          <span className="text-xs">{task.category}</span>
+                          <span>
+                            {task.priority && (
+                              <Flag
+                                className={`h-4 w-4 ${
+                                  task.priority === "high"
+                                    ? "text-red-500"
+                                    : task.priority === "medium"
+                                      ? "text-yellow-500"
+                                      : "text-blue-500"
+                                }`}
+                              />
+                            )}
+                          </span>
+                          <span className="text-xs text-green-600">
+                            {formatMMDDYYYY(task.startDate)}
+                          </span>
+                          <span className="text-xs text-red-500">
+                            {formatMMDDYYYY(task.dueDate)}
+                          </span>
+                          <span>
+                            <button
+                              type="button"
+                              className="text-red-500 hover:underline text-xs"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteTask(task._id);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}

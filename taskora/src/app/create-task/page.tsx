@@ -138,8 +138,8 @@ export default function CreateTaskPage() {
     <>
       <ScrollArea className="h-fit w-full max-w-full border-2 rounded-md">
         <Toaster richColors position="top-center" />
-        <div className="min-h-screen bg-gray-50 p-6">
-          <div className="w-full rounded-xl bg-white p-8 shadow-sm">
+        <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
+          <div className="w-full rounded-xl bg-white p-4 shadow-sm sm:p-6 lg:p-8">
             <div className=" flex justify-between">
               <h1 className="text-2xl font-semibold text-gray-900">
                 Create New Task
@@ -245,7 +245,7 @@ export default function CreateTaskPage() {
                       <Button
                         variant="outline"
                         data-empty={!startDate}
-                        className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                        className="data-[empty=true]:text-muted-foreground w-full md:w-[320px] justify-between text-left font-normal"
                       >
                         {startDate ? (
                           format(startDate, "PPP")
@@ -363,7 +363,7 @@ export default function CreateTaskPage() {
                       <Button
                         variant="outline"
                         data-empty={!dueDate}
-                        className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                        className="data-[empty=true]:text-muted-foreground w-full md:w-[320px] justify-between text-left font-normal"
                       >
                         {dueDate ? (
                           format(dueDate, "PPP")
@@ -420,7 +420,7 @@ export default function CreateTaskPage() {
                 <h3 className="mb-2 text-sm font-medium text-gray-700">
                   Attachments
                 </h3>
-                <label className="h-50 w-50 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
+                <label className="h-40 w-full max-w-40 border-2 border-dashed border-blue-400 rounded-md flex flex-col items-center justify-between cursor-pointer p-1 hover:bg-blue-50">
                   <Upload size={18} className="text-blue-600 mb-1 mt-18" />
 
                   <Input
@@ -446,7 +446,7 @@ export default function CreateTaskPage() {
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end gap-3 pt-6">
+              <div className="flex flex-wrap justify-end gap-3 pt-6">
                 <Button variant="ghost" onClick={() => reset()}>
                   Cancel
                 </Button>

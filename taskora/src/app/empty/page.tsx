@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function OnboardingPage() {
   return (
-    <div className="min-h-screen bg-gray-800 flex items-center justify-center px-4 ">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 ">
       <div className="w-full max-w-2xl text-center mt-20">
         {/* Illustration */}
         <div className="flex justify-center">
@@ -13,12 +13,12 @@ export default function OnboardingPage() {
         </div>
 
         {/* Title */}
-        <h1 className="mt-8 text-3xl sm:text-4xl font-semibold text-white">
+        <h1 className="mt-8 text-3xl sm:text-4xl font-semibold text-black">
           Welcome to Taskora! Let&apos;s Get Started.
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-4 text-white text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+        <p className="mt-4 text-black text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
           Taskora helps you manage projects and collaborate with your team
           effectively. Create your first project or import existing data to
           kickstart your journey.

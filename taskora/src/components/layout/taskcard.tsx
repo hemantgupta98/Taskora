@@ -139,7 +139,7 @@ export default function TaskCard({ task, onDelete, onStatusChange }: Props) {
             value={task.status}
             onValueChange={(value) => updateStatus(task, value as PlanStatus)}
           >
-            <SelectTrigger className="w-36 ml-2">
+            <SelectTrigger className="ml-2 w-full sm:w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

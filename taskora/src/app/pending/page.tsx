@@ -147,9 +147,9 @@ export default function Pending() {
   }
 
   return (
-    <div className="mx-auto p-5 mt-5 max-w-5xl rounded-xl shadow-2xl">
+    <div className="mx-auto mt-5 max-w-5xl rounded-xl p-4 shadow-2xl sm:p-5">
       <Toaster position="top-center" richColors />
-      <div className="p-4 space-y-3">
+      <div className="space-y-3 p-3 sm:p-4">
         <Input
           placeholder="Search pending…"
           className="w-full h-10 rounded-lg border px-3 text-sm"
@@ -182,11 +182,11 @@ export default function Pending() {
 
                 <p className="text-sm text-gray-600">{task.descripition}</p>
 
-                <div className="grid grid-cols-2 gap-2 mt-3 text-sm">
+                <div className="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
                   <p>
                     <b>Priority:</b> {task.priority}
                   </p>
-                  <p>
+                  <div>
                     <b>Status:</b>
                     <Select
                       value={task.status}
@@ -194,7 +194,7 @@ export default function Pending() {
                         updateStatus(task, value as PlanStatus)
                       }
                     >
-                      <SelectTrigger className="w-40">
+                      <SelectTrigger className="mt-1 w-full sm:w-40">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -203,7 +203,7 @@ export default function Pending() {
                         <SelectItem value="done">Done</SelectItem>
                       </SelectContent>
                     </Select>
-                  </p>
+                  </div>
 
                   <p>
                     <b>Category:</b> {task.category}

@@ -48,7 +48,7 @@ export default function DashboardPage() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="p-6 bg-slate-100 min-h-screen">
+    <div className="min-h-screen bg-slate-100 p-3 sm:p-4 lg:p-6">
       <h1 className="text-xl font-semibold mb-6">
         Project Management Dashboard
       </h1>
