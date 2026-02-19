@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import {
   LayoutDashboard,
@@ -33,15 +32,9 @@ const downLink = [
 ];
 
 export default function Sidebar() {
-  const router = useRouter();
   return (
     <aside className="w-64 bg-white border-r flex flex-col cursor-pointer">
-      <div
-        onClick={() => router.replace("/empty")}
-        className="p-6 text-2xl font-bold text-primary"
-      >
-        Taskora
-      </div>
+      <div className="p-6 text-2xl font-bold text-primary">Taskora</div>
       <nav className="flex-1 space-y-1 px-3">
         {links.map((item) => (
           <Link
