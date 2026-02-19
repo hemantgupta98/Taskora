@@ -92,4 +92,35 @@ export const getInvitedTeamMember = async (req, res) => {
   }
 };
 
-export default { accept, getAcceptUsers, getInvitedTeamMember };
+export const deleteTeamMemeber = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedPlan = await acceptModel.findByIdAndDelete(id);
+
+    if (!deletedPlan) {
+      return res.status(404).json({
+        success: false,
+        message: "Team member not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Team member deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete plan error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+export default {
+  accept,
+  getAcceptUsers,
+  getInvitedTeamMember,
+  deleteTeamMemeber,
+};
