@@ -65,7 +65,7 @@ export default function TeamManagementPage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 shadow-2xl rounded-2xl">
       {/* Main */}
       <main className="flex-1 flex flex-col">
         {/* Content */}
@@ -91,7 +91,7 @@ export default function TeamManagementPage() {
           </div>
 
           {/* Team Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ">
             {loading ? (
               <p className="text-gray-500">Loading team members...</p>
             ) : members.length === 0 ? (
