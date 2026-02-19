@@ -59,11 +59,11 @@ export default function BacklogMobile() {
     const query = search.toLowerCase();
 
     return (
-      task.title.toLowerCase().includes(query) ||
+      task.title.toUpperCase().includes(query) ||
       task.description.toLowerCase().includes(query) ||
       task.feature.toLowerCase().includes(query) ||
       task.priority.toLowerCase().includes(query) ||
-      task.admin.toLowerCase().includes(query)
+      task.admin.toUpperCase().includes(query)
     );
   });
 

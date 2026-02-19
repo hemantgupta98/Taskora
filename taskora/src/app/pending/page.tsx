@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../lib/socket";
 import { Toaster, toast } from "sonner";
+import Input from "@/src/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -48,9 +49,26 @@ function groupByAdmin(list: Data[]): Section[] {
 }
 
 export default function Pending() {
-  const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [plans, setPlans] = useState<Data[]>([]);
+  const [search, setSearch] = useState("");
+
+  const filteredTasks = plans.filter((task) => {
+    const query = search.toLowerCase();
+
+    return (
+      task._id.toLowerCase().includes(query) ||
+      task.assign.toLowerCase().includes(query) ||
+      task.status.toLowerCase().includes(query) ||
+      task.title.toLowerCase().includes(query) ||
+      task.descripition.toLowerCase().includes(query) ||
+      task.priority.toLowerCase().includes(query) ||
+      task.category.toLowerCase().includes(query) ||
+      task.admin.toLowerCase().includes(query)
+    );
+  });
+
+  const sections = groupByAdmin(filteredTasks);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -58,7 +76,6 @@ export default function Pending() {
         const res = await api.get("/task");
         const list: Data[] = res.data.data;
         setPlans(list);
-        setSections(groupByAdmin(list));
       } catch (err) {
         console.error("Failed to fetch plans", err);
       } finally {
@@ -87,13 +104,11 @@ export default function Pending() {
               });
 
               setPlans((prev) => {
-                const updated = prev.map((p) =>
+                return prev.map((p) =>
                   p._id === task._id
                     ? { ...p, status: "done" as PlanStatus }
                     : p,
                 );
-                setSections(groupByAdmin(updated));
-                return updated;
               });
 
               toast.success("Pending marked as done");
@@ -115,11 +130,9 @@ export default function Pending() {
       });
 
       setPlans((prev) => {
-        const updated = prev.map((p) =>
+        return prev.map((p) =>
           p._id === task._id ? { ...p, status: value as PlanStatus } : p,
         );
-        setSections(groupByAdmin(updated));
-        return updated;
       });
 
       toast.success("Status updated");
@@ -136,6 +149,17 @@ export default function Pending() {
   return (
     <div className="mx-auto p-5 mt-5 max-w-5xl rounded-xl shadow-2xl">
       <Toaster position="top-center" richColors />
+      <div className="p-4 space-y-3">
+        <Input
+          placeholder="Search pending…"
+          className="w-full h-10 rounded-lg border px-3 text-sm"
+          label=""
+          value={search}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearch(e.target.value)
+          }
+        />
+      </div>
       {sections.length === 0 && (
         <p className="text-center text-gray-500">No tasks found</p>
       )}
