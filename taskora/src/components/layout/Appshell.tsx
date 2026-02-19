@@ -19,6 +19,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     isTransitioningRef.current = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsTransitioning(false);
   }, [pathname]);
 
