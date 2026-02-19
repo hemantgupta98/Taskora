@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, Menu, Plus, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Sheet,
   SheetContent,
@@ -16,7 +16,6 @@ type NavbarProps = {
 };
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
-  const router = useRouter();
   return (
     <header className="mt-2 flex h-16 items-center justify-between border-b bg-white px-3 py-2 sm:px-4 lg:px-6">
       <div className="flex min-w-0 items-center gap-2 sm:gap-4">
@@ -38,13 +37,13 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        <button
-          onClick={() => router.push("/create-task")}
+        <Link
+          href="/create-task"
           className="flex items-center gap-1 rounded-lg bg-primary px-2.5 py-2 text-white sm:gap-2 sm:px-4"
         >
           <Plus size={16} />
           <span className="hidden sm:inline">Create Task</span>
-        </button>
+        </Link>
         <div className="relative">
           <Sheet>
             <SheetTrigger>

@@ -7,6 +7,7 @@ import {
   registerUser,
   verifyotp,
   resetpassword,
+  logout,
 } from "./auth.controllers.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -21,6 +22,7 @@ router.post("/login", login);
 router.post("/otp", registerUser);
 router.post("/verifyotp", verifyotp);
 router.post("/resetpassword", resetpassword);
+router.post("/logout", logout);
 
 router.get(
   "/google",

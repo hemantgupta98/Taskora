@@ -4,6 +4,7 @@ import { Mail, Lock, User2Icon } from "lucide-react";
 import SocialButton from "./SocailButton";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
@@ -130,12 +131,12 @@ export default function AuthForm() {
         />
 
         {mode === "login" && (
-          <div
-            onClick={() => router.push("/forget")}
-            className="text-right text-sm text-blue-500 cursor-pointer"
+          <Link
+            href="/forget"
+            className="block text-right text-sm text-blue-500 cursor-pointer"
           >
             Forgot Password?
-          </div>
+          </Link>
         )}
 
         <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold">

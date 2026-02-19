@@ -2,9 +2,35 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LogoutPage() {
   const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    const confirmed = window.confirm("Are you sure you want to logout?");
+    if (!confirmed) return;
+
+    setIsLoggingOut(true);
+
+    try {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+
+      await fetch(`${API_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+      document.cookie = "token=; Max-Age=0; path=/";
+      router.push("/empty");
+    }
+  };
 
   return (
     <div className="flex justify-center align-middle items-center py-10 bg-gray-50 px-4">
@@ -37,10 +63,11 @@ export default function LogoutPage() {
             Cancel
           </button>
           <button
-            onClick={() => router.push("/auth")}
-            className="w-40 rounded-xl bg-red-500 py-3 text-white font-medium hover:bg-red-600 transition"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-40 rounded-xl bg-red-500 py-3 text-white font-medium hover:bg-red-600 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Logout
+            {isLoggingOut ? "Logging out..." : "Logout"}
           </button>
         </div>
       </div>

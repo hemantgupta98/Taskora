@@ -1,6 +1,7 @@
 "use client";
 import { Mail, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
@@ -219,13 +220,13 @@ export default function AuthForm() {
           </div>
 
           {/* Social */}
-          <div
-            onClick={() => router.push("/auth")}
+          <Link
+            href="/auth"
             className=" cursor-pointer gap-2 flex justify-center text-gray-500"
           >
             <FaAngleDoubleLeft className="mt-1.5" />
             Login
-          </div>
+          </Link>
         </div>
       </div>
     </>

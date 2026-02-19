@@ -1,7 +1,7 @@
 "use client";
 
 import { UserPlus, SlidersHorizontal, Mail, Phone, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { api } from "../../lib/socket";
 import { useEffect, useState } from "react";
@@ -34,7 +34,6 @@ function groupByAdmin(list: TeamMember[]) {
 }
 
 export default function TeamManagementPage() {
-  const router = useRouter();
   const [plans, setPlans] = useState<TeamMember[]>([]);
   const [, setSectionsData] = useState<Section[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -119,13 +118,13 @@ export default function TeamManagementPage() {
             <h1 className="text-2xl font-semibold">Team Management</h1>
 
             <div className="flex w-full flex-wrap gap-3 sm:w-auto">
-              <button
-                onClick={() => router.push("/invite-team")}
+              <Link
+                href="/invite-team"
                 className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white cursor-pointer"
               >
                 <UserPlus size={16} />
                 Invite Member
-              </button>
+              </Link>
 
               <button
                 onClick={() => toast.warning("can't be assign")}
