@@ -1,12 +1,14 @@
 "use client";
 
-import { UserPlus, SlidersHorizontal, Mail, Phone } from "lucide-react";
+import { UserPlus, SlidersHorizontal, Mail, Phone, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { api } from "../../lib/socket";
 import { useEffect, useState } from "react";
+import { toast, Toaster } from "sonner";
 
 type TeamMember = {
+  _id: string;
   name: string;
   email: string;
   phone: number | string;
@@ -15,11 +17,30 @@ type TeamMember = {
   teamMember: string;
 };
 
+type Section = {
+  admin: string;
+  tasks: TeamMember[];
+};
+
+function groupByAdmin(list: TeamMember[]) {
+  const map = new Map<string, TeamMember[]>();
+  for (const t of list) {
+    const key = t._id || "Unassigned";
+    const arr = map.get(key) || [];
+    arr.push(t);
+    map.set(key, arr);
+  }
+  return Array.from(map.entries()).map(([admin, tasks]) => ({ admin, tasks }));
+}
+
 export default function TeamManagementPage() {
   const router = useRouter();
-
+  const [plans, setPlans] = useState<TeamMember[]>([]);
+  const [, setSectionsData] = useState<Section[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mode, setMode] = useState<"view" | "edit" | null>(null);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -43,6 +64,7 @@ export default function TeamManagementPage() {
             }
 
             return {
+              _id: user._id,
               name: user.name,
               email: user.email,
               phone: user.phone,
@@ -53,6 +75,8 @@ export default function TeamManagementPage() {
           }),
         );
 
+        setPlans(formattedMembers);
+        setSectionsData(groupByAdmin(formattedMembers));
         setMembers(formattedMembers);
       } catch (error) {
         console.error("Failed to fetch team members", error);
@@ -63,6 +87,25 @@ export default function TeamManagementPage() {
 
     fetchMembers();
   }, []);
+
+  const handleDeleteTask = async (id: string) => {
+    const confirmed = window.confirm("Are you sure you want to delete this?");
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/accept/deleteplans/${id}`);
+
+      const updated = plans.filter((t) => t._id !== id);
+      setPlans(updated);
+      setSectionsData(groupByAdmin(updated));
+      setMembers(updated);
+
+      toast.success("Plan deleted successfully");
+    } catch (err) {
+      console.error("Delete error:", err);
+      toast.error("Failed to delete plan");
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50 shadow-2xl rounded-2xl">
@@ -98,8 +141,27 @@ export default function TeamManagementPage() {
               <p className="text-gray-500">No team members found</p>
             ) : (
               members.map((member) => (
-                <MemberCard key={member.email} member={member} />
+                <MemberCard
+                  key={member.email}
+                  member={member}
+                  onView={() => {
+                    setSelectedMember(member);
+                    setMode("view");
+                  }}
+                  onDelete={handleDeleteTask}
+                  onEdit={() => toast.warning("Can't be edit")}
+                />
               ))
+            )}
+          </div>
+          <div className=" w-fit">
+            {mode === "view" && selectedMember && (
+              <div className="bg-white p-4 rounded-xl border">
+                <h2 className="font-semibold text-lg">Profile</h2>
+                <p>Name: {selectedMember.name}</p>
+                <p>Email: {selectedMember.email}</p>
+                <p>Phone: {selectedMember.phone}</p>
+              </div>
             )}
           </div>
         </div>
@@ -108,7 +170,17 @@ export default function TeamManagementPage() {
   );
 }
 
-function MemberCard({ member }: { member: TeamMember }) {
+function MemberCard({
+  member,
+  onView,
+  onDelete,
+  onEdit,
+}: {
+  member: TeamMember;
+  onView: () => void;
+  onDelete: (id: string) => void;
+  onEdit: () => void;
+}) {
   return (
     <div className="bg-white border rounded-2xl p-5 space-y-4">
       {/* Avatar + Status */}
@@ -135,8 +207,15 @@ function MemberCard({ member }: { member: TeamMember }) {
           />
         </div>
 
-        <div>
-          <p className="font-medium">{member.name}</p>
+        <div className="flex-1">
+          <div className="flex items-start justify-between">
+            <p className="font-medium">{member.name}</p>
+            <X
+              onClick={() => onDelete(member._id)}
+              size={20}
+              className="text-red-500 cursor-pointer"
+            />
+          </div>
           <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full text-gray-600">
             {member.teamMember}
           </span>
@@ -154,13 +233,19 @@ function MemberCard({ member }: { member: TeamMember }) {
           {member.phone}
         </div>
       </div>
-
+      <Toaster position="top-center" richColors />
       {/* Actions */}
       <div className="flex gap-3">
-        <button className="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50 cursor-pointer">
+        <button
+          onClick={onView}
+          className="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50 cursor-pointer"
+        >
           View Profile
         </button>
-        <button className="text-blue-600 text-sm cursor-pointer">
+        <button
+          onClick={onEdit}
+          className="text-blue-600 text-sm cursor-pointer"
+        >
           Edit Role
         </button>
       </div>
