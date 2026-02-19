@@ -2,7 +2,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../../lib/socket";
 import { Toaster, toast } from "sonner";
-import { X } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 
 type Data = {
   _id: string;
@@ -13,7 +19,7 @@ type Data = {
   startDate: number;
   assign: string;
   category: string;
-  status: string;
+  status: PlanStatus;
   dueDate: number;
   restrict: string;
 };
@@ -22,6 +28,8 @@ type Section = {
   admin: string;
   tasks: Data[];
 };
+
+type PlanStatus = "todo" | "progress" | "done";
 
 function groupByAdmin(list: Data[]): Section[] {
   const map = new Map<string, Data[]>();
@@ -61,6 +69,66 @@ export default function Pending() {
     fetchPlans();
   }, []);
 
+  const updateStatus = async (task: Data, value: PlanStatus) => {
+    const today = new Date();
+    const due = new Date(task.dueDate);
+
+    const isOverdue = today.getTime() > due.getTime();
+
+    if (value === "done" && isOverdue) {
+      toast("This plan is overdue. Is your work completed?", {
+        action: {
+          label: "Yes, Done",
+          onClick: async () => {
+            try {
+              await api.patch(`/task/update-status/${task._id}`, {
+                status: "done",
+                confirmDone: true,
+              });
+
+              setPlans((prev) => {
+                const updated = prev.map((p) =>
+                  p._id === task._id
+                    ? { ...p, status: "done" as PlanStatus }
+                    : p,
+                );
+                setSections(groupByAdmin(updated));
+                return updated;
+              });
+
+              toast.success("Pending marked as done");
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (err: any) {
+              toast.error(
+                err?.response?.data?.message || "Failed to update status",
+              );
+            }
+          },
+        },
+      });
+      return;
+    }
+
+    try {
+      await api.patch(`/task/update-status/${task._id}`, {
+        status: value,
+      });
+
+      setPlans((prev) => {
+        const updated = prev.map((p) =>
+          p._id === task._id ? { ...p, status: value as PlanStatus } : p,
+        );
+        setSections(groupByAdmin(updated));
+        return updated;
+      });
+
+      toast.success("Status updated");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Update failed");
+    }
+  };
+
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
   }
@@ -95,8 +163,24 @@ export default function Pending() {
                     <b>Priority:</b> {task.priority}
                   </p>
                   <p>
-                    <b>Status:</b> {task.status}
+                    <b>Status:</b>
+                    <Select
+                      value={task.status}
+                      onValueChange={(value) =>
+                        updateStatus(task, value as PlanStatus)
+                      }
+                    >
+                      <SelectTrigger className="w-40">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="todo">To Do</SelectItem>
+                        <SelectItem value="progress">Progress</SelectItem>
+                        <SelectItem value="done">Done</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </p>
+
                   <p>
                     <b>Category:</b> {task.category}
                   </p>

@@ -82,3 +82,56 @@ export const deleteTask = async (req, res) => {
     });
   }
 };
+
+export const updateBacklogStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, confirmDone } = req.body;
+
+    if (!["todo", "progress", "done"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status value",
+      });
+    }
+
+    const plan = await task.findById(id);
+    if (!plan) {
+      return res.status(404).json({
+        success: false,
+        message: "Plan not found",
+      });
+    }
+
+    const today = new Date();
+    const due = new Date(plan.dueDate);
+
+    const diffDays = Math.floor(
+      (today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (status === "done" && diffDays > 1 && !confirmDone) {
+      return res.status(200).json({
+        success: false,
+        confirmRequired: true,
+        message:
+          "This plan is overdue. If your work is completed, please confirm.",
+      });
+    }
+
+    plan.status = status;
+    await plan.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Pending status updated successfully",
+      data: plan,
+    });
+  } catch (error) {
+    console.error("Update status error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update pending status",
+    });
+  }
+};

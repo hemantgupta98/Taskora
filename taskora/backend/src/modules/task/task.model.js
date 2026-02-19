@@ -9,7 +9,11 @@ const createTask = new mongoose.Schema(
     startDate: { type: Number, required: true },
     assign: { type: String, required: true },
     category: { type: String, required: true },
-    status: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["todo", "progress", "done"],
+      default: "todo",
+    },
     dueDate: { type: Number, required: true },
     restrict: { type: String, required: true },
     attachment: { type: String, required: false, default: "" },
