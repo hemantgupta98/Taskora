@@ -71,7 +71,7 @@ export default function ProjectPage() {
     if (!confirmed) return;
 
     try {
-      await api.delete(`/task/${id}`);
+      await api.delete(`/task/deleteplans/${id}`);
       const updated = tasks.filter((t) => t._id !== id);
       setTasks(updated);
       setSectionsData(groupByAdmin(updated));

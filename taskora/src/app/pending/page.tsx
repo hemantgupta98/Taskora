@@ -64,23 +64,6 @@ export default function Pending() {
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
   }
-  const handleDeleteTask = async (id: string) => {
-    const confirmed = window.confirm("Are you sure you want to delete this?");
-    if (!confirmed) return;
-
-    try {
-      await api.delete(`/plans/deleteplans/${id}`);
-
-      const updated = plans.filter((t) => t._id !== id);
-      setPlans(updated);
-      setSections(groupByAdmin(updated));
-
-      toast.success("Plan deleted successfully");
-    } catch (err) {
-      console.error("Delete error:", err);
-      toast.error("Failed to delete plan");
-    }
-  };
 
   return (
     <div className="mx-auto p-5 mt-5 max-w-5xl rounded-xl shadow-2xl">
@@ -103,14 +86,6 @@ export default function Pending() {
                 key={task._id}
                 className="relative p-4 border rounded-lg bg-gray-50 hover:shadow"
               >
-                <button
-                  type="button"
-                  onClick={() => handleDeleteTask(task._id)}
-                  className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-                  aria-label="Delete task"
-                >
-                  <X className="w-4 h-4" />
-                </button>
                 <h3 className="font-semibold text-lg">{task.title}</h3>
 
                 <p className="text-sm text-gray-600">{task.descripition}</p>
