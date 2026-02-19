@@ -109,6 +109,7 @@ export default function TeamManagementPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-50 shadow-2xl rounded-2xl">
+      <Toaster position="top-center" richColors />
       {/* Main */}
       <main className="flex-1 flex flex-col">
         {/* Content */}
@@ -126,7 +127,10 @@ export default function TeamManagementPage() {
                 Invite Member
               </button>
 
-              <button className="flex items-center gap-2 border px-4 py-2 rounded-lg text-sm cursor-pointer">
+              <button
+                onClick={() => toast.warning("can't be assign")}
+                className="flex items-center gap-2 border px-4 py-2 rounded-lg text-sm cursor-pointer"
+              >
                 <SlidersHorizontal size={16} />
                 Bulk Assign Role
               </button>
@@ -233,7 +237,7 @@ function MemberCard({
           {member.phone}
         </div>
       </div>
-      <Toaster position="top-center" richColors />
+
       {/* Actions */}
       <div className="flex gap-3">
         <button

@@ -18,7 +18,7 @@ import {
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Project Board", href: "/project", icon: KanbanSquare },
-  { name: "Pendings", href: "/duetask", icon: Workflow },
+  { name: "Pendings", href: "/pending", icon: Workflow },
   { name: "Team", href: "/team", icon: Users },
   { name: "Backlog", href: "/backlog", icon: WorkflowIcon },
   { name: "Code", href: "/code", icon: CodeXml },
