@@ -1,21 +1,14 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
-
-const uri = process.env.MONGODB_URI;
-
-export const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    await client.connect();
-    console.log("✅ MongoDB Atlas connected");
+    await mongoose.connect(process.env.MONGODB_URI, {
+      dbName: "taskora",
+    });
+
+    console.log("✅ MongoDB Atlas connected (Mongoose)");
   } catch (error) {
-    console.error("❌ MongoDB connection failed:", error);
+    console.error("❌ MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };
