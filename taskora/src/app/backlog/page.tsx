@@ -122,7 +122,7 @@ export default function BacklogMobile() {
       <div className="p-4 space-y-3">
         <Input
           placeholder="Search backlog…"
-          className="w-full h-10 rounded-lg border px-3 text-sm"
+          className="w-full h-12 rounded-lg border px-3 text-sm"
           label=""
           value={search}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
