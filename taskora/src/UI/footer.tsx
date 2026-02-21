@@ -101,7 +101,7 @@ export default function CallToActionPage() {
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             <span className="hover:text-gray-700 cursor-pointer">
-              Privacy Policy
+              Privacy Policy's
             </span>
             <span className="hover:text-gray-700 cursor-pointer">
               Terms of Service
