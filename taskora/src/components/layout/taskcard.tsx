@@ -1,6 +1,6 @@
 "use client";
 
-import { api } from "../../lib/socket";
+import { api } from "../../lib/api";
 import { Toaster, toast } from "sonner";
 import {
   Select,

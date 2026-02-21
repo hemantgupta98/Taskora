@@ -11,13 +11,27 @@ import {
   verifyotp,
   resetpassword,
   logout,
+  getUserByGmail,
 } from "./auth.controllers.js";
+import { verifyToken } from "./auth.middleware.js";
 
 const router = express.Router();
 //all are set
 
 // Email / password auth
 router.post("/signup", signup);
+router.get("/me", verifyToken, async (req, res) => {
+  const user = await findUserByEmail(req.user.email);
+
+  return res.json({
+    success: true,
+    data: {
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+    },
+  });
+});
 router.post("/login", login);
 
 // OTP

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { api } from "../../lib/socket";
+import { api } from "../../lib/api";
 import { Toaster, toast } from "sonner";
 import Input from "@/src/components/ui/input";
 import {

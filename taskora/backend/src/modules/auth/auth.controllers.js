@@ -33,6 +33,42 @@ export const signup = async (req, res) => {
   }
 };
 
+export const getUserByGmail = async (req, res) => {
+  const { email } = req.query;
+  try {
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email query param is required",
+      });
+    }
+
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not registered. Please sign up first.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        userId: user._id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (error) {
+    console.error("Get user by gmail error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
 

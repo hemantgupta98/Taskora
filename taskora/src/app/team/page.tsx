@@ -3,7 +3,7 @@
 import { UserPlus, SlidersHorizontal, Mail, Phone, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { api } from "../../lib/socket";
+import { api } from "../../lib/api";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 

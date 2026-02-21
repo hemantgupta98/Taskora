@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import TaskDrawer from "../../components/Task/TaskDrawer";
-import { api } from "../../lib/socket";
+import { api } from "../../lib/api";
 import { Flag } from "lucide-react";
 import { formatMMDDYYYY } from "../../lib/date";
 import Input from "@/src/components/ui/input";

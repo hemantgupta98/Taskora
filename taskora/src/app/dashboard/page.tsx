@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import StatCard from "../../components/layout/Startcard";
-import { api } from "../../lib/socket";
+import { api } from "../../lib/api";
 
 type TaskItem = {
   _id: string;

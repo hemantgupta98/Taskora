@@ -10,7 +10,7 @@ import { forwardRef } from "react";
 import { Calendar } from "../../components/ui/calendar";
 import { Button } from "../../components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
-import { api } from "../../lib/socket";
+import { api } from "../../lib/api";
 import {
   Popover,
   PopoverContent,

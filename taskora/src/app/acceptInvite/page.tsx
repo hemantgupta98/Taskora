@@ -5,7 +5,7 @@ import Image from "next/image";
 import Input from "../../components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Toaster, toast } from "sonner";
-import { api } from "../../lib/socket";
+import { api } from "../../lib/api";
 
 type Accept = {
   name: string;
