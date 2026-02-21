@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import InputField from "../InputFields";
+
 import { Upload } from "lucide-react";
 
 export default function ProfileForm() {
@@ -31,11 +31,7 @@ export default function ProfileForm() {
       </div>
 
       {/* Form Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InputField label="Full Name" placeholder="Jane Doe" />
-        <InputField label="Email Address" placeholder="jane.doe@example.com" />
-        <InputField label="Username" placeholder="janedoe_pm" />
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
 
       {/* Contact Info */}
       <div className="mt-8">
@@ -43,14 +39,6 @@ export default function ProfileForm() {
         <p className="text-sm text-gray-500 mb-4">
           Update your contact details for better communication.
         </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Phone Number" placeholder="+1 (555) 123-4567" />
-          <InputField
-            label="Address"
-            placeholder="123 Taskora St, Suite 400, Innovation City, CA 90210"
-          />
-        </div>
       </div>
 
       {/* Actions */}
