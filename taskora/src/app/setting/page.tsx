@@ -14,10 +14,9 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { Url } from "next/dist/shared/lib/router/router";
+import { id } from "date-fns/locale";
 
 type FormData = {
-  fullName?: string;
-  email: string;
   username: string;
   contact: number;
   address: string;
@@ -28,13 +27,12 @@ type FormData = {
 type Data = {
   name?: string;
   email: string;
-  password: string;
 };
 
 export default function SettingsTabs() {
   const [mode, setMode] = useState<"Profile" | "Workspace">("Profile");
   const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState<Data[]>([]);
+  const [user, setUser] = useState<Data | null>(null);
 
   const { register, handleSubmit, reset } = useForm<FormData>();
 
@@ -43,37 +41,19 @@ export default function SettingsTabs() {
     reset();
   };
 
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [useSystem, setUseSystem] = useState(false);
-  const [accent, setAccent] = useState("#2563EB");
-  const [fontSize, setFontSize] = useState<"small" | "medium" | "large">(
-    "medium",
-  );
-
-  const accentColors = [
-    "#2563EB",
-    "#06B6D4",
-    "#22C55E",
-    "#F59E0B",
-    "#7C3AED",
-    "#EC4899",
-    "#DC2626",
-  ];
-
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchUser = async () => {
       try {
         const res = await api.get("/auth/signup");
-        const list: Data[] = res.data.data;
-        setTasks(list);
+        setUser(res.data.data); // must be { name, email }
       } catch (err) {
-        console.error("Failed to fetch tasks", err);
+        console.error("Failed to fetch user", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTasks();
+    fetchUser();
   }, []);
 
   if (loading) return <p>Loading...</p>;
@@ -127,22 +107,20 @@ export default function SettingsTabs() {
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
-                <label className="text-md font-semibold text-gray-500 ">
-                  full Name
-                  <Input
-                    placeholder="John Doe"
-                    type="name"
-                    {...register("fullName", { required: true })}
-                  />
-                </label>
-                <label className="text-md font-semibold text-gray-500">
-                  Email
-                  <Input
-                    placeholder="example@gmail.com"
-                    type="name"
-                    {...register("email", { required: true })}
-                  />
-                </label>
+                {user && (
+                  <>
+                    <label className="text-md font-semibold text-gray-500">
+                      Full Name
+                      <Input readOnly value={user.name ?? ""} />
+                    </label>
+
+                    <label className="text-md font-semibold text-gray-500">
+                      Email
+                      <Input readOnly value={user.email} />
+                    </label>
+                  </>
+                )}
+
                 <label className="text-md font-semibold text-gray-500 mt-5">
                   User Name
                   <Input
