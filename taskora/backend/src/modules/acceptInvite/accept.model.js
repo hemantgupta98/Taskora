@@ -13,6 +13,10 @@ const acceptSchema = new mongoose.Schema(
     password: { type: String, required: true },
 
     confirmPassword: { type: String, required: true },
+    avatar: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Media",
+    },
   },
   { timeseries: true },
 );

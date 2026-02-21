@@ -1,6 +1,7 @@
 import { findUserByEmail, User } from "./accept.service.js";
 import acceptModel from "./accept.model.js";
 import inviteModel from "../invite/invite.model.js";
+import { Media } from "../../media/media.model.js";
 
 export const accept = async (req, res) => {
   const { name, phone, email, password, confirmpassword } = req.body;
@@ -117,10 +118,49 @@ export const deleteTeamMemeber = async (req, res) => {
     });
   }
 };
+export const uploadAcceptImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    if (!req.body?.acceptId) {
+      return res.status(400).json({
+        success: false,
+        message: "acceptId is required",
+      });
+    }
+
+    const media = await Media.create({
+      originalName: req.file.originalname,
+      fileName: req.file.filename,
+      fileType: req.file.mimetype,
+      fileSize: req.file.size,
+      url: `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`,
+      module: "accept",
+      moduleId: req.body.acceptId || null,
+      uploadedBy: req.user?._id || null,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Image uploaded & stored",
+      media,
+    });
+  } catch (error) {
+    console.error("Upload error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Upload failed",
+    });
+  }
+};
 
 export default {
   accept,
   getAcceptUsers,
   getInvitedTeamMember,
   deleteTeamMemeber,
+  uploadAcceptImage,
 };
