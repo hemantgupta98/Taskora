@@ -26,9 +26,7 @@ type FormData = {
 };
 
 export default function SettingsTabs() {
-  const [mode, setMode] = useState<"Profile" | "Workspace" | "Theme">(
-    "Profile",
-  );
+  const [mode, setMode] = useState<"Profile" | "Workspace">("Profile");
 
   const { register, handleSubmit, reset } = useForm<FormData>();
 
@@ -70,13 +68,6 @@ export default function SettingsTabs() {
         >
           <Briefcase className="p-1" />
           Workspace
-        </button>
-        <button
-          onClick={() => setMode("Theme")}
-          className={`flex items-center gap-1 rounded-md p-2 shadow-xl ${mode === "Theme" ? "ring-1 ring-blue-400" : "border"}`}
-        >
-          <Palette className="p-1" />
-          Theme
         </button>
       </div>
       <div className="m-3 rounded-2xl p-4 shadow-2xl sm:m-5 sm:p-5">
@@ -279,139 +270,6 @@ export default function SettingsTabs() {
                 </button>
               </div>
             </form>
-          </div>
-        )}
-
-        {mode === "Theme" && (
-          <div className="rounded-xl bg-slate-100">
-            {/* Sidebar */}
-
-            {/* Main Content */}
-            <main className="p-4 sm:p-6 lg:p-8">
-              <h2 className="text-3xl font-bold text-slate-800">
-                Theme Settings
-              </h2>
-              <p className="text-slate-500 mb-8">
-                Customize your theme preferences.
-              </p>
-
-              {/* Appearance */}
-              <section className="bg-white rounded-xl p-6 shadow mb-8">
-                <h3 className="text-xl font-semibold mb-4">Appearance</h3>
-
-                <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-                  <button
-                    onClick={() => setTheme("light")}
-                    className={`flex-1 border rounded-xl p-4 flex flex-col items-center gap-3 transition ${
-                      theme === "light"
-                        ? "border-blue-600 ring-2 ring-blue-200"
-                        : "hover:border-slate-300"
-                    }`}
-                  >
-                    <Sun className="text-yellow-500" />
-                    <span className="font-medium">Light Mode</span>
-                  </button>
-
-                  <button
-                    onClick={() => setTheme("dark")}
-                    className={`flex-1 border rounded-xl p-4 flex flex-col items-center gap-3 transition ${
-                      theme === "dark"
-                        ? "border-blue-600 ring-2 ring-blue-200"
-                        : "hover:border-slate-300"
-                    }`}
-                  >
-                    <Moon className="text-slate-700" />
-                    <span className="font-medium">Dark Mode</span>
-                  </button>
-                </div>
-
-                {/* System Toggle */}
-                <div className="mt-6 flex flex-wrap items-center gap-4">
-                  <span className="text-slate-700">Use System Preference</span>
-                  <button
-                    onClick={() => setUseSystem(!useSystem)}
-                    className={`w-12 h-6 rounded-full relative transition ${
-                      useSystem ? "bg-blue-600" : "bg-slate-300"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition ${
-                        useSystem ? "translate-x-6" : ""
-                      }`}
-                    />
-                  </button>
-                </div>
-              </section>
-
-              {/* Accent Color */}
-              <section className="bg-white rounded-xl p-6 shadow mb-8">
-                <h3 className="text-xl font-semibold mb-4">Accent Color</h3>
-
-                <div className="mb-4 flex flex-wrap gap-4">
-                  {accentColors.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setAccent(color)}
-                      style={{ backgroundColor: color }}
-                      className="w-10 h-10 rounded-full flex items-center justify-center"
-                    >
-                      {accent === color && <Check className="text-white" />}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4">
-                  <label className="font-medium">Custom Color:</label>
-                  <input
-                    type="color"
-                    value={accent}
-                    onChange={(e) => setAccent(e.target.value)}
-                    className="w-12 h-10 p-1 border rounded"
-                  />
-                  <input
-                    value={accent}
-                    readOnly
-                    className="border px-3 py-2 rounded w-32"
-                  />
-                </div>
-              </section>
-
-              {/* Font Size */}
-              <section className="bg-white rounded-xl p-6 shadow mb-8">
-                <h3 className="text-xl font-semibold mb-4">Font Size</h3>
-
-                <div className="flex flex-wrap gap-4">
-                  {(["small", "medium", "large"] as const).map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setFontSize(size)}
-                      className={`px-6 py-2 rounded-lg border transition ${
-                        fontSize === size
-                          ? "bg-blue-600 text-white"
-                          : "hover:bg-slate-100"
-                      }`}
-                    >
-                      {size.charAt(0).toUpperCase() + size.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-10">
-                <button
-                  onClick={() => reset()}
-                  className="bg-gray-300 shadow-xl text-white font-semibold rounded-sm p-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="w-full rounded-sm bg-blue-500 p-2 font-semibold text-white shadow-xl sm:w-40"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </main>
           </div>
         )}
       </div>
