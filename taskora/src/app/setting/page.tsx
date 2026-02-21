@@ -26,6 +26,7 @@ type FormData = {
 
 export default function SettingsTabs() {
   const [mode, setMode] = useState<"Profile" | "Workspace">("Profile");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const { register, handleSubmit, reset, watch, setValue } =
     useForm<FormData>();
@@ -33,6 +34,11 @@ export default function SettingsTabs() {
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     console.log(data);
     reset();
+  };
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImagePreview(URL.createObjectURL(e.target.files[0]));
+    }
   };
 
   // 🔥 WATCH VALUES (TEXT ONLY)
@@ -89,27 +95,32 @@ export default function SettingsTabs() {
               Manage your personal profile details
             </p>
 
-            {/* PROFILE IMAGE */}
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Image
-                src="/logo.png"
-                alt="profile logo"
-                height={50}
-                width={50}
-                className="rounded-4xl bg-gray-100 object-cover"
-              />
-
-              <Input
-                icon={
-                  <Upload size={18} className="cursor-pointer text-blue-600" />
-                }
-                type="file"
-                accept="image/*"
-                className="font-semibold"
-              />
-            </div>
-
             <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="flex flex-col items-center mb-5">
+                <div className="w-24 h-24 rounded-full border flex items-center justify-center overflow-hidden bg-gray-100">
+                  {imagePreview ? (
+                    <Image
+                      src={imagePreview}
+                      alt="Profile Preview"
+                      width={96}
+                      height={96}
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-400 text-sm">Upload</span>
+                  )}
+                </div>
+                <label className="mt-2 text-sm text-blue-600 cursor-pointer">
+                  Upload logo
+                  <Input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+                </label>
+              </div>
+
               <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
                 <label className="text-md font-semibold text-gray-500">
                   Full Name
@@ -205,29 +216,6 @@ export default function SettingsTabs() {
               <div className="my-6 h-px bg-gray-200" />
 
               {/* LOGO & ICON — NOT SYNCED */}
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-                <h1 className="text-xl font-semibold text-black">
-                  Logo & Icons
-                </h1>
-
-                <label className="flex h-40 w-full max-w-40 cursor-pointer flex-col items-center justify-between rounded-md border-2 border-dashed border-blue-400 p-1 hover:bg-blue-50">
-                  <span className="text-md font-medium text-gray-500">
-                    Upload Logo
-                  </span>
-                  <Upload size={18} className="mb-1 text-blue-600" />
-                  <Input type="file" accept="image/*" className="hidden" />
-                </label>
-
-                <label className="flex h-40 w-full max-w-40 cursor-pointer flex-col items-center justify-between rounded-md border-2 border-dashed border-blue-400 p-1 hover:bg-blue-50">
-                  <span className="text-md font-medium text-gray-500">
-                    Upload Icon
-                  </span>
-                  <Upload size={18} className="mb-1 text-blue-600" />
-                  <Input type="file" accept="image/*" className="hidden" />
-                </label>
-              </div>
-
-              <div className="my-6 h-px bg-gray-200" />
 
               <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3">
                 <h1 className="text-xl font-semibold text-black">Time zone</h1>

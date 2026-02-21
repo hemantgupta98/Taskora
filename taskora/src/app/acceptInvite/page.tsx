@@ -6,6 +6,7 @@ import Input from "../../components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import { api } from "../../lib/api";
+import { useRouter } from "next/navigation";
 
 type Accept = {
   name: string;
@@ -33,7 +34,7 @@ export default function AcceptInvite() {
   });
 
   const emailValue = watch("email");
-
+  const router = useRouter();
   useEffect(() => {
     const email = emailValue?.trim();
 
@@ -117,6 +118,7 @@ export default function AcceptInvite() {
 
       reset();
       setTeamMemberRole("");
+      router.push("/team");
     } catch (error) {
       console.error("AUTH ERROR 👉", error);
       toast.error("Server error. Please try again.");
@@ -130,7 +132,7 @@ export default function AcceptInvite() {
         <div className="text-center mb-6">
           <h1 className="text-2xl font-semibold">Welcome to Taskora 🎉</h1>
           <p className="text-gray-500 text-sm mt-1">
-            You’re invited to join <b>Team Alpha</b> as <b>Editor</b>
+            You’re invited to join Team.
           </p>
         </div>
         <Toaster position="top-center" richColors />
@@ -248,11 +250,6 @@ export default function AcceptInvite() {
             </button>
           </div>
         </form>
-
-        {/* Footer */}
-        <p className="text-xs text-center text-gray-400 mt-4">
-          By joining, you agree to Taskora’s Terms & Privacy Policy
-        </p>
       </div>
     </div>
   );
