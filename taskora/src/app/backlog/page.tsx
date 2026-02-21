@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import TaskCard, { PlanStatus } from "../../components/layout/taskcard";
 import AddTaskSheet from "../../components/layout/tasksheet";
-import api from "../../lib/api";
-import Input from "@/src/components/ui/input";
+import { api } from "../../lib/api";
+import Input from "../../components/ui/input";
 
 type TaskItem = {
   _id: string;
