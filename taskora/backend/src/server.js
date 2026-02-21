@@ -6,6 +6,7 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
+//port
 const port = process.env.PORT || 5000;
 
 const startServer = async () => {
