@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   description: "SaaS Project Management Tool",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {
