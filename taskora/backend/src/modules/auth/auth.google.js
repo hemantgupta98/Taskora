@@ -6,7 +6,7 @@ import { googleDB } from "./auth.model.js";
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
 const API_BASE_URL = (
-  process.env.API_BASE_URL ?? "http://localhost:5000"
+  process.env.API_BASE_URL ?? "https://taskora-88w5.onrender.com"
 ).replace(/\/$/, "");
 
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {

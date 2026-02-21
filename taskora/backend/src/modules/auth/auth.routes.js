@@ -49,10 +49,11 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: `${process.env.FRONTEND_URL ?? "http://localhost:3000"}/login?oauth=failed`,
+    failureRedirect: `${process.env.FRONTEND_URL ?? "https://taskora-peach.vercel.app/"}/login?oauth=failed`,
   }),
   (req, res) => {
-    const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
+    const FRONTEND_URL =
+      process.env.FRONTEND_URL ?? "https://taskora-peach.vercel.app/";
 
     try {
       const user = req.user;
