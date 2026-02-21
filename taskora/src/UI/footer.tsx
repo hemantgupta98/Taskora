@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import Image from "next/image";
+import { Toaster, toast } from "sonner";
 
 export default function CallToActionPage() {
   return (
@@ -19,12 +20,18 @@ export default function CallToActionPage() {
             Join 50,000+ teams who have already simplified their day with
             Taskora. No credit card required to start.
           </p>
-
+          <Toaster position="top-center" richColors />
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-md font-semibold hover:bg-gray-100 transition">
+            <button
+              onClick={() => toast.warning("work on progress")}
+              className="bg-white text-blue-600 px-8 py-3 rounded-md font-semibold hover:bg-gray-100 transition"
+            >
               Start Your 14-Day Trial
             </button>
-            <button className="bg-white/20 text-white px-8 py-3 rounded-md font-semibold hover:bg-white/30 transition">
+            <button
+              onClick={() => toast.warning("work on progress")}
+              className="bg-white/20 text-white px-8 py-3 rounded-md font-semibold hover:bg-white/30 transition"
+            >
               Schedule a Demo
             </button>
           </div>
@@ -36,7 +43,13 @@ export default function CallToActionPage() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-500 rounded-md" />
+              <Image
+                src="/logo.png"
+                alt="logo"
+                height={42}
+                width={42}
+                className="sm:h-[50px] sm:w-[50px]"
+              />
               <span className="text-xl font-semibold text-gray-900">
                 Taskora
               </span>

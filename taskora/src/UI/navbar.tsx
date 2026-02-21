@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
@@ -18,9 +19,11 @@ export default function Navbar() {
 
       {/* Actions */}
       <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start">
-        <button className="text-gray-600 hover:text-black">Log In</button>
-        <button className="bg-blue-500 text-white px-4 sm:px-5 py-2 rounded-md hover:bg-blue-600 text-sm sm:text-base whitespace-nowrap">
-          Get Started Free
+        <button className="bg-blue-500 text-white px-4 sm:px-5 py-2 rounded-md hover:bg-blue-600 text-sm sm:text-base whitespace-nowrap cursor-pointer">
+          <Link href={"/auth"}>Log In</Link>
+        </button>
+        <button className="bg-blue-500 text-white px-4 sm:px-5 py-2 rounded-md hover:bg-blue-600 text-sm sm:text-base whitespace-nowrap cursor-pointer">
+          <Link href={"/auth"}>Get start free</Link>
         </button>
       </div>
     </nav>

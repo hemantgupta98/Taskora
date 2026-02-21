@@ -1,6 +1,7 @@
 "use client";
 
 import Dashboard from "./dashboard";
+import { Toaster, toast } from "sonner";
 
 export default function Hero() {
   return (
@@ -20,16 +21,14 @@ export default function Hero() {
           Taskora is the smart management platform that prioritizes your day,
           syncs your team, and turns chaos into clarity.
         </p>
-
+        <Toaster position="top-center" richColors />
         <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-          <button className="bg-blue-500 text-white px-5 sm:px-6 py-3 rounded-md text-base sm:text-lg hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto">
+          <button
+            onClick={() => toast.warning("Please Signup first")}
+            className="bg-blue-500 text-white px-5 sm:px-6 py-3 rounded-md text-base sm:text-lg hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
+          >
             Create Your First Project →
           </button>
-
-          <p className="text-gray-500 text-sm sm:text-base">
-            Already have an account?{" "}
-            <span className="text-blue-500 cursor-pointer">Sign In</span>
-          </p>
         </div>
 
         {/* Trusted Logos */}
