@@ -14,6 +14,7 @@ import {
 } from "./auth.controllers.js";
 
 const router = express.Router();
+//all are set
 
 // Email / password auth
 router.post("/signup", signup);
