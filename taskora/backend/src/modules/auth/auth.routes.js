@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import jwt from "jsonwebtoken";
 import passport from "passport";
@@ -9,8 +12,6 @@ import {
   resetpassword,
   logout,
 } from "./auth.controllers.js";
-import dotenv from "dotenv";
-dotenv.config();
 
 const router = express.Router();
 

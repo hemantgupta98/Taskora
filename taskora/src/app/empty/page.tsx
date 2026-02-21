@@ -2,6 +2,7 @@
 
 import Navbar from "../../UI/navbar";
 import Hero from "../../UI/hero";
+
 import Content from "../../UI/content";
 import { motion } from "motion/react";
 

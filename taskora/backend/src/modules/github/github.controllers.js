@@ -14,9 +14,6 @@ import { githubDB } from "./github.model.js";
 const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5000";
 
-/**
- * 🔐 STEP 1: Redirect user to GitHub
- */
 export const githubLogin = async (req, res) => {
   const base = "https://github.com/login/oauth/authorize";
 
@@ -24,7 +21,7 @@ export const githubLogin = async (req, res) => {
 
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_CLIENT_ID,
-    scope: "read:user user:email repo", // ✅ repo access
+    scope: "read:user user:email repo",
     redirect_uri: redirectUri,
     allow_signup: "true",
   }).toString();
