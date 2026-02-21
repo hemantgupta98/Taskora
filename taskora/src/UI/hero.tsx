@@ -5,7 +5,7 @@ import { Toaster, toast } from "sonner";
 
 export default function Hero() {
   return (
-    <section className="px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20 mx-auto w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="min-h-screen overflow-x-hidden px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20 mx-auto w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
       {/* Left Content */}
       <div>
         <span className="inline-block mb-4 px-3 sm:px-4 py-1 text-xs sm:text-sm bg-blue-100 text-blue-600 rounded-full">
@@ -21,7 +21,9 @@ export default function Hero() {
           Taskora is the smart management platform that prioritizes your day,
           syncs your team, and turns chaos into clarity.
         </p>
+
         <Toaster position="top-center" richColors />
+
         <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
           <button
             onClick={() => toast.warning("Please Signup first")}
@@ -45,7 +47,10 @@ export default function Hero() {
         </div>
       </div>
 
-      <Dashboard />
+      {/* Right Content (Desktop only) */}
+      <div className="hidden lg:block">
+        <Dashboard />
+      </div>
     </section>
   );
 }
