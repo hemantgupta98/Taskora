@@ -1,11 +1,11 @@
 "use client";
 
 import { User, Briefcase, Palette } from "lucide-react";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Upload, Moon, Sun, Check } from "lucide-react";
-
+import { api } from "../../lib/socket";
 import {
   Select,
   SelectContent,
@@ -25,8 +25,16 @@ type FormData = {
   workUrl: Url;
 };
 
+type Data = {
+  name?: string;
+  email: string;
+  password: string;
+};
+
 export default function SettingsTabs() {
   const [mode, setMode] = useState<"Profile" | "Workspace">("Profile");
+  const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState<Data[]>([]);
 
   const { register, handleSubmit, reset } = useForm<FormData>();
 
@@ -51,6 +59,24 @@ export default function SettingsTabs() {
     "#EC4899",
     "#DC2626",
   ];
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await api.get("/auth/signup");
+        const list: Data[] = res.data.data;
+        setTasks(list);
+      } catch (err) {
+        console.error("Failed to fetch tasks", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
