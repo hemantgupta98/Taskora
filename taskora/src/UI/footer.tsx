@@ -4,18 +4,18 @@ import React from "react";
 
 export default function CallToActionPage() {
   return (
-    <main className="bg-white">
+    <main className="bg-white ">
       {/* ================= CTA SECTION ================= */}
-      <section className="px-6 py-24">
-        <div className="max-w-5xl mx-auto bg-blue-500 rounded-3xl px-10 py-20 text-center text-white shadow-lg relative overflow-hidden">
+      <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto bg-blue-500 rounded-2xl sm:rounded-3xl px-5 sm:px-8 lg:px-10 py-12 sm:py-16 lg:py-20 text-center text-white shadow-lg relative overflow-hidden">
           {/* Decorative Circle */}
-          <div className="absolute top-6 right-6 w-32 h-32 border border-white/20 rounded-full" />
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 w-20 h-20 sm:w-32 sm:h-32 border border-white/20 rounded-full" />
 
-          <h2 className="text-4xl font-bold">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
             Ready to boost your productivity?
           </h2>
 
-          <p className="mt-4 text-lg text-white/90 max-w-2xl mx-auto">
+          <p className="mt-4 text-base sm:text-lg text-white/90 max-w-2xl mx-auto">
             Join 50,000+ teams who have already simplified their day with
             Taskora. No credit card required to start.
           </p>
@@ -31,11 +31,10 @@ export default function CallToActionPage() {
         </div>
       </section>
 
-      {/* ================= FOOTER ================= */}
-      <footer className="border-t px-6 py-16">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-10">
+      <footer className="border-t px-4 sm:px-6 lg:px-8 py-10 sm:py-12 lg:py-16">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10">
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-blue-500 rounded-md" />
               <span className="text-xl font-semibold text-gray-900">
@@ -84,10 +83,10 @@ export default function CallToActionPage() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="max-w-6xl mx-auto mt-12 pt-6 border-t flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
-          <p>© 2024 Taskora Technologies Inc. All rights reserved.</p>
+        <div className="max-w-6xl mx-auto mt-10 sm:mt-12 pt-6 border-t flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
+          <p>© 2026 Taskora Inc. All rights reserved.</p>
 
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             <span className="hover:text-gray-700 cursor-pointer">
               Privacy Policy
             </span>

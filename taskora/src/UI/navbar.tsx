@@ -1,26 +1,25 @@
 "use client";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
-    <nav className="w-full px-8 py-4 flex items-center justify-between">
+    <nav className="w-full px-4 sm:px-6 lg:px-8 py-4 mt-2 sm:mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
       {/* Logo */}
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 bg-blue-500 rounded-md" />
-        <span className="text-xl font-semibold">Taskora</span>
+      <div className="flex items-center gap-2 sm:ml-2 lg:ml-5">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          height={42}
+          width={42}
+          className="sm:h-[50px] sm:w-[50px]"
+        />
+        <span className="text-lg sm:text-xl font-semibold">Taskora</span>
       </div>
 
-      {/* Links */}
-      <ul className="hidden md:flex gap-8 text-gray-600">
-        <li className="hover:text-black cursor-pointer">Features</li>
-        <li className="hover:text-black cursor-pointer">Solutions</li>
-        <li className="hover:text-black cursor-pointer">Pricing</li>
-        <li className="hover:text-black cursor-pointer">Resources</li>
-      </ul>
-
       {/* Actions */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start">
         <button className="text-gray-600 hover:text-black">Log In</button>
-        <button className="bg-blue-500 text-white px-5 py-2 rounded-md hover:bg-blue-600">
+        <button className="bg-blue-500 text-white px-4 sm:px-5 py-2 rounded-md hover:bg-blue-600 text-sm sm:text-base whitespace-nowrap">
           Get Started Free
         </button>
       </div>

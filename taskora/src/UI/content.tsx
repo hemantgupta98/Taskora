@@ -49,24 +49,24 @@ export default function FeaturesPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-white px-6 py-24">
+    <main className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:py-24">
       {/* Heading */}
       <div className="text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
           Built for modern workflows
         </h1>
-        <p className="mt-4 text-gray-600 text-lg">
+        <p className="mt-4 text-gray-600 text-base sm:text-lg">
           Stop juggling tools. Taskora centralizes your strategy, communication,
           and execution in one beautiful space.
         </p>
       </div>
 
       {/* Feature Cards */}
-      <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="mt-10 sm:mt-14 lg:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
         {features.map((feature, index) => (
           <div
             key={index}
-            className="bg-white border rounded-xl p-8 shadow-sm hover:shadow-md transition"
+            className="bg-white border rounded-xl p-5 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition"
           >
             {/* Icon */}
             <div className="w-12 h-12 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg text-xl">
@@ -74,7 +74,7 @@ export default function FeaturesPage() {
             </div>
 
             {/* Title */}
-            <h3 className="mt-6 text-xl font-semibold text-gray-900">
+            <h3 className="mt-5 sm:mt-6 text-lg sm:text-xl font-semibold text-gray-900">
               {feature.title}
             </h3>
 
