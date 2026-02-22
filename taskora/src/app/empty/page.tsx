@@ -26,6 +26,7 @@ export default function HomePage() {
       <motion.div
         variants={sectionAnimation}
         initial="hidden"
+        animate="visible"
         whileInView="visible"
         viewport={{ once: true, amount: 0.6 }}
       >
@@ -35,6 +36,7 @@ export default function HomePage() {
       <motion.div
         variants={sectionAnimation}
         initial="hidden"
+        animate="visible"
         whileInView="visible"
         viewport={{ once: true, amount: 0.5 }}
       >
@@ -44,6 +46,7 @@ export default function HomePage() {
       <motion.div
         variants={sectionAnimation}
         initial="hidden"
+        animate="visible"
         whileInView="visible"
         viewport={{ once: true, amount: 0.5 }}
       >
@@ -53,6 +56,7 @@ export default function HomePage() {
       <motion.div
         variants={sectionAnimation}
         initial="hidden"
+        animate="visible"
         whileInView="visible"
         viewport={{ once: true, amount: 0.5 }}
       >
