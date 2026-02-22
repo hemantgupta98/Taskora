@@ -69,7 +69,7 @@ export default function FeaturesPage() {
             className="bg-white border rounded-xl p-5 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition"
           >
             {/* Icon */}
-            <div className="w-12 h-12 flex items-center justify-center bg-red-500 text-blue-600 rounded-lg text-xl">
+            <div className="w-12 h-12 flex items-center justify-center bg-gray-100 text-blue-600 rounded-lg text-xl">
               {feature.icon}
             </div>
 
