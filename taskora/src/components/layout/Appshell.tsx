@@ -14,7 +14,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const isTransitioningRef = useRef(false);
   const router = useRouter();
   const pathname = usePathname();
-  const publicRoutes = ["/", "/empty", "/auth", "/forget"];
+  const publicRoutes = ["/", "/empty", "/auth", "/forget", "/acceptInvite"];
   const isPublicRoute = publicRoutes.includes(pathname);
 
   useEffect(() => {

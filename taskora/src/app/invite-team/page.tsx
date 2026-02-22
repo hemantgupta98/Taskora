@@ -33,7 +33,7 @@ export default function InviteTeamModal() {
     },
   });
 
-  const teamLink = "http://taskora.com/join/team-abc-123";
+  const teamLink = "https://taskora-peach.vercel.app/acceptInvite";
 
   const copyToClipboard = async (text: string) => {
     try {

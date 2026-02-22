@@ -26,7 +26,7 @@ export const user = async (req, res) => {
 
 export const sendInvite = async (req, res) => {
   const { email, teamMembers } = req.body;
-  const link = "http://localhost:3000/acceptInvite";
+  const link = "https://taskora-peach.vercel.app/acceptInvite";
 
   if (!Array.isArray(teamMembers) || teamMembers.length === 0) {
     return res.status(400).json({
