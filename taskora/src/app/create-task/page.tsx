@@ -104,7 +104,7 @@ export default function CreateTaskPage() {
     };
 
     try {
-      const url = "http://localhost:5000/api/task/createtask";
+      const url = "https://taskora-88w5.onrender.com/api/task/createtask";
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

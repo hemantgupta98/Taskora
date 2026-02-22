@@ -47,13 +47,16 @@ export default function InviteTeamModal() {
 
   const onsubmit: SubmitHandler<Invite> = async (data) => {
     try {
-      const res = await fetch("http://localhost:5000/api/invite/sendinvite", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        "https://taskora-88w5.onrender.com/api/invite/sendinvite",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      });
+      );
 
       let result;
       const contentType = res.headers.get("content-type");

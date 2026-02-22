@@ -16,7 +16,7 @@ export default function LogoutPage() {
 
     try {
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+        process.env.NEXT_PUBLIC_API_URL ?? "https://taskora-88w5.onrender.com";
 
       await fetch(`${API_URL}/api/auth/logout`, {
         method: "POST",

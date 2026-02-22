@@ -106,7 +106,7 @@ export default function CreatePlanPage() {
     }
 
     try {
-      const url = "http://localhost:5000/api/plans/createplans";
+      const url = "https://taskora-88w5.onrender.com/api/plans/createplans";
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

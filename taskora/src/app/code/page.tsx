@@ -18,7 +18,8 @@ export default function ContactsTable() {
   const [loading, setLoading] = useState(true);
   const [githubConnected, setGithubConnected] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ?? "https://taskora-88w5.onrender.com";
 
   const loginWithGithub = () => {
     const oauthUrl = `${API_URL}/api/github/login`;
