@@ -53,8 +53,8 @@ export default function AuthForm() {
       }
 
       if (mode === "login" && result?.token) {
-        // Store token for Authorization header usage in later requests.
         localStorage.setItem("token", result.token);
+        toast.success("Token genterated");
       }
 
       toast.success(
