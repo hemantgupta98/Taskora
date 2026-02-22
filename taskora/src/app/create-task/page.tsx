@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { Button } from "../../components/ui/button";
-
+import { useRouter } from "next/router";
 import {
   ChevronsDownIcon,
   ChevronDownIcon,
@@ -68,7 +68,7 @@ export default function CreateTaskPage() {
     },
   });
   const [status, setStatus] = useState<Status>("todo");
-
+  const router = useRouter();
   const statusStyles: Record<Status, string> = {
     todo: "bg-red-100 text-red-700 border-red-200",
     progress: "bg-blue-100 text-blue-700 border-blue-200",
@@ -104,6 +104,9 @@ export default function CreateTaskPage() {
     };
 
     try {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL ?? "https://taskora-88w5.onrender.com";
+
       // 🔐 JWT token (login ke baad stored)
       const token = localStorage.getItem("token");
 
@@ -112,7 +115,7 @@ export default function CreateTaskPage() {
         return;
       }
 
-      const url = "https://taskora-88w5.onrender.com/api/task/createtask";
+      const url = `${API_URL}/api/task/createtask`;
 
       const res = await fetch(url, {
         method: "POST",
@@ -132,6 +135,7 @@ export default function CreateTaskPage() {
 
       reset();
       toast.success("Successfully created task");
+      router.push("/dashbaord");
     } catch (error) {
       console.error("Error in sending", error);
       toast.error("Can't create task");

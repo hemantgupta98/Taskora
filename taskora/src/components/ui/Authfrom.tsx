@@ -52,6 +52,11 @@ export default function AuthForm() {
         return reset();
       }
 
+      if (mode === "login" && result?.token) {
+        // Store token for Authorization header usage in later requests.
+        localStorage.setItem("token", result.token);
+      }
+
       toast.success(
         mode === "signup" ? "Account created successfully" : "Login successful",
       );
