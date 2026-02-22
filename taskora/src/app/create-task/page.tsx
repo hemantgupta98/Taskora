@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { Button } from "../../components/ui/button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import {
   ChevronsDownIcon,
   ChevronDownIcon,
@@ -135,7 +135,7 @@ export default function CreateTaskPage() {
 
       reset();
       toast.success("Successfully created task");
-      router.push("/dashbaord");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Error in sending", error);
       toast.error("Can't create task");
