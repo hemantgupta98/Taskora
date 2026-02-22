@@ -54,7 +54,6 @@ export default function AuthForm() {
 
       if (mode === "login" && result?.token) {
         localStorage.setItem("token", result.token);
-        toast.success("Token genterated");
       }
 
       toast.success(

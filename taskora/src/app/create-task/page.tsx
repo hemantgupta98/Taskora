@@ -111,24 +111,35 @@ export default function CreateTaskPage() {
       const token = localStorage.getItem("token");
 
       if (!token) {
+        console.error("❌ No token found in localStorage");
         toast.error("You are not logged in");
         return;
       }
 
+      console.log("✅ Token found:", token.substring(0, 20) + "..."); // Log first 20 chars only
+
       const url = `${API_URL}/api/task/createtask`;
+      console.log("📤 Sending request to:", url);
 
       const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ✅ MOST IMPORTANT
+          Authorization: `Bearer ${token}`, // ✅ Correct format: "Bearer <token>"
         },
         body: JSON.stringify(payload),
       });
 
+      console.log("📥 Response status:", res.status);
       const result = await res.json();
+      console.log("📥 Response body:", result);
 
       if (!res.ok) {
+        console.error(
+          "❌ API Error:",
+          res.status,
+          result.message || "Unknown error",
+        );
         toast.error(result.message || "Failed to create task");
         return;
       }
