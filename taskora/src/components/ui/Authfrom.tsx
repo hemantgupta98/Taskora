@@ -27,8 +27,8 @@ export default function AuthForm() {
     try {
       const url =
         mode === "signup"
-          ? "http://localhost:5000/api/auth/signup"
-          : "http://localhost:5000/api/auth/login";
+          ? "https://taskora-88w5.onrender.com/api/auth/signup"
+          : "https://taskora-88w5.onrender.com/api/auth/login";
 
       const res = await fetch(url, {
         method: "POST",
@@ -64,11 +64,13 @@ export default function AuthForm() {
     }
   };
   const loginWithGoogle = () => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL ?? "https://taskora-88w5.onrender.com";
     window.location.href = `${API_URL}/api/auth/google`;
   };
   const loginWithGithub = () => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL ?? "https://taskora-88w5.onrender.com";
     window.location.href = `${API_URL}/api/github/login`;
   };
 

@@ -42,17 +42,17 @@ export default function AuthForm() {
       let payload = {};
 
       if (mode === "send") {
-        url = "http://localhost:5000/api/auth/otp";
+        url = "https://taskora-88w5.onrender.com/api/auth/otp";
         payload = { email: data.email };
       }
 
       if (mode === "otp") {
-        url = "http://localhost:5000/api/auth/verifyotp";
+        url = "https://taskora-88w5.onrender.com/api/auth/verifyotp";
         payload = { email: data.email, otp };
       }
 
       if (mode === "reset") {
-        url = "http://localhost:5000/api/auth/resetpassword";
+        url = "https://taskora-88w5.onrender.com/api/auth/resetpassword";
         payload = {
           email: data.email,
           otp,
