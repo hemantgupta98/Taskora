@@ -1,7 +1,6 @@
 import task from "./task.model.js";
 
 const allowedFields = [
-  "admin",
   "title",
   "descripition",
   "priority",
@@ -21,66 +20,82 @@ export const createTask = async (req, res) => {
       if (req.body[key] !== undefined) data[key] = req.body[key];
     }
 
+    data.userId = req.user.id;
+
     const doc = await task.create(data);
     return res.status(201).json({ success: true, data: doc });
   } catch (err) {
-    const message = err?.message || "Failed to create task";
-    return res.status(400).json({ success: false, message });
+    return res.status(400).json({
+      success: false,
+      message: err.message || "Failed to create task",
+    });
   }
 };
 
 export const getTasks = async (req, res) => {
   try {
-    const filter = {};
-    if (req.query.admin) filter.admin = req.query.admin;
+    const list = await task
+      .find({ userId: req.user.id })
+      .sort({ createdAt: -1 });
 
-    const list = await task.find(filter).sort({ createdAt: -1 });
     return res.status(200).json({ success: true, data: list });
   } catch (err) {
-    const message = err?.message || "Failed to fetch tasks";
-    return res.status(500).json({ success: false, message });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch tasks",
+    });
   }
 };
 
 export const getTaskById = async (req, res) => {
   try {
     const { id } = req.params;
-    const doc = await task.findById(id);
-    if (!doc)
-      return res
-        .status(404)
-        .json({ success: false, message: "Task not found" });
-    return res.status(200).json({ success: true, data: doc });
-  } catch (err) {
-    const message = err?.message || "Failed to fetch task";
-    return res.status(400).json({ success: false, message });
-  }
-};
 
-export const deleteTask = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedPlan = await task.findByIdAndDelete(id);
-
-    if (!deletedPlan) {
-      return res.status(404).json({
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
         success: false,
-        message: "Task not found",
+        message: "Invalid task id",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Task deleted successfully",
+    const doc = await task.findOne({
+      _id: id,
+      userId: req.user.id,
     });
-  } catch (error) {
-    console.error("Delete task error:", error);
-    res.status(500).json({
+
+    if (!doc) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found or unauthorized",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: doc,
+    });
+  } catch (err) {
+    console.error("Get task error:", err);
+    return res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "Failed to fetch task",
     });
   }
+};
+export const deleteTask = async (req, res) => {
+  const deleted = await task.findOneAndDelete({
+    _id: req.params.id,
+    userId: req.user.id,
+  });
+
+  if (!deleted) {
+    return res.status(404).json({
+      success: false,
+      message: "Task not found or unauthorized",
+    });
+  }
+
+  res.json({ success: true, message: "Task deleted successfully" });
 };
 
 export const updateBacklogStatus = async (req, res) => {

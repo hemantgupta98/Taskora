@@ -2,7 +2,13 @@ import mongoose from "mongoose";
 
 const createTask = new mongoose.Schema(
   {
-    admin: { type: String, required: true },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+
     title: { type: String, required: true },
     descripition: { type: String, required: true },
     priority: { type: String, required: true },

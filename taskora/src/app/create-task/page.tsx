@@ -89,8 +89,8 @@ export default function CreateTaskPage() {
         ? (data.attachment as File).name
         : "";
 
+    // 🔐 payload me admin/userId NAHI bhejna
     const payload = {
-      admin: data.admin,
       title: data.title,
       descripition: data.descripition,
       priority: data.priority,
@@ -104,36 +104,40 @@ export default function CreateTaskPage() {
     };
 
     try {
+      // 🔐 JWT token (login ke baad stored)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        toast.error("You are not logged in");
+        return;
+      }
+
       const url = "https://taskora-88w5.onrender.com/api/task/createtask";
+
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ MOST IMPORTANT
+        },
         body: JSON.stringify(payload),
       });
 
-      let result;
-      const contentType = res.headers.get("content-type");
-
-      if (contentType?.includes("application/json")) {
-        result = await res.json();
-      } else {
-        const text = await res.text();
-        throw new Error(text || "Invalid server response");
-      }
+      const result = await res.json();
 
       if (!res.ok) {
         toast.error(result.message || "Failed to create task");
-        return reset();
+        return;
       }
 
       reset();
       toast.success("Successfully created task");
     } catch (error) {
-      console.log("Error in sending", error);
+      console.error("Error in sending", error);
       toast.error("Can't create task");
     }
   };
+
   return (
     <>
       <ScrollArea className="h-fit w-full max-w-full border-2 rounded-md">

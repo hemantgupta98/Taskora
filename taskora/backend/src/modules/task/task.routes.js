@@ -6,13 +6,14 @@ import {
   deleteTask,
   updateBacklogStatus,
 } from "./task.contollers.js";
+import { verifyToken } from "../../middleware/main.middleware.js";
 
 const router = express.Router();
 
-router.post("/createtask", createTask);
-router.get("/", getTasks);
-router.get("/:id", getTaskById);
-router.delete("/deleteplans/:id", deleteTask);
-router.patch("/update-status/:id", updateBacklogStatus);
+router.post("/createtask", verifyToken, createTask);
+router.get("/", verifyToken, getTasks);
+router.get("/:id", verifyToken, getTaskById);
+router.delete("/deleteplans/:id", verifyToken, deleteTask);
+router.patch("/update-status/:id", verifyToken, updateBacklogStatus);
 
 export default router;
