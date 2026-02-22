@@ -12,9 +12,25 @@ import {
 import { githubDB } from "./github.model.js";
 
 const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5000";
+const BACKEND_URL =
+  process.env.BACKEND_URL ??
+  process.env.API_BASE_URL ??
+  "https://taskora-88w5.onrender.com";
+const isProduction = process.env.NODE_ENV === "production";
+const isGithubConfigured = Boolean(
+  process.env.GITHUB_CLIENT_ID &&
+    process.env.GITHUB_CLIENT_SECRET &&
+    process.env.JWT_TOKEN,
+);
 
 export const githubLogin = async (req, res) => {
+  if (!isGithubConfigured) {
+    return res.status(503).json({
+      success: false,
+      message: "GitHub OAuth is not configured on server",
+    });
+  }
+
   const base = "https://github.com/login/oauth/authorize";
 
   const redirectUri = `${BACKEND_URL}/api/github/callback`;
@@ -33,6 +49,10 @@ export const githubLogin = async (req, res) => {
  * 🔁 STEP 2: GitHub callback
  */
 export const githubCallback = async (req, res) => {
+  if (!isGithubConfigured) {
+    return res.redirect(`${FRONTEND_URL}/auth?oauth=github_not_configured`);
+  }
+
   const { code } = req.query;
   if (!code) {
     return res.redirect(`${FRONTEND_URL}/auth?oauth=missing_code`);
@@ -91,8 +111,8 @@ export const githubCallback = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false, // true in production (https)
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
     });
 
     // Redirect back to frontend

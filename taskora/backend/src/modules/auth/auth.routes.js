@@ -13,9 +13,13 @@ import {
   logout,
   getUserByGmail,
 } from "./auth.controllers.js";
+import { findUserByEmail } from "./auth.service.js";
 import { verifyToken } from "./auth.middleware.js";
 
 const router = express.Router();
+const isGoogleConfigured = Boolean(
+  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
+);
 //all are set
 
 // Email / password auth
@@ -42,11 +46,30 @@ router.post("/logout", logout);
 
 router.get(
   "/google",
+  (req, res, next) => {
+    if (!isGoogleConfigured) {
+      return res.status(503).json({
+        success: false,
+        message: "Google OAuth is not configured on server",
+      });
+    }
+
+    next();
+  },
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
 router.get(
   "/google/callback",
+  (req, res, next) => {
+    if (!isGoogleConfigured) {
+      const FRONTEND_URL =
+        process.env.FRONTEND_URL ?? "https://taskora-peach.vercel.app/";
+      return res.redirect(`${FRONTEND_URL}/login?oauth=google_not_configured`);
+    }
+
+    next();
+  },
   passport.authenticate("google", {
     session: false,
     failureRedirect: `${process.env.FRONTEND_URL ?? "https://taskora-peach.vercel.app/"}/login?oauth=failed`,
