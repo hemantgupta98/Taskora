@@ -28,6 +28,13 @@ export const sendInvite = async (req, res) => {
   const { email, teamMembers } = req.body;
   const link = "https://taskora-peach.vercel.app/acceptInvite";
 
+  if (!process.env.EMAIL_APP_USER || !process.env.EMAIL_APP_PASS) {
+    return res.status(503).json({
+      success: false,
+      message: "Email service is not configured on server",
+    });
+  }
+
   if (!Array.isArray(teamMembers) || teamMembers.length === 0) {
     return res.status(400).json({
       success: false,

@@ -114,6 +114,13 @@ const otpGenerator = () => {
 export const registerUser = async (req, res) => {
   const { email } = req.body;
 
+  if (!process.env.EMAIL_APP_USER || !process.env.EMAIL_APP_PASS) {
+    return res.status(503).json({
+      success: false,
+      message: "Email service is not configured on server",
+    });
+  }
+
   try {
     const user = await findUserByEmail(email);
     if (!user) {
