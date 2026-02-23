@@ -18,7 +18,7 @@ router.delete("/deleteplans/:id", deleteTeamMemeber);
 router.post(
   "/upload",
 
-  upload.single("image"), // 👈 REQUIRED
+  upload.single("image"),
   uploadAcceptImage,
 );
 export default router;

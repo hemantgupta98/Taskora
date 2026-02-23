@@ -20,10 +20,6 @@ export const createPlans = async (req, res) => {
 
     data.userId = req.user.id;
 
-    if (typeof data.teamMembers === "string") {
-      data.teamMembers = [data.teamMembers];
-    }
-
     const plans = await planModel.create(data);
 
     try {

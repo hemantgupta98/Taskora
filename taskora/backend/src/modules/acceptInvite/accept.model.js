@@ -3,6 +3,12 @@ import { hashpassword } from "../auth/auth.hashed.js";
 
 const acceptSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     name: { type: String, required: true },
     phone: {
       type: String,
@@ -18,7 +24,7 @@ const acceptSchema = new mongoose.Schema(
       ref: "Media",
     },
   },
-  { timeseries: true },
+  { timestamps: true },
 );
 
 acceptSchema.pre("save", async function () {

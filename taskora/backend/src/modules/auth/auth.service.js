@@ -1,7 +1,30 @@
 import { User, ResetPassword } from "./auth.model.js";
+import acceptModel from "../acceptInvite/accept.model.js";
 
 export const findUserByEmail = async (email) => {
-  return await User.findOne({ email });
+  // Check in auth/signup collection
+  let user = await User.findOne({ email });
+  
+  return user;
+};
+
+export const findUserByEmailForLogin = async (email) => {
+  // First check in auth/signup collection
+  let user = await User.findOne({ email });
+  
+  // If not found, check in accept invite collection
+  // This allows users who accepted invites to login
+  if (!user) {
+    const acceptUser = await acceptModel.findOne({ email });
+    if (acceptUser) {
+      // Return the accept user data in a compatible format
+      return {
+        _id: acceptUser._id,
+        name: acceptUser.name,
+        email: acceptUser.email,
+        password: acceptUser.password, // Already hashed
+        isFromAcceptInvite: true,
+      };
 };
 
 export const createUser = async (data) => {

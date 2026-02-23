@@ -15,12 +15,8 @@ const planSchema = new mongoose.Schema(
     access: { type: String, required: true },
     dueDate: { type: Number, required: true },
     teamMembers: {
-      type: [String],
+      type: String,
       required: true,
-      validate: {
-        validator: (value) => Array.isArray(value) && value.length > 0,
-        message: "At least one team member is required",
-      },
     },
     status: {
       type: String,

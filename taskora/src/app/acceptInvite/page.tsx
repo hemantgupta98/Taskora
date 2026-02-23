@@ -90,7 +90,7 @@ export default function AcceptInvite() {
     }
     console.log(data);
     try {
-      const url = "http://localhost:5000/api/accept/acceptinvite";
+      const url = "https://taskora-88w5.onrender.com/api/accept/acceptinvite";
 
       const res = await fetch(url, {
         method: "POST",
@@ -174,7 +174,7 @@ export default function AcceptInvite() {
               value={teamMemberRole}
               readOnly
               className="bg-gray-100 text-gray-500 cursor-not-allowed"
-              {...register("teamMembers", {})}
+              {...register("teamMembers")}
             />
 
             <Input

@@ -2,16 +2,38 @@ import { findUserByEmail, User } from "./accept.service.js";
 import acceptModel from "./accept.model.js";
 import inviteModel from "../invite/invite.model.js";
 import { Media } from "../../media/media.model.js";
+import { User as AuthUser } from "../auth/auth.model.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const accept = async (req, res) => {
   const { name, phone, email, password, confirmpassword } = req.body;
 
   try {
+    // Check if user already exists in accept invite records
     const userExist = await findUserByEmail(email);
     if (userExist) {
       return res.status(409).json({ message: "User already exists" });
     }
 
+    // Check if user already exists in auth system
+    const authUserExist = await AuthUser.findOne({ email });
+    if (authUserExist) {
+      return res
+        .status(409)
+        .json({ message: "User already exists in auth system" });
+    }
+
+    // Validate password confirmation
+    if (password !== confirmpassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+
+    // Save user in accept invite collection
     const savedUser = await User({
       name,
       phone,
@@ -19,10 +41,30 @@ export const accept = async (req, res) => {
       password,
       confirmpassword,
     });
+
+    // Create user in auth system so they can login
+    const authUser = await AuthUser.create({
+      name,
+      email,
+      password, // Will be hashed by pre-save hook in auth.model.js
+    });
+
+    // Generate JWT token
+    const jwtToken = process.env.JWT_TOKEN;
+    const token = jwt.sign({ id: authUser._id }, jwtToken, {
+      expiresIn: "20h",
+    });
+
     res.status(201).json({
       success: true,
       data: savedUser,
-      message: "accept user saved",
+      token,
+      user: {
+        id: authUser._id,
+        email: authUser.email,
+        name: authUser.name,
+      },
+      message: "Accept invite completed - user registered and can now login",
     });
   } catch (error) {
     res.status(400).json({

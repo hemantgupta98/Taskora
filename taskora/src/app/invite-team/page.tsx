@@ -13,8 +13,7 @@ import { SubmitHandler, useForm, Controller } from "react-hook-form";
 
 type Invite = {
   email: string;
-
-  teamMembers: string[];
+  teamMembers: string;
 };
 
 export default function InviteTeamModal() {
@@ -29,12 +28,11 @@ export default function InviteTeamModal() {
   } = useForm<Invite>({
     defaultValues: {
       email: "",
-      teamMembers: [],
+      teamMembers: "",
     },
   });
 
   const teamLink = "https://taskora-peach.vercel.app/acceptInvite";
-
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -104,66 +102,10 @@ export default function InviteTeamModal() {
               <label className="mb-1 block text-sm font-medium text-gray-800">
                 Role<span className="text-red-500">*</span>
               </label>
-              <Controller
-                name="teamMembers"
-                control={control}
-                rules={{
-                  validate: (value) =>
-                    (value?.length ?? 0) > 0 || "Add at least one team member",
-                }}
-                render={({ field, fieldState }) => (
-                  <div className="w-full md:w-[320px]">
-                    <div
-                      className={`flex flex-wrap gap-2 rounded-md border px-3 py-2 min-h-10.5
-                        ${fieldState.error ? "border-red-500" : "border-input"}
-                      `}
-                    >
-                      {(field.value ?? []).map((member, index) => (
-                        <span
-                          key={index}
-                          className="flex items-center gap-1 bg-muted px-2 py-1 rounded text-sm"
-                        >
-                          {member}
-                          <button
-                            type="button"
-                            onClick={() =>
-                              field.onChange(
-                                field.value.filter((_, i) => i !== index),
-                              )
-                            }
-                          >
-                            <X size={14} />
-                          </button>
-                        </span>
-                      ))}
-
-                      <Input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                          if (e.key === "Enter" && input.trim()) {
-                            e.preventDefault();
-                            if (!(field.value ?? []).includes(input.trim())) {
-                              field.onChange([
-                                ...(field.value ?? []),
-                                input.trim(),
-                              ]);
-                            }
-                            setInput("");
-                          }
-                        }}
-                        placeholder="Enter team roles"
-                        className="flex-1 outline-none bg-transparent text-sm min-w-30"
-                      />
-                    </div>
-
-                    {fieldState.error && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
+              <Input
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
+                placeholder="Enter team member role"
+                {...register("teamMembers", { required: "Role is required" })}
               />
             </div>
             {/* Invite by Email */}
