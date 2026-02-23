@@ -51,6 +51,7 @@ export default function AuthForm() {
         toast.error(result.message || "Authentication failed");
         return reset();
       }
+      console.log("LOGIN RESPONSE 👉", result);
 
       if (mode === "login" && result?.token) {
         localStorage.setItem("token", result.token);

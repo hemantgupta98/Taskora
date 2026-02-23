@@ -5,6 +5,7 @@ import inviteRoutes from "../modules/invite/invite.routes.js";
 import acceptinviteRoutes from "../modules/acceptInvite/accept.routes.js";
 import githubRoutes from "../modules/github/github.routes.js";
 import backlogRoutes from "../modules/backlog/backlog.routes.js";
+import notificationRoutes from "../modules/notification/notification.routes.js";
 import express from "express";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.use("/invite", inviteRoutes);
 router.use("/accept", acceptinviteRoutes);
 router.use("/github", githubRoutes);
 router.use("/backlog", backlogRoutes);
+router.use("/notification", notificationRoutes);
 
 export default router;

@@ -5,7 +5,7 @@ import TaskDrawer from "../../components/Task/TaskDrawer";
 import { api } from "../../lib/api";
 import { Flag } from "lucide-react";
 import { formatMMDDYYYY } from "../../lib/date";
-import Input from "@/src/components/ui/input";
+import Input from "../../components/ui/input";
 
 type TaskItem = {
   _id: string;

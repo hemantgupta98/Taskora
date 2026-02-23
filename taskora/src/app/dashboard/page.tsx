@@ -15,12 +15,11 @@ type TaskItem = {
   category: string;
   status: string;
   dueDate: number;
-  progress?: number; // ✅ ADDED
+  progress?: number;
   restrict?: string;
   attachment?: string;
 };
 
-/* ================= HELPERS (UNCHANGED) ================= */
 function getBorderColorForTask(priority?: string) {
   if (!priority) return "border-gray-300";
   if (priority === "high") return "border-red-500";
@@ -28,7 +27,6 @@ function getBorderColorForTask(priority?: string) {
   return "border-blue-500";
 }
 
-/* ================= NEW: AUTO PROGRESS FROM STATUS ================= */
 function getProgressFromStatus(status?: string) {
   if (status === "completed") return 100;
   if (status === "in-progress") return 50;
@@ -84,12 +82,10 @@ function CircleProgress({ value, label }: CircleProgressProps) {
   );
 }
 
-/* ================= DASHBOARD PAGE ================= */
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
 
-  /* ================= API CALL (UNCHANGED) ================= */
   useEffect(() => {
     const fetchTasks = async () => {
       try {

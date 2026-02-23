@@ -1,5 +1,5 @@
 import task from "./task.model.js";
-
+import { createNotification } from "../notification/notification.service.js";
 const allowedFields = [
   "title",
   "descripition",
@@ -23,6 +23,14 @@ export const createTask = async (req, res) => {
     data.userId = req.user.id;
 
     const doc = await task.create(data);
+
+    await createNotification({
+      userId: req.user.id,
+      type: "TASK_CREATED",
+      title: "Task Created",
+      message: `You created a task "${doc.title}"`,
+    });
+
     return res.status(201).json({ success: true, data: doc });
   } catch (err) {
     return res.status(400).json({
@@ -94,7 +102,12 @@ export const deleteTask = async (req, res) => {
       message: "Task not found or unauthorized",
     });
   }
-
+  await createNotification({
+    userId: req.user.id,
+    type: "TASK_DELETED",
+    title: "Task Deleted",
+    message: `Task "${deleted.title}" was deleted`,
+  });
   res.json({ success: true, message: "Task deleted successfully" });
 };
 
@@ -136,6 +149,13 @@ export const updateBacklogStatus = async (req, res) => {
 
     plan.status = status;
     await plan.save();
+
+    await createNotification({
+      userId: req.user.id,
+      type: "TASK_STATUS_UPDATED",
+      title: "Task Status Updated",
+      message: `Task "${plan.title}" moved to ${status}`,
+    });
 
     return res.status(200).json({
       success: true,

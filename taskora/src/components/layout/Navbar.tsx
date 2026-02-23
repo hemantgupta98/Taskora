@@ -2,6 +2,7 @@
 
 import { Bell, Menu, Plus, Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -10,12 +11,24 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../../components/ui/sheet";
+import NotificationList from "../notification/list";
+import { api } from "../../lib/api";
 
 type NavbarProps = {
   onMenuClick?: () => void;
 };
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // fetch unread count
+  useEffect(() => {
+    api.get("/notifications").then((res) => {
+      const unread = res.data.data.filter((n: any) => !n.isRead).length;
+      setUnreadCount(unread);
+    });
+  }, []);
+
   return (
     <header className="mt-2 flex h-16 items-center justify-between border-b bg-white px-3 py-2 sm:px-4 lg:px-6">
       <div className="flex min-w-0 items-center gap-2 sm:gap-4">
@@ -44,30 +57,27 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           <Plus size={16} />
           <span className="hidden sm:inline">Create Task</span>
         </Link>
-        <div className="relative">
-          <Sheet>
-            <SheetTrigger>
-              <div className="h-2 w-2 absolute right-1 bg-red-500 rounded-full animate-pulse"></div>
-              <Bell className="text-gray-500 cursor-pointer " />
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Are you absolutely sure?</SheetTitle>
-                <SheetDescription>
-                  This action cannot be undone.
-                </SheetDescription>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
-        </div>
 
-        {/**<Image
-          src="/pic.jpg"
-          alt="Profile"
-          width={36}
-          height={36}
-          className="rounded-full"
-        /> */}
+        {/* 🔔 NOTIFICATION BELL */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className="relative">
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
+              )}
+              <Bell className="text-gray-500 cursor-pointer" />
+            </button>
+          </SheetTrigger>
+
+          <SheetContent side="right" className="w-full sm:max-w-md">
+            <SheetHeader className="mb-4">
+              <SheetTitle>Notifications</SheetTitle>
+            </SheetHeader>
+
+            {/* 🔥 YOUR NOTIFICATION UI */}
+            <NotificationList />
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

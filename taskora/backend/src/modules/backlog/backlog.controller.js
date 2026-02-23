@@ -1,5 +1,5 @@
 import backlog from "./backlog.model.js";
-
+import { createNotification } from "../notification/notification.service.js";
 const allowedFields = [
   "admin",
   "title",
@@ -19,6 +19,13 @@ export const createBacklog = async (req, res) => {
     }
 
     const doc = await backlog.create(data);
+    await createNotification({
+      userId: req.user.id,
+      type: "BACKLOG_CREATED",
+      title: "Backlog Created",
+      message: `You created a backlog "${doc.title}"`,
+    });
+
     return res.status(201).json({ success: true, data: doc });
   } catch (err) {
     const message = err?.message || "Failed to create backlog";
@@ -66,6 +73,12 @@ export const deleteBacklog = async (req, res) => {
         message: "backlog not found",
       });
     }
+    await createNotification({
+      userId: req.user.id,
+      type: "BACKLOG_DELETED",
+      title: "Backlog Deleted",
+      message: `You Delete a backlog "${doc.title}"`,
+    });
 
     res.status(200).json({
       success: true,
@@ -118,6 +131,13 @@ export const updateBacklogStatus = async (req, res) => {
 
     plan.status = status;
     await plan.save();
+
+    await createNotification({
+      userId: req.user.id,
+      type: "BACKLOG_UPDATE",
+      title: "Backlog Update",
+      message: `You Update a backlog "${doc.title}"`,
+    });
 
     return res.status(200).json({
       success: true,
