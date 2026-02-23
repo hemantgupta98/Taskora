@@ -7,6 +7,7 @@ import {
   createResetPasswordRecord,
 } from "./auth.service.js";
 import sendOtp from "./auth.gmail.js";
+import { isMailConfigured } from "../../utils/mailer.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -255,10 +256,11 @@ export const registerUser = async (req, res) => {
     });
   }
 
-  if (!process.env.EMAIL_APP_USER || !process.env.EMAIL_APP_PASS) {
+  if (!isMailConfigured()) {
     return res.status(503).json({
       success: false,
-      message: "Email service is not configured on server",
+      message:
+        "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
     });
   }
 

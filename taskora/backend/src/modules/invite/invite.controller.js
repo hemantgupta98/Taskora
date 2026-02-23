@@ -2,6 +2,7 @@ import inviteModel from "./invite.model.js";
 import sendLink from "./invite.gmail.js";
 import dotenv from "dotenv";
 import { createNotification } from "../notification/notification.service.js";
+import { isMailConfigured } from "../../utils/mailer.js";
 
 dotenv.config();
 
@@ -34,10 +35,11 @@ export const sendInvite = async (req, res) => {
   const { email, teamMembers } = req.body;
   const link = "https://taskora-peach.vercel.app/acceptInvite";
 
-  if (!process.env.EMAIL_APP_USER || !process.env.EMAIL_APP_PASS) {
+  if (!isMailConfigured()) {
     return res.status(503).json({
       success: false,
-      message: "Email service is not configured on server",
+      message:
+        "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
     });
   }
 
@@ -62,8 +64,8 @@ export const sendInvite = async (req, res) => {
       email,
     });
 
-    const sent = await sendLink(email, link, normalizedMembers);
-    if (sent) {
+    const mailResult = await sendLink(email, link, normalizedMembers);
+    if (mailResult?.success) {
       try {
         await createNotification({
           userId: req.user.id,
@@ -80,9 +82,10 @@ export const sendInvite = async (req, res) => {
         .json({ success: true, message: "link sent successfully" });
     }
 
-    return res
-      .status(500)
-      .json({ success: false, message: "Sending link failed" });
+    return res.status(502).json({
+      success: false,
+      message: mailResult?.message || "Sending invite link failed",
+    });
   } catch (err) {
     console.log(err);
     return res
