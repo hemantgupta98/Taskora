@@ -121,6 +121,13 @@ export const updateBacklogStatus = async (req, res) => {
     const { id } = req.params;
     const { status, confirmDone } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid task id",
+      });
+    }
+
     if (!["todo", "progress", "done"].includes(status)) {
       return res.status(400).json({
         success: false,
@@ -158,12 +165,16 @@ export const updateBacklogStatus = async (req, res) => {
     plan.status = status;
     await plan.save();
 
-    await createNotification({
-      userId: req.user.id,
-      type: "TASK_STATUS_UPDATED",
-      title: "Task Status Updated",
-      message: `Task "${plan.title}" moved to ${status}`,
-    });
+    try {
+      await createNotification({
+        userId: req.user.id,
+        type: "TASK_UPDATE",
+        title: "Task Status Updated",
+        message: `Task "${plan.title}" moved to ${status}`,
+      });
+    } catch (notifyErr) {
+      console.warn("Task notification failed:", notifyErr.message);
+    }
 
     return res.status(200).json({
       success: true,

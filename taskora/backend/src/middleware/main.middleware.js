@@ -4,18 +4,19 @@ import { User, googleDB } from "../modules/auth/auth.model.js";
 export const verifyToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    const bearerToken =
+      authHeader && authHeader.startsWith("Bearer ")
+        ? authHeader.split(" ")[1]
+        : null;
+    const cookieToken = req.cookies?.auth_token || null;
+    const token = bearerToken || cookieToken;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      console.warn(
-        "❌ AUTH ERROR: Missing or invalid Authorization header format",
-      );
+    if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Authorization token missing",
+        message: "Please login first",
       });
     }
-
-    const token = authHeader.split(" ")[1];
 
     if (!process.env.JWT_TOKEN) {
       console.error("❌ CRITICAL: JWT_TOKEN environment variable not set");
@@ -28,14 +29,17 @@ export const verifyToken = async (req, res, next) => {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_TOKEN);
+      if (!decoded?.id) {
+        return res.status(401).json({
+          success: false,
+          message: "Please login first",
+        });
+      }
     } catch (verifyErr) {
       console.warn(`❌ JWT verification failed: ${verifyErr.message}`);
       return res.status(401).json({
         success: false,
-        message:
-          verifyErr.name === "TokenExpiredError"
-            ? "Token expired - please login again"
-            : "Invalid token signature - please login again",
+        message: "Please login first",
       });
     }
 
@@ -53,7 +57,7 @@ export const verifyToken = async (req, res, next) => {
       );
       return res.status(401).json({
         success: false,
-        message: "User no longer exists - please login again",
+        message: "Please login first",
       });
     }
 
@@ -68,7 +72,7 @@ export const verifyToken = async (req, res, next) => {
     console.error("❌ UNEXPECTED AUTH ERROR:", err);
     return res.status(401).json({
       success: false,
-      message: "Authentication failed",
+      message: "Please login first",
     });
   }
 };

@@ -10,6 +10,25 @@ import sendOtp from "./auth.gmail.js";
 import dotenv from "dotenv";
 dotenv.config();
 
+const issueAuthToken = (res, userId, expiresIn = "20h") => {
+  const jwtToken = process.env.JWT_TOKEN;
+  if (!jwtToken) {
+    throw new Error("JWT token secret is missing");
+  }
+
+  const token = jwt.sign({ id: userId }, jwtToken, { expiresIn });
+
+  const isProduction = process.env.NODE_ENV === "production";
+  res.cookie("auth_token", token, {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
+    maxAge: 20 * 60 * 60 * 1000,
+  });
+
+  return token;
+};
+
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -21,13 +40,13 @@ export const signup = async (req, res) => {
     }
 
     const user = await createUser({ name, email, password });
-    const jwtToken = process.env.JWT_TOKEN;
-    const token = jwt.sign({ id: user._id }, jwtToken, { expiresIn: "20h" });
+    const issueSignupToken = process.env.ISSUE_SIGNUP_TOKEN !== "false";
+    const token = issueAuthToken(res, user._id);
 
     res.status(201).json({
       success: true,
       message: "User created successfully",
-      token,
+      ...(issueSignupToken ? { token } : {}),
       user: {
         id: user._id,
         email: user.email,
@@ -57,8 +76,7 @@ export const getUserByGmail = async (req, res) => {
         message: "User not registered. Please sign up first.",
       });
     }
-    const jwtToken = process.env.JWT_TOKEN;
-    const token = jwt.sign({ id: user._id }, jwtToken, { expiresIn: "20h" });
+    const token = issueAuthToken(res, user._id);
 
     return res.status(200).json({
       success: true,
@@ -99,8 +117,7 @@ export const login = async (req, res) => {
       email: user.email,
     });
 
-    const jwtToken = process.env.JWT_TOKEN;
-    const token = jwt.sign({ id: user._id }, jwtToken, { expiresIn: "20h" });
+    const token = issueAuthToken(res, user._id);
 
     res.json({
       success: true,
@@ -271,6 +288,12 @@ export const resetpassword = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     const isProduction = process.env.NODE_ENV === "production";
+
+    res.clearCookie("auth_token", {
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    });
 
     res.clearCookie("token", {
       httpOnly: true,
