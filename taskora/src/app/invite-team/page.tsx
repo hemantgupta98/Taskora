@@ -32,17 +32,6 @@ export default function InviteTeamModal() {
     },
   });
 
-  const teamLink = "https://taskora-peach.vercel.app/acceptInvite";
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      alert("copied..");
-    } catch (err) {
-      console.log("Failed to copy:", err);
-    }
-  };
-  if (!open) return null;
-
   const onsubmit: SubmitHandler<Invite> = async (data) => {
     try {
       const res = await fetch(
@@ -135,44 +124,6 @@ export default function InviteTeamModal() {
               </button>
             </div>
           </form>
-
-          {/* Shareable Link */}
-          <div className="border rounded-xl p-4 space-y-3">
-            <h3 className="font-medium">Shareable Team Link</h3>
-            <div className="flex items-center gap-2">
-              <input
-                readOnly
-                value="https://taskora.com/join/team-abc-123"
-                className="flex-1 border rounded-lg px-3 py-2 text-sm"
-              />
-              <button
-                onClick={() => copyToClipboard(teamLink)}
-                className="flex items-center gap-1 px-3 py-2 border rounded-lg text-sm"
-              >
-                <Copy size={16} /> Copy Link
-              </button>
-            </div>
-            <p className="text-xs text-gray-500">
-              Anyone with this link can join as a Viewer. Roles can be adjusted
-              later.
-            </p>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="border rounded-xl p-4 space-y-3">
-            <h3 className="font-medium">Recent Activity</h3>
-            <div className="flex items-center gap-3 text-sm">
-              {/**<img
-                src="https://i.pravatar.cc/32"
-                className="w-8 h-8 rounded-full"
-              /> */}
-
-              <p className="text-gray-600">
-                <span className="font-medium">Alice Johnson</span> invited
-                <span className="font-medium"> Bob Williams</span> as Editor
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
