@@ -9,8 +9,12 @@ export const createNotification = async ({ userId, type, title, message }) => {
     message,
   });
 
-  const io = getIO();
-  io.to(userId.toString()).emit("new-notification", notification);
+  try {
+    const io = getIO();
+    io.to(userId.toString()).emit("new-notification", notification);
+  } catch (error) {
+    console.warn("Socket emit skipped:", error.message);
+  }
 
   return notification;
 };

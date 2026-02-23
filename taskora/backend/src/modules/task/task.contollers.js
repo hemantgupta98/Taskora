@@ -24,12 +24,16 @@ export const createTask = async (req, res) => {
 
     const doc = await task.create(data);
 
-    await createNotification({
-      userId: req.user.id,
-      type: "TASK_CREATED",
-      title: "Task Created",
-      message: `You created a task "${doc.title}"`,
-    });
+    try {
+      await createNotification({
+        userId: req.user.id,
+        type: "TASK_CREATED",
+        title: "Task Created",
+        message: `You created a task "${doc.title}"`,
+      });
+    } catch (notifyErr) {
+      console.warn("Task notification failed:", notifyErr.message);
+    }
 
     return res.status(201).json({ success: true, data: doc });
   } catch (err) {

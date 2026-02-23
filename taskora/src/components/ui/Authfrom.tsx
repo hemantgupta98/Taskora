@@ -57,6 +57,10 @@ export default function AuthForm() {
         localStorage.setItem("token", result.token);
       }
 
+      if (mode === "signup" && result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+
       toast.success(
         mode === "signup" ? "Account created successfully" : "Login successful",
       );

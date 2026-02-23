@@ -51,9 +51,12 @@ export const getUserByGmail = async (req, res) => {
         message: "User not registered. Please sign up first.",
       });
     }
+    const jwtToken = process.env.JWT_TOKEN;
+    const token = jwt.sign({ id: user._id }, jwtToken, { expiresIn: "20h" });
 
     return res.status(200).json({
       success: true,
+      token,
       data: {
         userId: user._id,
         email: user.email,
