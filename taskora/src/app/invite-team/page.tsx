@@ -34,14 +34,19 @@ export default function InviteTeamModal() {
 
   const onsubmit: SubmitHandler<Invite> = async (data) => {
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(
         "https://taskora-88w5.onrender.com/api/invite/sendinvite",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            email: data.email,
+            teamMembers: data.teamMembers,
+          }),
         },
       );
 
@@ -56,6 +61,7 @@ export default function InviteTeamModal() {
       }
       if (!res.ok) {
         toast.error(result.message || "Failed to connect");
+        return;
       }
 
       toast.success("Invites sent successfully ✅");

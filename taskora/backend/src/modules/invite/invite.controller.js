@@ -9,8 +9,13 @@ export const user = async (req, res) => {
   const { teamMembers, email } = req.body;
 
   try {
+    const normalizedMembers = Array.isArray(teamMembers)
+      ? teamMembers.join(", ")
+      : String(teamMembers || "").trim();
+
     const savedUser = await inviteModel.create({
-      teamMembers,
+      userId: req.user.id,
+      teamMembers: normalizedMembers,
       email,
     });
     res.status(201).json({
@@ -36,7 +41,14 @@ export const sendInvite = async (req, res) => {
     });
   }
 
-  if (!Array.isArray(teamMembers) || teamMembers.length === 0) {
+  const normalizedMembers = Array.isArray(teamMembers)
+    ? teamMembers.map((member) => String(member || "").trim()).filter(Boolean)
+    : String(teamMembers || "")
+        .split(",")
+        .map((member) => member.trim())
+        .filter(Boolean);
+
+  if (normalizedMembers.length === 0) {
     return res.status(400).json({
       success: false,
       message: "teamMembers is required",
@@ -44,25 +56,28 @@ export const sendInvite = async (req, res) => {
   }
 
   try {
-    await inviteModel.create({ teamMembers, email });
-    const sent = await sendLink(email, link, teamMembers);
+    await inviteModel.create({
+      userId: req.user.id,
+      teamMembers: normalizedMembers.join(", "),
+      email,
+    });
+
+    const sent = await sendLink(email, link, normalizedMembers);
     if (sent) {
+      try {
+        await createNotification({
+          userId: req.user.id,
+          type: "INVITE_SEND",
+          title: "Invitation sent",
+          message: `Invitation sent to ${email}`,
+        });
+      } catch (notifyErr) {
+        console.warn("Invite notification failed:", notifyErr.message);
+      }
+
       return res
         .status(200)
         .json({ success: true, message: "link sent successfully" });
-    }
-
-    data.userId = req.user.id;
-
-    try {
-      await createNotification({
-        userId: req.user.id,
-        type: "INVITE_SEND",
-        title: "Invitation send",
-        message: `You send a Invite "${doc.title}"`,
-      });
-    } catch (notifyErr) {
-      console.warn("Invite notification failed:", notifyErr.message);
     }
 
     return res
@@ -72,7 +87,7 @@ export const sendInvite = async (req, res) => {
     console.log(err);
     return res
       .status(400)
-      .json({ seccess: false, message: "Failed to send link" });
+      .json({ success: false, message: "Failed to send link" });
   }
 };
 

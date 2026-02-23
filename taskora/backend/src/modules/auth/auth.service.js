@@ -1,21 +1,43 @@
 import { User, ResetPassword } from "./auth.model.js";
 import acceptModel from "../acceptInvite/accept.model.js";
 
+const escapeRegex = (value = "") => {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
+const getEmailFilter = (email) => {
+  const normalizedEmail = String(email || "")
+    .trim()
+    .toLowerCase();
+  if (!normalizedEmail) {
+    return null;
+  }
+
+  return {
+    $regex: `^${escapeRegex(normalizedEmail)}$`,
+    $options: "i",
+  };
+};
+
 export const findUserByEmail = async (email) => {
-  // Check in auth/signup collection
-  let user = await User.findOne({ email });
-  
+  const emailFilter = getEmailFilter(email);
+  if (!emailFilter) return null;
+
+  let user = await User.findOne({ email: emailFilter });
+
   return user;
 };
 
 export const findUserByEmailForLogin = async (email) => {
-  // First check in auth/signup collection
-  let user = await User.findOne({ email });
-  
+  const emailFilter = getEmailFilter(email);
+  if (!emailFilter) return null;
+
+  let user = await User.findOne({ email: emailFilter });
+
   // If not found, check in accept invite collection
   // This allows users who accepted invites to login
   if (!user) {
-    const acceptUser = await acceptModel.findOne({ email });
+    const acceptUser = await acceptModel.findOne({ email: emailFilter });
     if (acceptUser) {
       // Return the accept user data in a compatible format
       return {
@@ -27,12 +49,19 @@ export const findUserByEmailForLogin = async (email) => {
       };
     }
   }
-  
+
   return user;
 };
 
 export const createUser = async (data) => {
-  return await User.create(data);
+  const normalizedEmail = String(data?.email || "")
+    .trim()
+    .toLowerCase();
+
+  return await User.create({
+    ...data,
+    email: normalizedEmail,
+  });
 };
 
 export const createResetPasswordRecord = async (user) => {
