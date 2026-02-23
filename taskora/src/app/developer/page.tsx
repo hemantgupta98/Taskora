@@ -41,10 +41,10 @@ export default function ProjectShowcasePage() {
           }}
         >
           <div className="mb-10 mt-10">
-            <h1 className="text-5xl font-semibold text-gray-900 mb-5">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-gray-900 mb-5">
               Taskora
             </h1>
-            <p className="mt-2 max-w-4xl text-2xl text-gray-600">
+            <p className="mt-2 max-w-4xl text-base md:text-lg lg:text-xl text-gray-600">
               A modern project management platform inspired by Jira, built to
               plan, track, and manage work efficiently across teams and
               projects.
@@ -64,10 +64,10 @@ export default function ProjectShowcasePage() {
           }}
         >
           <section className="mb-10">
-            <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+            <h2 className="mb-3 text-xl md:text-2xl font-semibold text-gray-900">
               Project Overview
             </h2>
-            <p className="leading-relaxed text-gray-700 text-2xl">
+            <p className="leading-relaxed text-gray-700 text-base md:text-lg lg:text-xl">
               Taskora is a full-stack project management application designed to
               simulate real-world SaaS workflows. The platform focuses on clean
               UI/UX, scalable architecture, and secure authentication, making it
@@ -89,10 +89,10 @@ export default function ProjectShowcasePage() {
           }}
         >
           <section className="mb-10">
-            <h2 className="mb-3 text-xl font-semibold text-gray-900">
+            <h2 className="mb-3 text-xl md:text-2xl font-semibold text-gray-900">
               Inspiration
             </h2>
-            <p className="leading-relaxed text-gray-700 text-2xl">
+            <p className="leading-relaxed text-gray-700 text-base md:text-lg lg:text-xl">
               This project is inspired by Jira’s workflow-driven approach to
               project management. Taskora is built from scratch to deeply
               understand how large-scale task management platforms work, while
@@ -113,17 +113,17 @@ export default function ProjectShowcasePage() {
           }}
         >
           <section className="mb-10">
-            <h2 className="mb-4 text-xl font-semibold text-gray-900">
+            <h2 className="mb-4 text-xl md:text-2xl font-semibold text-gray-900">
               Tech Stack
             </h2>
 
             <div className="grid gap-6 sm:grid-cols-2">
               {/* Frontend */}
               <div className="rounded-lg border border-gray-200 p-5">
-                <h3 className="mb-2 text-lg font-semibold text-gray-800">
+                <h3 className="mb-2 text-base md:text-lg font-semibold text-gray-800">
                   Frontend
                 </h3>
-                <ul className="space-y-1 text-gray-700 text-2xl">
+                <ul className="space-y-1 text-gray-700 text-sm md:text-base lg:text-lg">
                   <li>• Next.js (React + TypeScript)</li>
                   <li>• Tailwind CSS</li>
                   <li>• Shadcn UI & Radix UI</li>
@@ -137,10 +137,10 @@ export default function ProjectShowcasePage() {
 
               {/* Backend */}
               <div className="rounded-lg border border-gray-200 p-5">
-                <h3 className="mb-2 text-lg font-semibold text-gray-800">
+                <h3 className="mb-2 text-base md:text-lg font-semibold text-gray-800">
                   Backend
                 </h3>
-                <ul className="space-y-1 text-gray-700 text-2xl">
+                <ul className="space-y-1 text-gray-700 text-sm md:text-base lg:text-lg">
                   <li>• Node.js & Express.js</li>
                   <li>• MongoDB & Mongoose</li>
                   <li>• JWT Authentication</li>
@@ -167,10 +167,10 @@ export default function ProjectShowcasePage() {
           }}
         >
           <section className="mb-10">
-            <h2 className="mb-3 text-xl font-semibold text-gray-900">
+            <h2 className="mb-3 text-xl md:text-2xl font-semibold text-gray-900">
               Development Approach
             </h2>
-            <p className="leading-relaxed text-gray-700 text-2xl">
+            <p className="leading-relaxed text-gray-700 text-base md:text-lg lg:text-xl">
               Taskora is developed using a clean separation between frontend and
               backend responsibilities. APIs are REST-based, components are
               modular and reusable, and the overall structure follows
@@ -192,12 +192,12 @@ export default function ProjectShowcasePage() {
           }}
         >
           <section className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-            <h2 className="mb-2 text-xl font-semibold text-gray-900">
+            <h2 className="mb-2 text-xl md:text-2xl font-semibold text-gray-900">
               About the Developer
             </h2>
-            <p className="leading-relaxed text-gray-700 text-2xl">
-              Hi, I’m{" "}
-              <span className=" text-3xl font-semibold text-orange-400">
+            <p className="leading-relaxed text-gray-700 text-base md:text-lg lg:text-xl">
+              Hi, I'm{" "}
+              <span className="text-lg md:text-xl lg:text-2xl font-semibold text-orange-400">
                 Hemant Gupta
               </span>
               , a 2nd-year BCA student at Jharkhand Rai University, Ranchi, and
@@ -209,7 +209,7 @@ export default function ProjectShowcasePage() {
               problem-solving—writing code that is not just functional, but
               maintainable and purposeful.
             </p>
-            <p className=" pt-5 text-2xl text-red-500">
+            <p className="pt-5 text-base md:text-lg lg:text-xl text-red-500">
               {" "}
               Through these roles, I’ve learned how real production systems are
               built—collaboration with teams, writing scalable features,
