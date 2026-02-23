@@ -121,7 +121,24 @@ const otpGenerator = () => {
 };
 
 export const registerUser = async (req, res) => {
-  const { email } = req.body;
+  const normalizedEmail = String(req.body?.email || "")
+    .trim()
+    .toLowerCase();
+
+  if (!normalizedEmail) {
+    return res.status(400).json({
+      success: false,
+      message: "Email is required",
+    });
+  }
+
+  const emailPattern = /^\S+@\S+\.\S+$/;
+  if (!emailPattern.test(normalizedEmail)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid email format",
+    });
+  }
 
   if (!process.env.EMAIL_APP_USER || !process.env.EMAIL_APP_PASS) {
     return res.status(503).json({
@@ -131,7 +148,7 @@ export const registerUser = async (req, res) => {
   }
 
   try {
-    const user = await findUserByEmail(email);
+    const user = await findUserByEmail(normalizedEmail);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -144,16 +161,20 @@ export const registerUser = async (req, res) => {
     user.otpExpiresAt = expiresAt;
     await user.save();
 
-    const sent = await sendOtp(email, otp);
+    const sent = await sendOtp(normalizedEmail, otp);
     if (sent) {
       return res
         .status(200)
         .json({ success: true, message: "OTP sent successfully" });
     }
 
+    user.otpCode = undefined;
+    user.otpExpiresAt = undefined;
+    await user.save();
+
     return res
-      .status(500)
-      .json({ success: false, message: "Sending OTP failed" });
+      .status(502)
+      .json({ success: false, message: "Unable to send OTP email" });
   } catch (error) {
     console.log("Register OTP error:", error);
     return res

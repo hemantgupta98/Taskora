@@ -12,9 +12,17 @@ const transporter = nodemailer.createTransport({
 
 const sendOtp = async (email, otp) => {
   try {
+    const recipient = String(email || "")
+      .trim()
+      .toLowerCase();
+
+    if (!recipient) {
+      throw new Error("Recipient email is missing");
+    }
+
     const mailOption = {
       from: `"Taskora" <${process.env.EMAIL_APP_USER}>`,
-      to: email,
+      to: recipient,
       subject: "Password Reset OTP",
       text: `Your One-Time Password (OTP) is ${otp}`,
       html: `
