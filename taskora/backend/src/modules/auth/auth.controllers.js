@@ -161,8 +161,8 @@ export const registerUser = async (req, res) => {
     user.otpExpiresAt = expiresAt;
     await user.save();
 
-    const sent = await sendOtp(normalizedEmail, otp);
-    if (sent) {
+    const mailResult = await sendOtp(normalizedEmail, otp);
+    if (mailResult?.success) {
       return res
         .status(200)
         .json({ success: true, message: "OTP sent successfully" });
@@ -172,9 +172,10 @@ export const registerUser = async (req, res) => {
     user.otpExpiresAt = undefined;
     await user.save();
 
-    return res
-      .status(502)
-      .json({ success: false, message: "Unable to send OTP email" });
+    return res.status(502).json({
+      success: false,
+      message: mailResult?.message || "Unable to send OTP email",
+    });
   } catch (error) {
     console.log("Register OTP error:", error);
     return res

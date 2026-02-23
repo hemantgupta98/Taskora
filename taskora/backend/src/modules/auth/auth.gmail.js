@@ -10,6 +10,25 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const getMailErrorMessage = (error) => {
+  const code = error?.code;
+  const responseCode = error?.responseCode;
+
+  if (code === "EAUTH" || responseCode === 535) {
+    return "Gmail authentication failed. Check EMAIL_APP_USER and EMAIL_APP_PASS.";
+  }
+
+  if (code === "ETIMEDOUT" || code === "ESOCKET") {
+    return "Mail server timeout. Please try again.";
+  }
+
+  if (responseCode === 550 || responseCode === 553 || code === "EENVELOPE") {
+    return "Recipient email was rejected by provider.";
+  }
+
+  return "OTP email delivery failed.";
+};
+
 const sendOtp = async (email, otp) => {
   try {
     const recipient = String(email || "")
@@ -37,10 +56,18 @@ const sendOtp = async (email, otp) => {
 
     const info = await transporter.sendMail(mailOption);
     console.log("OTP sent successfully: otp chal gya", info.messageId);
-    return true;
+    return { success: true };
   } catch (error) {
-    console.log("Error in sending OTP: otp nhi gya", error.message);
-    return false;
+    console.log("Error in sending OTP: otp nhi gya", {
+      code: error?.code,
+      responseCode: error?.responseCode,
+      message: error?.message,
+    });
+
+    return {
+      success: false,
+      message: getMailErrorMessage(error),
+    };
   }
 };
 
