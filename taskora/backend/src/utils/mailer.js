@@ -30,6 +30,21 @@ const getMailEnv = () => {
   return { user, pass, from, oauth };
 };
 
+const getSmtpConfig = () => {
+  const host = process.env.SMTP_HOST || "smtp.gmail.com";
+  const port = Number(process.env.SMTP_PORT || 587);
+  const secure = String(process.env.SMTP_SECURE || "false") === "true";
+
+  return {
+    host,
+    port,
+    secure,
+    connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT || 20000),
+    greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT || 15000),
+    socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT || 30000),
+  };
+};
+
 const hasPasswordAuth = (env) => Boolean(env.user && env.pass);
 const hasOAuthAuth = (env) =>
   Boolean(
@@ -51,10 +66,25 @@ export const isMailConfigured = () => getMailAuthMode() !== "none";
 const buildTransport = () => {
   const env = getMailEnv();
   const mode = getMailAuthMode();
+  const smtp = getSmtpConfig();
+
+  const transportBase = {
+    host: smtp.host,
+    port: smtp.port,
+    secure: smtp.secure,
+    requireTLS: !smtp.secure,
+    connectionTimeout: smtp.connectionTimeout,
+    greetingTimeout: smtp.greetingTimeout,
+    socketTimeout: smtp.socketTimeout,
+    tls: {
+      servername: smtp.host,
+      minVersion: "TLSv1.2",
+    },
+  };
 
   if (mode === "password") {
     return nodemailer.createTransport({
-      service: "gmail",
+      ...transportBase,
       auth: {
         user: env.user,
         pass: env.pass,
@@ -64,7 +94,7 @@ const buildTransport = () => {
 
   if (mode === "oauth2") {
     return nodemailer.createTransport({
-      service: "gmail",
+      ...transportBase,
       auth: {
         type: "OAuth2",
         user: env.user,
@@ -86,6 +116,55 @@ const getTransporter = () => {
   }
 
   return transporter;
+};
+
+const buildAlternateTransport = () => {
+  const env = getMailEnv();
+  const mode = getMailAuthMode();
+  const smtp = getSmtpConfig();
+
+  const fallbackPort = smtp.port === 587 ? 465 : 587;
+  const fallbackSecure = fallbackPort === 465;
+
+  const transportBase = {
+    host: smtp.host,
+    port: fallbackPort,
+    secure: fallbackSecure,
+    requireTLS: !fallbackSecure,
+    connectionTimeout: smtp.connectionTimeout,
+    greetingTimeout: smtp.greetingTimeout,
+    socketTimeout: smtp.socketTimeout,
+    tls: {
+      servername: smtp.host,
+      minVersion: "TLSv1.2",
+    },
+  };
+
+  if (mode === "password") {
+    return nodemailer.createTransport({
+      ...transportBase,
+      auth: {
+        user: env.user,
+        pass: env.pass,
+      },
+    });
+  }
+
+  if (mode === "oauth2") {
+    return nodemailer.createTransport({
+      ...transportBase,
+      auth: {
+        type: "OAuth2",
+        user: env.user,
+        clientId: env.oauth.clientId,
+        clientSecret: env.oauth.clientSecret,
+        refreshToken: env.oauth.refreshToken,
+        accessToken: env.oauth.accessToken,
+      },
+    });
+  }
+
+  return null;
 };
 
 const classifyError = (error) => {
@@ -239,6 +318,45 @@ export const sendMailSafe = async ({ to, subject, text, html, context }) => {
     };
   } catch (error) {
     const classified = classifyError(error);
+
+    if (classified.reason === "smtp_timeout") {
+      try {
+        const retryTransport = buildAlternateTransport();
+        if (retryTransport) {
+          const retryInfo = await retryTransport.sendMail({
+            from: `"Taskora" <${env.from}>`,
+            to: recipient,
+            subject,
+            text,
+            html,
+          });
+
+          console.info(`[MAIL:${context}] sent after retry`, {
+            mode,
+            to: recipient,
+            messageId: retryInfo?.messageId,
+            accepted: retryInfo?.accepted,
+            rejected: retryInfo?.rejected,
+          });
+
+          return {
+            success: true,
+            message: "Email sent successfully",
+            data: {
+              messageId: retryInfo?.messageId,
+            },
+          };
+        }
+      } catch (retryError) {
+        const retryClassified = classifyError(retryError);
+        console.error(`[MAIL:${context}] retry failed`, {
+          mode,
+          to: recipient,
+          reason: retryClassified.reason,
+          ...retryClassified.details,
+        });
+      }
+    }
 
     console.error(`[MAIL:${context}] failed`, {
       mode,
