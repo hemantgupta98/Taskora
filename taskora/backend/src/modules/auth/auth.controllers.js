@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { comparePassword, hashpassword } from "./auth.hashed.js";
-import { LoginHistory } from "./auth.model.js";
+import { LoginHistory, User, googleDB } from "./auth.model.js";
 import {
   createUser,
   findUserByEmail,
@@ -92,6 +92,104 @@ export const getUserByGmail = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Server error",
+    });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    let user = await User.findById(userId).select(
+      "_id name email username contact address bio",
+    );
+
+    if (!user) {
+      user = await googleDB
+        .findById(userId)
+        .select("_id name email username contact address bio");
+    }
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        userId: user._id,
+        name: user.name || "",
+        email: user.email || "",
+        username: user.username || "",
+        contact: user.contact || "",
+        address: user.address || "",
+        bio: user.bio || "",
+      },
+    });
+  } catch (error) {
+    console.error("Get profile error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch profile",
+    });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const editableFields = ["username", "contact", "address", "bio"];
+    const updates = {};
+
+    for (const key of editableFields) {
+      if (req.body[key] !== undefined) {
+        updates[key] = String(req.body[key] ?? "").trim();
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No profile fields provided for update",
+      });
+    }
+
+    let user = await User.findById(userId);
+
+    if (!user) {
+      user = await googleDB.findById(userId);
+    }
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    Object.assign(user, updates);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: {
+        userId: user._id,
+        name: user.name || "",
+        email: user.email || "",
+        username: user.username || "",
+        contact: user.contact || "",
+        address: user.address || "",
+        bio: user.bio || "",
+      },
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
     });
   }
 };

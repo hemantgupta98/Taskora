@@ -12,8 +12,9 @@ import {
   resetpassword,
   logout,
   getUserByGmail,
+  getProfile,
+  updateProfile,
 } from "./auth.controllers.js";
-import { findUserByEmail } from "./auth.service.js";
 import { verifyToken } from "./auth.middleware.js";
 
 const router = express.Router();
@@ -24,18 +25,8 @@ const isGoogleConfigured = Boolean(
 
 // Email / password auth
 router.post("/signup", signup);
-router.get("/me", verifyToken, async (req, res) => {
-  const user = await findUserByEmail(req.user.email);
-
-  return res.json({
-    success: true,
-    data: {
-      userId: user._id,
-      email: user.email,
-      name: user.name,
-    },
-  });
-});
+router.get("/me", verifyToken, getProfile);
+router.patch("/me", verifyToken, updateProfile);
 router.post("/login", login);
 
 // OTP
