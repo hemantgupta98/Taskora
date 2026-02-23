@@ -1,6 +1,7 @@
 "use client";
 
-import { X, Send, Copy, Link } from "lucide-react";
+import { X, Send } from "lucide-react";
+import Link from "next/link";
 import {
   forwardRef,
   useState,
