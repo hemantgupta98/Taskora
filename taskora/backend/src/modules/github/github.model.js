@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const githubSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     githubId: { type: String, required: true, unique: true },
     provider: { type: String, default: "github" },
     username: { type: String },

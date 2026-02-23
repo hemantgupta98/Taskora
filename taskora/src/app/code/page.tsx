@@ -47,10 +47,17 @@ export default function ContactsTable() {
           } catch (e) {
             console.log(e);
           }
+          return;
+        }
+
+        if (res.status === 401) {
+          return;
         }
       } catch (err) {
         console.log(err);
-        return toast.error("error");
+        toast.error("Unable to connect GitHub right now");
+        clearInterval(interval);
+        return;
       }
 
       if (popup.closed) {
@@ -73,8 +80,14 @@ export default function ContactsTable() {
           return;
         }
 
+        if (!res.ok) {
+          setGithubConnected(false);
+          setLoading(false);
+          return;
+        }
+
         const data = await res.json();
-        setRepos(data.repos);
+        setRepos(data.repos || []);
         setGithubConnected(true);
       } catch (err) {
         console.error(err);
@@ -94,12 +107,7 @@ export default function ContactsTable() {
             onClick={loginWithGithub}
             className="mb-4 flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-white"
           >
-            <Github
-              open={false}
-              onClose={function (): void {
-                throw new Error("Function not implemented.");
-              }}
-            />
+            <span>🔗</span>
             Connect GitHub
           </button>
         )}

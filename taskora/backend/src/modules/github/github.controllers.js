@@ -19,8 +19,8 @@ const BACKEND_URL =
 const isProduction = process.env.NODE_ENV === "production";
 const isGithubConfigured = Boolean(
   process.env.GITHUB_CLIENT_ID &&
-    process.env.GITHUB_CLIENT_SECRET &&
-    process.env.JWT_TOKEN,
+  process.env.GITHUB_CLIENT_SECRET &&
+  process.env.JWT_TOKEN,
 );
 
 export const githubLogin = async (req, res) => {
@@ -125,17 +125,7 @@ export const githubCallback = async (req, res) => {
 
 export const getGithubRepos = async (req, res) => {
   try {
-    // ✅ Read JWT from cookie
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res.status(401).json({ message: "GitHub not connected" });
-    }
-
-    // ✅ Decode JWT
-    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
-
-    const githubToken = decoded.githubToken; // 👈 MUST exist
+    const githubToken = req.githubToken;
 
     if (!githubToken) {
       return res.status(401).json({ message: "Invalid GitHub token" });
