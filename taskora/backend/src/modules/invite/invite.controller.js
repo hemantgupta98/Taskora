@@ -3,6 +3,7 @@ import sendLink from "./invite.gmail.js";
 import dotenv from "dotenv";
 import { createNotification } from "../notification/notification.service.js";
 import { isMailConfigured } from "../../utils/mailer.js";
+import { verifyMailTransport } from "../../utils/mailer.js";
 
 dotenv.config();
 
@@ -38,8 +39,8 @@ export const sendInvite = async (req, res) => {
   if (!isMailConfigured()) {
     return res.status(503).json({
       success: false,
-      reason: mailResult?.reason || "mail_send_failed",
-      mode: mailResult?.mode || "unknown",
+      reason: "mail_not_configured",
+      mode: "none",
       message:
         "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
     });
@@ -87,6 +88,7 @@ export const sendInvite = async (req, res) => {
     return res.status(502).json({
       success: false,
       reason: mailResult?.reason || "mail_send_failed",
+      mode: mailResult?.mode || "unknown",
       message: mailResult?.message || "Sending invite link failed",
     });
   } catch (err) {
@@ -94,6 +96,19 @@ export const sendInvite = async (req, res) => {
     return res
       .status(400)
       .json({ success: false, message: "Failed to send link" });
+  }
+};
+
+export const mailHealth = async (_req, res) => {
+  try {
+    const result = await verifyMailTransport();
+    return res.status(result.success ? 200 : 503).json(result);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      reason: "mail_health_failed",
+      message: "Failed to verify mail transport",
+    });
   }
 };
 

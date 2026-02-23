@@ -62,6 +62,20 @@ const getMailAuthMode = () => {
 };
 
 export const isMailConfigured = () => getMailAuthMode() !== "none";
+export const getMailMode = () => getMailAuthMode();
+
+export const getMailConfigSnapshot = () => {
+  const env = getMailEnv();
+  return {
+    mode: getMailAuthMode(),
+    hasEmailUser: Boolean(env.user),
+    hasEmailPass: Boolean(env.pass),
+    hasClientId: Boolean(env.oauth.clientId),
+    hasClientSecret: Boolean(env.oauth.clientSecret),
+    hasRefreshToken: Boolean(env.oauth.refreshToken),
+    hasRedirectUri: Boolean(env.oauth.redirectUri),
+  };
+};
 
 const buildTransport = () => {
   const env = getMailEnv();
@@ -370,6 +384,51 @@ export const sendMailSafe = async ({ to, subject, text, html, context }) => {
       reason: classified.reason,
       mode,
       message: classified.publicMessage,
+    };
+  }
+};
+
+export const verifyMailTransport = async () => {
+  const mode = getMailAuthMode();
+
+  if (mode === "none") {
+    return {
+      success: false,
+      reason: "mail_not_configured",
+      mode,
+      message:
+        "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
+      debug: getMailConfigSnapshot(),
+    };
+  }
+
+  try {
+    const tx = getTransporter();
+    if (!tx) {
+      return {
+        success: false,
+        reason: "transporter_init_failed",
+        mode,
+        message: "Email transporter initialization failed",
+      };
+    }
+
+    await tx.verify();
+
+    return {
+      success: true,
+      mode,
+      message: "SMTP verification successful",
+      debug: getMailConfigSnapshot(),
+    };
+  } catch (error) {
+    const classified = classifyError(error);
+    return {
+      success: false,
+      reason: classified.reason,
+      mode,
+      message: classified.publicMessage,
+      debug: getMailConfigSnapshot(),
     };
   }
 };
