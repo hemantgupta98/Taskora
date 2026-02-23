@@ -53,13 +53,15 @@ export default function NotificationList() {
       )}
 
       {/* List */}
-      {notifications.map((n) => (
-        <NotificationItem
-          key={n._id}
-          notification={n}
-          onDelete={handleDelete}
-        />
-      ))}
+      <div className="max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
+        {notifications.map((n) => (
+          <NotificationItem
+            key={n._id}
+            notification={n}
+            onDelete={handleDelete}
+          />
+        ))}
+      </div>
     </div>
   );
 }
