@@ -20,8 +20,6 @@ type Invite = {
 };
 
 export default function InviteTeamModal() {
-  const [open, setOpen] = useState(true);
-
   const {
     register,
     reset,
@@ -87,9 +85,6 @@ export default function InviteTeamModal() {
               Invite new members to your team and manage their roles.
             </p>
           </div>
-          <button onClick={() => setOpen(false)} className="text-gray-500 mb-4">
-            <X size={18} />
-          </button>
         </div>
 
         {/* Content */}
