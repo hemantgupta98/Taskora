@@ -27,11 +27,7 @@ export default function AcceptInvite() {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<Accept>({
-    defaultValues: {
-      teamMembers: "",
-    },
-  });
+  } = useForm<Accept>({});
 
   const emailValue = watch("email");
   const router = useRouter();

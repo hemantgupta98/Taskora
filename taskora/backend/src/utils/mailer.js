@@ -17,8 +17,14 @@ const getMailEnv = () => {
       process.env.GOOGLE_REFRESH_TOKEN,
       process.env.GMAIL_REFRESH_TOKEN,
     ),
-    accessToken: pick(process.env.GOOGLE_ACCESS_TOKEN, process.env.GMAIL_ACCESS_TOKEN),
-    redirectUri: pick(process.env.GOOGLE_REDIRECT_URI, process.env.GMAIL_REDIRECT_URI),
+    accessToken: pick(
+      process.env.GOOGLE_ACCESS_TOKEN,
+      process.env.GMAIL_ACCESS_TOKEN,
+    ),
+    redirectUri: pick(
+      process.env.GOOGLE_REDIRECT_URI,
+      process.env.GMAIL_REDIRECT_URI,
+    ),
   };
 
   return { user, pass, from, oauth };
@@ -26,7 +32,12 @@ const getMailEnv = () => {
 
 const hasPasswordAuth = (env) => Boolean(env.user && env.pass);
 const hasOAuthAuth = (env) =>
-  Boolean(env.user && env.oauth.clientId && env.oauth.clientSecret && env.oauth.refreshToken);
+  Boolean(
+    env.user &&
+    env.oauth.clientId &&
+    env.oauth.clientSecret &&
+    env.oauth.refreshToken,
+  );
 
 const getMailAuthMode = () => {
   const env = getMailEnv();
@@ -96,7 +107,7 @@ const classifyError = (error) => {
     return {
       reason: "auth_failed",
       publicMessage:
-        "Mail authentication failed. Check EMAIL_USER/EMAIL_PASS or OAuth credentials.",
+        "Mail authentication failed. Check EMAIL_APP_USER/EMAIL_APP_PASS (or EMAIL_USER/EMAIL_PASS) or OAuth credentials.",
       details,
     };
   }
@@ -163,6 +174,7 @@ export const sendMailSafe = async ({ to, subject, text, html, context }) => {
     return {
       success: false,
       reason: "recipient_missing",
+      mode: "none",
       message: "Recipient email is required",
     };
   }
@@ -174,6 +186,7 @@ export const sendMailSafe = async ({ to, subject, text, html, context }) => {
     return {
       success: false,
       reason: "mail_not_configured",
+      mode,
       message:
         "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
       debug: {
@@ -194,6 +207,7 @@ export const sendMailSafe = async ({ to, subject, text, html, context }) => {
       return {
         success: false,
         reason: "transporter_init_failed",
+        mode,
         message: "Email transporter initialization failed",
       };
     }
@@ -236,6 +250,7 @@ export const sendMailSafe = async ({ to, subject, text, html, context }) => {
     return {
       success: false,
       reason: classified.reason,
+      mode,
       message: classified.publicMessage,
     };
   }

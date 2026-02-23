@@ -38,6 +38,8 @@ export const sendInvite = async (req, res) => {
   if (!isMailConfigured()) {
     return res.status(503).json({
       success: false,
+      reason: mailResult?.reason || "mail_send_failed",
+      mode: mailResult?.mode || "unknown",
       message:
         "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
     });

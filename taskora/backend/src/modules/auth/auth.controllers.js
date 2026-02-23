@@ -92,6 +92,8 @@ export const getUserByGmail = async (req, res) => {
     console.error("Get user by gmail error:", error);
     return res.status(500).json({
       success: false,
+      reason: mailResult?.reason || "mail_send_failed",
+      mode: mailResult?.mode || "unknown",
       message: "Server error",
     });
   }
