@@ -20,6 +20,7 @@ import {
   ChevronsUpIcon,
   ChevronUpIcon,
 } from "lucide-react";
+import { api } from "../../lib/api";
 
 type Data = {
   admin: string;
@@ -72,28 +73,7 @@ export default function AddTaskSheet({
   const onSubmit: SubmitHandler<Data> = async (data) => {
     console.log(data);
     try {
-      const url = "http://localhost:5000/api/backlog/createbacklog";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-
-      let result;
-      const contentType = res.headers.get("content-type");
-
-      if (contentType?.includes("application/json")) {
-        result = await res.json();
-      } else {
-        const text = await res.text();
-        throw new Error(text || "Invalid server response");
-      }
-
-      if (!res.ok) {
-        toast.error(result.message || "Backlog failed");
-        return reset();
-      }
+      await api.post("/backlog/createbacklog", data);
 
       toast.success("Backlog created");
 

@@ -18,6 +18,8 @@ export const createBacklog = async (req, res) => {
       if (req.body[key] !== undefined) data[key] = req.body[key];
     }
 
+    data.userId = req.user.id;
+
     const doc = await backlog.create(data);
     await createNotification({
       userId: req.user.id,
@@ -35,7 +37,7 @@ export const createBacklog = async (req, res) => {
 
 export const getBacklog = async (req, res) => {
   try {
-    const filter = {};
+    const filter = { userId: req.user.id };
     if (req.query.admin) filter.admin = req.query.admin;
 
     const list = await backlog.find(filter).sort({ createdAt: -1 });
@@ -49,11 +51,11 @@ export const getBacklog = async (req, res) => {
 export const getBacklogById = async (req, res) => {
   try {
     const { id } = req.params;
-    const doc = await backlog.findById(id);
+    const doc = await backlog.findOne({ _id: id, userId: req.user.id });
     if (!doc)
       return res
         .status(404)
-        .json({ success: false, message: "Backlog not found" });
+        .json({ success: false, message: "Backlog not found or unauthorized" });
     return res.status(200).json({ success: true, data: doc });
   } catch (err) {
     const message = err?.message || "Failed to fetch backlog";
@@ -65,7 +67,10 @@ export const deleteBacklog = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedPlan = await backlog.findByIdAndDelete(id);
+    const deletedPlan = await backlog.findOneAndDelete({
+      _id: id,
+      userId: req.user.id,
+    });
 
     if (!deletedPlan) {
       return res.status(404).json({
@@ -73,12 +78,17 @@ export const deleteBacklog = async (req, res) => {
         message: "backlog not found",
       });
     }
-    await createNotification({
-      userId: req.user.id,
-      type: "BACKLOG_DELETED",
-      title: "Backlog Deleted",
-      message: `You Delete a backlog "${doc.title}"`,
-    });
+
+    try {
+      await createNotification({
+        userId: req.user.id,
+        type: "BACKLOG_DELETED",
+        title: "Backlog Deleted",
+        message: `You deleted a backlog "${deletedPlan.title}"`,
+      });
+    } catch (notifyErr) {
+      console.warn("Backlog notification failed:", notifyErr.message);
+    }
 
     res.status(200).json({
       success: true,
@@ -105,11 +115,11 @@ export const updateBacklogStatus = async (req, res) => {
       });
     }
 
-    const plan = await backlog.findById(id);
+    const plan = await backlog.findOne({ _id: id, userId: req.user.id });
     if (!plan) {
       return res.status(404).json({
         success: false,
-        message: "Backlog not found",
+        message: "Backlog not found or unauthorized",
       });
     }
 
@@ -136,7 +146,7 @@ export const updateBacklogStatus = async (req, res) => {
       userId: req.user.id,
       type: "BACKLOG_UPDATE",
       title: "Backlog Update",
-      message: `You Update a backlog "${doc.title}"`,
+      message: `You updated a backlog "${plan.title}"`,
     });
 
     return res.status(200).json({

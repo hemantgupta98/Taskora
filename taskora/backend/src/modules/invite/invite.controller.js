@@ -1,6 +1,7 @@
 import inviteModel from "./invite.model.js";
 import sendLink from "./invite.gmail.js";
 import dotenv from "dotenv";
+import { createNotification } from "../notification/notification.service.js";
 
 dotenv.config();
 
@@ -49,6 +50,19 @@ export const sendInvite = async (req, res) => {
       return res
         .status(200)
         .json({ success: true, message: "link sent successfully" });
+    }
+
+    data.userId = req.user.id;
+
+    try {
+      await createNotification({
+        userId: req.user.id,
+        type: "INVITE_SEND",
+        title: "Invitation send",
+        message: `You send a Invite "${doc.title}"`,
+      });
+    } catch (notifyErr) {
+      console.warn("Invite notification failed:", notifyErr.message);
     }
 
     return res

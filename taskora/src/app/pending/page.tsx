@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../lib/api";
 import { Toaster, toast } from "sonner";
-import Input from "@/src/components/ui/input";
+import Input from "../../components/ui/input";
 import {
   Select,
   SelectContent,

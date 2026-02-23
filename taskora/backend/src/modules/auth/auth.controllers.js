@@ -21,11 +21,17 @@ export const signup = async (req, res) => {
     }
 
     const user = await createUser({ name, email, password });
+    const jwtToken = process.env.JWT_TOKEN;
+    const token = jwt.sign({ id: user._id }, jwtToken, { expiresIn: "20h" });
 
     res.status(201).json({
       success: true,
       message: "User created successfully",
-      data: user,
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+      },
     });
   } catch (error) {
     console.log("Signup error:", error);

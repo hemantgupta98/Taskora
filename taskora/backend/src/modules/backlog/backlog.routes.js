@@ -6,13 +6,14 @@ import {
   deleteBacklog,
   updateBacklogStatus,
 } from "./backlog.controller.js";
+import { verifyToken } from "../../middleware/main.middleware.js";
 
 const router = express.Router();
 
-router.post("/createbacklog", createBacklog);
-router.get("/", getBacklog);
-router.get("/:id", getBacklogById);
-router.delete("/deletebacklog/:id", deleteBacklog);
-router.patch("/update-status/:id", updateBacklogStatus);
+router.post("/createbacklog", verifyToken, createBacklog);
+router.get("/", verifyToken, getBacklog);
+router.get("/:id", verifyToken, getBacklogById);
+router.delete("/deletebacklog/:id", verifyToken, deleteBacklog);
+router.patch("/update-status/:id", verifyToken, updateBacklogStatus);
 
 export default router;

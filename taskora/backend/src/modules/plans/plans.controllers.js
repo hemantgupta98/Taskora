@@ -1,5 +1,5 @@
 import planModel from "./plans.model.js";
-
+import { createNotification } from "../notification/notification.service.js";
 const allowedFields = [
   "name",
   "access",
@@ -18,11 +18,25 @@ export const createPlans = async (req, res) => {
       if (req.body[key] !== undefined) data[key] = req.body[key];
     }
 
+    data.userId = req.user.id;
+
     if (typeof data.teamMembers === "string") {
       data.teamMembers = [data.teamMembers];
     }
 
     const plans = await planModel.create(data);
+
+    try {
+      await createNotification({
+        userId: req.user.id,
+        type: "PLAN_CREATED",
+        title: "Plan Created",
+        message: `You created a plan "${plans.name}"`,
+      });
+    } catch (notifyErr) {
+      console.warn("Plan notification failed:", notifyErr.message);
+    }
+
     return res.status(200).json({ success: true, data: plans });
   } catch (error) {
     console.log("Error in creating plans", error.message);
@@ -35,7 +49,7 @@ export const createPlans = async (req, res) => {
 
 export const getPlans = async (req, res) => {
   try {
-    const filter = {};
+    const filter = { userId: req.user.id };
     if (req.query.admin) filter.admin = req.query.admin;
 
     const list = await planModel.find(filter).sort({ createdAt: -1 });
@@ -49,11 +63,11 @@ export const getPlans = async (req, res) => {
 export const getPlansById = async (req, res) => {
   try {
     const { id } = req.params;
-    const doc = await planModel.findById(id);
+    const doc = await planModel.findOne({ _id: id, userId: req.user.id });
     if (!doc)
       return res
         .status(404)
-        .json({ success: false, message: "Plans not found" });
+        .json({ success: false, message: "Plan not found or unauthorized" });
     return res.status(200).json({ success: true, data: doc });
   } catch (err) {
     const message = err?.message || "Failed to fetch Plans";
@@ -65,13 +79,27 @@ export const deletePlan = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedPlan = await planModel.findByIdAndDelete(id);
+    const deletedPlan = await planModel.findOneAndDelete({
+      _id: id,
+      userId: req.user.id,
+    });
 
     if (!deletedPlan) {
       return res.status(404).json({
         success: false,
         message: "Plan not found",
       });
+    }
+
+    try {
+      await createNotification({
+        userId: req.user.id,
+        type: "PLAN_DELETED",
+        title: "Plan Deleted",
+        message: `You deleted a plan "${deletedPlan.name}"`,
+      });
+    } catch (notifyErr) {
+      console.warn("Plan notification failed:", notifyErr.message);
     }
 
     res.status(200).json({
@@ -99,11 +127,11 @@ export const updatePlanStatus = async (req, res) => {
       });
     }
 
-    const plan = await planModel.findById(id);
+    const plan = await planModel.findOne({ _id: id, userId: req.user.id });
     if (!plan) {
       return res.status(404).json({
         success: false,
-        message: "Plan not found",
+        message: "Plan not found or unauthorized",
       });
     }
 
@@ -126,6 +154,17 @@ export const updatePlanStatus = async (req, res) => {
     plan.status = status;
     await plan.save();
 
+    try {
+      await createNotification({
+        userId: req.user.id,
+        type: "PLAN_UPDATE",
+        title: "Plan Update",
+        message: `You updated a plan "${plan.name}"`,
+      });
+    } catch (notifyErr) {
+      console.warn("Plan notification failed:", notifyErr.message);
+    }
+
     return res.status(200).json({
       success: true,
       message: "Plan status updated successfully",
@@ -146,6 +185,7 @@ export const getBacklogPlans = async (req, res) => {
 
     const plans = await planModel
       .find({
+        userId: req.user.id,
         status: { $ne: "done" },
         dueDate: { $lt: today },
       })

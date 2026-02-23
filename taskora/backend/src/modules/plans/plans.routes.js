@@ -7,14 +7,15 @@ import {
   getBacklogPlans,
   updatePlanStatus,
 } from "./plans.controllers.js";
+import { verifyToken } from "../../middleware/main.middleware.js";
 
 const router = express.Router();
 
-router.post("/createplans", createPlans);
-router.get("/", getPlans);
-router.get("/backlog", getBacklogPlans);
-router.get("/:id", getPlansById);
-router.delete("/deleteplans/:id", deletePlan);
-router.patch("/update-status/:id", updatePlanStatus);
+router.post("/createplans", verifyToken, createPlans);
+router.get("/", verifyToken, getPlans);
+router.get("/backlog", verifyToken, getBacklogPlans);
+router.get("/:id", verifyToken, getPlansById);
+router.delete("/deleteplans/:id", verifyToken, deletePlan);
+router.patch("/update-status/:id", verifyToken, updatePlanStatus);
 
 export default router;

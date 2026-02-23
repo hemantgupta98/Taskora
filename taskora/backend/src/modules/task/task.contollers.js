@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import task from "./task.model.js";
 import { createNotification } from "../notification/notification.service.js";
 const allowedFields = [
@@ -127,11 +128,14 @@ export const updateBacklogStatus = async (req, res) => {
       });
     }
 
-    const plan = await task.findById(id);
+    const plan = await task.findOne({
+      _id: id,
+      userId: req.user.id,
+    });
     if (!plan) {
       return res.status(404).json({
         success: false,
-        message: "Plan not found",
+        message: "Task not found or unauthorized",
       });
     }
 

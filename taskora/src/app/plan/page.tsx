@@ -106,27 +106,8 @@ export default function CreatePlanPage() {
     }
 
     try {
-      const url = "https://taskora-88w5.onrender.com/api/plans/createplans";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-      let result;
-      const contentType = res.headers.get("content-type");
+      await api.post("/plans/createplans", data);
 
-      if (contentType?.includes("application/json")) {
-        result = await res.json();
-      } else {
-        const text = await res.text();
-        throw new Error(text || "Invalid server response");
-      }
-
-      if (!res.ok) {
-        toast.error(result.message || "Plans failed");
-        return reset();
-      }
       reset();
       toast.success("Plans created ");
     } catch (error) {
