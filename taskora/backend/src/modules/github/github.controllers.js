@@ -12,7 +12,7 @@ import {
 import { githubDB } from "./github.model.js";
 
 const FRONTEND_URL =
-  process.env.FRONTEND_URL ?? "https://taskora-peach.vercel.app/dashboard";
+  process.env.FRONTEND_URL ?? "https://taskora-peach.vercel.app";
 const BACKEND_URL =
   process.env.BACKEND_URL ??
   process.env.API_BASE_URL ??
