@@ -11,7 +11,8 @@ import {
 } from "./github.auth.js";
 import { githubDB } from "./github.model.js";
 
-const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
+const FRONTEND_URL =
+  process.env.FRONTEND_URL ?? "https://taskora-peach.vercel.app/dashboard";
 const BACKEND_URL =
   process.env.BACKEND_URL ??
   process.env.API_BASE_URL ??
