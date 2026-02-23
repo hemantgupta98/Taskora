@@ -18,6 +18,13 @@ const BACKEND_URL =
   process.env.API_BASE_URL ??
   "https://taskora-88w5.onrender.com";
 const isProduction = process.env.NODE_ENV === "production";
+const isCrossSite = (() => {
+  try {
+    return new URL(FRONTEND_URL).origin !== new URL(BACKEND_URL).origin;
+  } catch {
+    return isProduction;
+  }
+})();
 const isGithubConfigured = Boolean(
   process.env.GITHUB_CLIENT_ID &&
   process.env.GITHUB_CLIENT_SECRET &&
@@ -112,8 +119,8 @@ export const githubCallback = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: isProduction ? "none" : "lax",
-      secure: isProduction,
+      sameSite: isCrossSite ? "none" : "lax",
+      secure: isCrossSite || isProduction,
     });
 
     // Redirect back to frontend
