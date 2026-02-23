@@ -25,6 +25,10 @@ export const findUserByEmailForLogin = async (email) => {
         password: acceptUser.password, // Already hashed
         isFromAcceptInvite: true,
       };
+    }
+  }
+  
+  return user;
 };
 
 export const createUser = async (data) => {
