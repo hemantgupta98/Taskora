@@ -291,6 +291,7 @@ export const registerUser = async (req, res) => {
 
     return res.status(502).json({
       success: false,
+      reason: mailResult?.reason || "mail_send_failed",
       message: mailResult?.message || "Unable to send OTP email",
     });
   } catch (error) {

@@ -84,6 +84,7 @@ export const sendInvite = async (req, res) => {
 
     return res.status(502).json({
       success: false,
+      reason: mailResult?.reason || "mail_send_failed",
       message: mailResult?.message || "Sending invite link failed",
     });
   } catch (err) {
