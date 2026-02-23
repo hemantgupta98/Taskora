@@ -1,6 +1,6 @@
 "use client";
 
-import { X, Send, Copy } from "lucide-react";
+import { X, Send, Copy, Link } from "lucide-react";
 import {
   forwardRef,
   useState,
@@ -11,6 +11,8 @@ import { toast, Toaster } from "sonner";
 import LabeledInput from "../../components/ui/input";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 
+import { FaAngleDoubleLeft } from "react-icons/fa";
+
 type Invite = {
   email: string;
   teamMembers: string;
@@ -18,7 +20,7 @@ type Invite = {
 
 export default function InviteTeamModal() {
   const [open, setOpen] = useState(true);
-  const [input, setInput] = useState("");
+
   const {
     register,
     reset,
@@ -128,6 +130,13 @@ export default function InviteTeamModal() {
               >
                 <Send size={16} /> Send Invites
               </button>
+              <Link
+                href="/team"
+                className=" cursor-pointer gap-2 flex justify-center text-gray-500"
+              >
+                <FaAngleDoubleLeft className="mt-1.5" />
+                Back
+              </Link>
             </div>
           </form>
         </div>
