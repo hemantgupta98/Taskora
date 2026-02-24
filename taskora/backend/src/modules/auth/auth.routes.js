@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
 import jwt from "jsonwebtoken";
 import passport from "passport";
@@ -15,6 +12,7 @@ import {
   getProfile,
   updateProfile,
 } from "./auth.controllers.js";
+import { sendMailSafe } from "../../utils/mailer.js";
 import { verifyToken } from "./auth.middleware.js";
 
 const router = express.Router();
@@ -34,6 +32,16 @@ router.post("/otp", registerUser);
 router.post("/verifyotp", verifyotp);
 router.post("/resetpassword", resetpassword);
 router.post("/logout", logout);
+router.get("/mail-test", async (req, res) => {
+  const result = await sendMailSafe({
+    to: "yourgmail@gmail.com",
+    subject: "SMTP Test",
+    text: "SMTP working successfully",
+    context: "test",
+  });
+
+  return res.json(result);
+});
 
 router.get(
   "/google",

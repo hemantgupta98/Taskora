@@ -1,11 +1,8 @@
 import inviteModel from "./invite.model.js";
 import sendLink from "./invite.gmail.js";
-import dotenv from "dotenv";
 import { createNotification } from "../notification/notification.service.js";
 import { isMailConfigured } from "../../utils/mailer.js";
 import { verifyMailTransport } from "../../utils/mailer.js";
-
-dotenv.config();
 
 export const user = async (req, res) => {
   const { teamMembers, email } = req.body;
@@ -42,7 +39,7 @@ export const sendInvite = async (req, res) => {
       reason: "mail_not_configured",
       mode: "none",
       message:
-        "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
+        "Email service is not configured. Set EMAIL_APP_USER/EMAIL_APP_PASS or Google OAuth mail credentials.",
     });
   }
 

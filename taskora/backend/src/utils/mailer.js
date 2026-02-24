@@ -3,8 +3,8 @@ import nodemailer from "nodemailer";
 const pick = (...values) => values.find((value) => String(value || "").trim());
 
 const getMailEnv = () => {
-  const user = pick(process.env.EMAIL_APP_USER, process.env.EMAIL_USER);
-  const pass = pick(process.env.EMAIL_APP_PASS, process.env.EMAIL_PASS);
+  const user = pick(process.env.EMAIL_APP_USER);
+  const pass = pick(process.env.EMAIL_APP_PASS);
   const from = pick(process.env.EMAIL_FROM, user);
 
   const oauth = {
@@ -85,14 +85,12 @@ const buildTransport = () => {
   const transportBase = {
     host: smtp.host,
     port: smtp.port,
-    secure: smtp.secure,
-    requireTLS: !smtp.secure,
+    secure: smtp.port === 465,
     connectionTimeout: smtp.connectionTimeout,
     greetingTimeout: smtp.greetingTimeout,
     socketTimeout: smtp.socketTimeout,
     tls: {
-      servername: smtp.host,
-      minVersion: "TLSv1.2",
+      rejectUnauthorized: false,
     },
   };
 
@@ -143,14 +141,12 @@ const buildAlternateTransport = () => {
   const transportBase = {
     host: smtp.host,
     port: fallbackPort,
-    secure: fallbackSecure,
-    requireTLS: !fallbackSecure,
+    secure: fallbackPort === 465,
     connectionTimeout: smtp.connectionTimeout,
     greetingTimeout: smtp.greetingTimeout,
     socketTimeout: smtp.socketTimeout,
     tls: {
-      servername: smtp.host,
-      minVersion: "TLSv1.2",
+      rejectUnauthorized: false,
     },
   };
 
@@ -200,7 +196,7 @@ const classifyError = (error) => {
     return {
       reason: "auth_failed",
       publicMessage:
-        "Mail authentication failed. Check EMAIL_APP_USER/EMAIL_APP_PASS (or EMAIL_USER/EMAIL_PASS) or OAuth credentials.",
+        "Mail authentication failed. Check EMAIL_APP_USER/EMAIL_APP_PASS or OAuth credentials.",
       details,
     };
   }
@@ -281,7 +277,7 @@ export const sendMailSafe = async ({ to, subject, text, html, context }) => {
       reason: "mail_not_configured",
       mode,
       message:
-        "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
+        "Email service is not configured. Set EMAIL_APP_USER/EMAIL_APP_PASS or Google OAuth mail credentials.",
       debug: {
         hasEmailUser: Boolean(env.user),
         hasEmailPass: Boolean(env.pass),
@@ -397,7 +393,7 @@ export const verifyMailTransport = async () => {
       reason: "mail_not_configured",
       mode,
       message:
-        "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
+        "Email service is not configured. Set EMAIL_APP_USER/EMAIL_APP_PASS or Google OAuth mail credentials.",
       debug: getMailConfigSnapshot(),
     };
   }

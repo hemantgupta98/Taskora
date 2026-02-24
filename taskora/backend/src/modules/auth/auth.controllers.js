@@ -8,8 +8,6 @@ import {
 } from "./auth.service.js";
 import sendOtp from "./auth.gmail.js";
 import { isMailConfigured } from "../../utils/mailer.js";
-import dotenv from "dotenv";
-dotenv.config();
 
 const issueAuthToken = (res, userId, expiresIn = "20h") => {
   const jwtToken = process.env.JWT_TOKEN;
@@ -262,7 +260,7 @@ export const registerUser = async (req, res) => {
     return res.status(503).json({
       success: false,
       message:
-        "Email service is not configured. Set EMAIL_USER/EMAIL_PASS or Google OAuth mail credentials.",
+        "Email service is not configured. Set EMAIL_APP_USER/EMAIL_APP_PASS or Google OAuth mail credentials.",
     });
   }
 

@@ -4,8 +4,6 @@ import inviteModel from "../invite/invite.model.js";
 import { Media } from "../../media/media.model.js";
 import { User as AuthUser } from "../auth/auth.model.js";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config();
 
 export const accept = async (req, res) => {
   const { name, phone, email, password, confirmpassword } = req.body;
