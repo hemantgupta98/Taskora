@@ -20,11 +20,13 @@ const authSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-authSchema.pre("save", async function () {
+{
+  /**authSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
   this.password = await hashpassword(this.password);
-});
+}); */
+}
 
 const User = mongoose.model("SignupHistory", authSchema);
 
